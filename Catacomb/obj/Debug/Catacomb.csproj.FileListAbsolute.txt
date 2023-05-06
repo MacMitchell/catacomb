@@ -7,3 +7,12 @@ C:\Users\chum_\Desktop\randomCode\goodStuff\Catacomb\Catacomb\obj\Debug\Catacomb
 C:\Users\chum_\Desktop\randomCode\goodStuff\Catacomb\Catacomb\obj\Debug\Catacomb.csproj.CoreCompileInputs.cache
 C:\Users\chum_\Desktop\randomCode\goodStuff\Catacomb\Catacomb\obj\Debug\Catacomb.exe
 C:\Users\chum_\Desktop\randomCode\goodStuff\Catacomb\Catacomb\obj\Debug\Catacomb.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Debug\Catacomb.exe.config
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Debug\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Debug\Catacomb.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.csproj.AssemblyReference.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.Properties.Resources.resources
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.csproj.GenerateResource.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.csproj.CoreCompileInputs.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.pdb
