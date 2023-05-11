@@ -5,3 +5,10 @@ C:\Users\chum_\source\repos\ConsoleApp2\ConsoleApp2\obj\Debug\Catacomb.csproj.As
 C:\Users\chum_\source\repos\ConsoleApp2\ConsoleApp2\obj\Debug\Catacomb.csproj.CoreCompileInputs.cache
 C:\Users\chum_\source\repos\ConsoleApp2\ConsoleApp2\obj\Debug\Catacomb.exe
 C:\Users\chum_\source\repos\ConsoleApp2\ConsoleApp2\obj\Debug\Catacomb.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Debug\Catacomb.exe.config
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Debug\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Debug\Catacomb.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.csproj.AssemblyReference.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.csproj.CoreCompileInputs.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Debug\Catacomb.pdb

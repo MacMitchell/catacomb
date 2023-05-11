@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using System.Windows;
 
 
-namespace WpfApp1
+namespace Catacomb
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -38,17 +38,23 @@ namespace WpfApp1
     }
     public partial class MainWindow : Window
     {
-        Window mainWindow;
         Canvas mainCanvas;
 
+        
         public MainWindow()
         {
             mainCanvas = new Canvas();
             mainCanvas.Background = Brushes.Black;
+            
             this.Content = mainCanvas;
             this.Title = "HELLO WORLD";
             this.Show();
+            this.MouseDown += test;
 
+        }
+        void test(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Message here");
         }
     }
 }
