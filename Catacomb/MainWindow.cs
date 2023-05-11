@@ -12,12 +12,30 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows;
+
 
 namespace WpfApp1
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+    public class Start
+    {
+
+        [STAThread]
+        static void Main(string[] args)
+
+        {
+            Application test = new Application();
+            MainWindow window = new MainWindow();
+            test.MainWindow = window;
+            test.Run();
+            
+
+        }
+    }
     public partial class MainWindow : Window
     {
         Window mainWindow;
@@ -27,11 +45,9 @@ namespace WpfApp1
         {
             mainCanvas = new Canvas();
             mainCanvas.Background = Brushes.Black;
-            
-
-            InitializeComponent();
             this.Content = mainCanvas;
             this.Title = "HELLO WORLD";
+            this.Show();
 
         }
     }

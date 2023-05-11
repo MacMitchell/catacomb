@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.33529.622
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{C1B4A18C-BAFA-49A3-9CF0-D84E8DEC417A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catacomb", "Catacomb\Catacomb.csproj", "{11D34587-C041-4897-A79F-D488A8F54A3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C1B4A18C-BAFA-49A3-9CF0-D84E8DEC417A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1B4A18C-BAFA-49A3-9CF0-D84E8DEC417A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1B4A18C-BAFA-49A3-9CF0-D84E8DEC417A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1B4A18C-BAFA-49A3-9CF0-D84E8DEC417A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11D34587-C041-4897-A79F-D488A8F54A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D34587-C041-4897-A79F-D488A8F54A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D34587-C041-4897-A79F-D488A8F54A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D34587-C041-4897-A79F-D488A8F54A3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DBD5C1BE-AD15-4F7C-802C-F41ED64AD0E7}
+		SolutionGuid = {71D73818-06C6-4863-9D29-A624F2802A6E}
 	EndGlobalSection
 EndGlobal
