@@ -12,8 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Windows;
-
+using Catacomb.Maze;
 
 namespace Catacomb
 {
@@ -29,11 +28,133 @@ namespace Catacomb
 
         {
             Application test = new Application();
-            MainWindow window = new MainWindow();
-            test.MainWindow = window;
-            test.Run();
+            //MainWindow window = new MainWindow();
+            //test.MainWindow = window;
+            Window mazeWindow = GetMazeTest();
             
+            test.MainWindow = mazeWindow;
+            mazeWindow.Show();            
+            MazeBuilder builder = new MazeBuilder();
 
+            Room testMaze   = builder.BuildMaze(25,5);
+            
+            test.Run();
+
+        }
+        private static Label textBox1;
+        private static Label textBox2;
+        private static Room testMaze;
+        private static Button left;
+        private static Button right;
+        private static Button up;
+        private static Button down;
+        private static Window GetMazeTest()
+        {
+            Window returnWindow = new Window();
+            Canvas mainCanvas2 = new Canvas();
+            mainCanvas2.Background = Brushes.Black;
+            mainCanvas2.Width = returnWindow.Width;
+            mainCanvas2.Height = returnWindow.Height;
+
+            MazeBuilder builder = new MazeBuilder();
+            testMaze = builder.BuildMaze(15, 3);
+
+            textBox1 = new Label();
+            textBox1.Foreground = Brushes.White;
+            textBox2 = new Label();
+            textBox2.Foreground = Brushes.White;
+
+            
+            /*Line test = new Line();
+            test.X1 = 0.0;
+            test.Y1 = 0.0;
+            test.X2 = 500;
+            test.Y2 = 500;
+            test.Stroke = Brushes.Red;
+            mainCanvas.Children.Add(test);
+            */
+
+            //this.MouseDown += testF;
+
+
+
+            left = new Button();
+            left.Content = "Left";
+            left.Margin = new Thickness(15, 15, 10, 0);
+            left.Width = 200;
+            left.Height = 50;
+            left.HorizontalAlignment = HorizontalAlignment.Left;
+            left.Click += (sender, EventArgs) => { Move(3); };
+
+
+
+            right = new Button();
+            right.Content = "right";
+            right.Margin = new Thickness(15, 15, 10, 0);
+            right.Width = 200;
+            right.Height = 50;
+            right.HorizontalAlignment = HorizontalAlignment.Right;
+            right.Click += (sender, EventArgs) => { Move(1); };
+
+
+
+            up = new Button();
+            up.Content = "Up";
+            up.Margin = new Thickness(15, 15, 10, 0);
+            up.Width = 200;
+            up.Height = 50;
+            up.Click += (sender, EventArgs) => { Move(0); };
+
+
+            down = new Button();
+            down.Content = "Down";
+            down.Margin = new Thickness(15, 15, 10, 0);
+            down.Width = 200;
+            down.Height = 50;
+            down.Click += (sender, EventArgs) => { Move(2); };
+
+
+            StackPanel verticalStack = new StackPanel();
+            verticalStack.Orientation = Orientation.Vertical;
+            StackPanel horizontalStack = new StackPanel();
+            horizontalStack.Orientation = Orientation.Horizontal;
+
+            mainCanvas2.Children.Add(verticalStack);
+            
+            verticalStack.Children.Add(up);
+            verticalStack.Children.Add(horizontalStack);
+            verticalStack.Children.Add(textBox1);
+            verticalStack.Children.Add(textBox2);
+            horizontalStack.Children.Add(left);
+            horizontalStack.Children.Add(down);
+            
+            horizontalStack.Children.Add(right);
+
+            returnWindow.Content = mainCanvas2;
+
+            updateLabels();
+
+            return returnWindow;
+        }
+
+        public static void updateLabels()
+        {
+            left.Background = testMaze.HasConnection(3) ? Brushes.White : Brushes.Red;
+            right.Background = testMaze.HasConnection(1) ? Brushes.White : Brushes.Red;
+            up.Background = testMaze.HasConnection(0) ? Brushes.White : Brushes.Red;
+            down.Background = testMaze.HasConnection(2) ? Brushes.White : Brushes.Red;
+            textBox1.Content = testMaze.GetRoomType();
+            textBox2.Content = testMaze.getId();
+        }
+        public static void Move(int direction)
+        {
+            
+            if (!testMaze.HasConnection(direction))
+            {
+                return;
+            }
+            testMaze = testMaze.GetConnectedRoom(direction);
+            updateLabels();
         }
     }
     public partial class MainWindow : Window
@@ -45,16 +166,70 @@ namespace Catacomb
         {
             mainCanvas = new Canvas();
             mainCanvas.Background = Brushes.Black;
+            mainCanvas.Width = this.Width;
+            mainCanvas.Height = this.Height;
             
+            /*Line test = new Line();
+            test.X1 = 0.0;
+            test.Y1 = 0.0;
+            test.X2 = 500;
+            test.Y2 = 500;
+            test.Stroke = Brushes.Red;
+            mainCanvas.Children.Add(test);
+            */
             this.Content = mainCanvas;
             this.Title = "HELLO WORLD";
             this.Show();
-            this.MouseDown += test;
+            //this.MouseDown += testF;
+
+            StackPanel tester3 = new StackPanel();
+            
+            mainCanvas.Children.Add(tester3);
+
+            Button left = new Button();
+            left.Content = "Left";
+            left.Margin = new Thickness(15, 15, 10, 0);
+            left.Width = 200;
+            left.Height = 50;
+            left.HorizontalAlignment = HorizontalAlignment.Left;
+
+
+            Button right = new Button();
+            right.Content = "right";
+            right.Margin = new Thickness(15, 15, 10, 0);
+            right.Width = 200;
+            right.Height = 50;
+            right.HorizontalAlignment = HorizontalAlignment.Right;
+
+
+            Button up = new Button();
+            up.Content = "Up";
+            up.Margin = new Thickness(15, 15, 10, 0);
+            up.Width = 200;
+            up.Height = 50;
+
+            Button down = new Button();
+            down.Content = "Down";
+            down.Margin = new Thickness(15, 15, 10, 0);
+            down.Width = 200;
+            down.Height = 50;
+
+            tester3.Children.Add(left);
+            tester3.Children.Add(down);
+            tester3.Children.Add(up);
+            tester3.Children.Add(right);
+
+
+            this.Show();
+            
+
 
         }
-        void test(object sender, RoutedEventArgs e)
+        void testF(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Message here");
         }
+
+        
     }
 }
