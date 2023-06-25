@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catacomb.Maze
 {
-    class Connection
+    public class Connection
     {
         private Room r1;
         private Room r2;

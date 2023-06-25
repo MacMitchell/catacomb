@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Catacomb.Maze
 {
     
-    class MazeBuilder
+    public class MazeBuilder
     {
         private static Random rand;
 

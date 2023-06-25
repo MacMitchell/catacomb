@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catacomb.Vectors
 {
-    interface Vector
+    public interface Vector
     {
         Point GetStartPoint();
         Point GetEndPoint();

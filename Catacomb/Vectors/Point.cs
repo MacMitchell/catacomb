@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catacomb.Vectors
 {
-    class Point
+    public class Point
     {
 
         private double x;

@@ -1,0 +1,17 @@
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\UnitTests.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\UnitTests.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Catacomb.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Catacomb.exe.config
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\obj\Debug\BankTests.csproj.AssemblyReference.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\obj\Debug\BankTests.csproj.CoreCompileInputs.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\obj\Debug\BankTests.csproj.CopyComplete
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\obj\Debug\UnitTests.dll
+C:\Users\chum_\Desktop\randomCode\git\catacomb\UnitTests\obj\Debug\UnitTests.pdb

@@ -6,23 +6,40 @@ using System.Threading.Tasks;
 using Catacomb.Global;
 namespace Catacomb.Vectors
 {
-    class CatLine : Vector
+    public class CatLine : Vector
     {
         private Point start;
         private Point end;
         private double slope;
         public CatLine(Point start, Point end)
         {
-            this.start = start;
-            this.end = end;
+            if(start.GetX() > end.GetX())
+            {
+                this.end = start;
+                this.start = end;
+            }
+            else
+            {
+                this.start = start;
+                this.end = end;
+            }
+
 
             this.slope = (end.GetY() - start.GetY()) / (end.GetX() - start.GetX());
         }
 
         public CatLine(double x1, double y1, double x2, double y2)
         {
-            this.start = new Point(x1, y1);
-            this.end = new Point(x2,y2);
+            if(x1 > x2)
+            {
+                this.start = new Point(x2, y2);
+                this.end = new Point(x1, y1);
+            }
+            else
+            {
+                this.start = new Point(x1, y1);
+                this.end = new Point(x2, y2);
+            }
 
             this.slope = (end.GetY() - start.GetY()) / (end.GetX() - start.GetX());
         }
@@ -44,21 +61,28 @@ namespace Catacomb.Vectors
                 return false;
             }
             double intersection = GetIntersectPointX(other);
-            Console.WriteLine("\nThis Intersection: " + GetIntercept() + ", OTHER: " + other.GetIntercept());
-            Console.WriteLine("\n====================\nInterSect:  " + intersection);
+            
             return (DoesLineContainXPoint(intersection) && other.DoesLineContainXPoint(intersection));
         }
 
         private bool DoesLineContainXPoint(double xIn)
         {
-            return (xIn > start.GetMinX(end) && xIn < start.GetMaxX(end));
+            return (xIn + Globals.TOLERANCE >= start.GetMinX(end) && xIn- Globals.TOLERANCE <= start.GetMaxX(end));
         }
         public double GetIntersectPointX(CatLine other)
         {
-            double slopeX = GetSlope() - other.GetSlope();
-            double intercept = other.GetIntercept() - GetIntercept();
-            double result = (double)intercept / (double)slopeX;
-            return result;
+            try
+            {
+                double slopeX = GetSlope() - other.GetSlope();
+                double intercept = other.GetIntercept() - GetIntercept();
+                double result = (double)intercept / (double)slopeX;
+                return result;
+            }
+            catch(DivideByZeroException)
+            {
+                return -1;
+            }
+            
         }
         public double GetSlope()
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catacomb.Maze
 {
-    class Hallway : Room
+    public class Hallway : Room
     {
         public override string GetRoomType()
         {

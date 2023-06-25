@@ -66,6 +66,7 @@
     <Compile Include="MainWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vectors\CatLine.cs" />
+    <Compile Include="Vectors\Rectangle.cs" />
     <Compile Include="Vectors\Vector.cs" />
     <Compile Include="Vectors\Point.cs" />
     <Compile Include="Visuals\Drawn.cs" />

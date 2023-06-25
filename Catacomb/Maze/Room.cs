@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace Catacomb.Maze
 {
-    class Room 
+    public class Room 
     {
 
         private Connection top;

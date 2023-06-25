@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Catacomb.Maze
 {
-    class Maze
+    public class Maze
     {
         
 
