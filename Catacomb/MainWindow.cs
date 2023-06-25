@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Catacomb.Maze;
-
+using Catacomb.Vectors;
 namespace Catacomb
 {
     /// <summary>
@@ -37,7 +37,15 @@ namespace Catacomb
             MazeBuilder builder = new MazeBuilder();
 
             Room testMaze   = builder.BuildMaze(25,5);
-            
+
+
+            CatLine l1 = new CatLine(-1, -3, 2, 9);
+            CatLine l2 = new CatLine(-2.5, 2, 0, -3);
+
+            Console.WriteLine("\n==================\nINTERSECTION RESULT: " + l1.DoesIntersect(l2));
+
+
+
             test.Run();
 
         }

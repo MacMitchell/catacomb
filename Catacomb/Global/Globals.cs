@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
-namespace Catacomb.Visuals
+namespace Catacomb.Global
 {
-    interface Drawer
+    public static class Globals
     {
-        Canvas Draw();
+        public const double TOLERANCE = 0.00005;
     }
 }
