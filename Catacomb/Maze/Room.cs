@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-
+using Catacomb.Vectors;
 
 namespace Catacomb.Maze
 {
@@ -17,6 +17,12 @@ namespace Catacomb.Maze
         private Connection bottom;
         private Connection left;
         private static int counter = 0;
+        private Drawn roomDrawn;
+
+        public Drawn RoomDrawn
+        {
+            get { return roomDrawn; }
+        }
         private int id;
         public Room()
         {
@@ -25,15 +31,13 @@ namespace Catacomb.Maze
             right = null;
             bottom = null;
             left = null;
+            roomDrawn = null;
         }
         public int getId()
         {
             return id;
         }
-        /**
-         @param up: if true that means it connects either up or down
-        @param posive: if true that mean it connects either right or up
-         */
+
         public void connect(Room other, int direction)
         {
             Connection connect = new Connection(this, other);
@@ -71,9 +75,21 @@ namespace Catacomb.Maze
             return "Room";
         }
 
-        public virtual Canvas Draw()
+        public Canvas GetCanvas()
         {
-            return new Canvas();
+            return roomDrawn.GetCanvas();
         }
+        
+
+        public virtual void Draw(Point p1, Point p2)
+        {
+            if(roomDrawn == null)
+            {
+                roomDrawn = new DrawnRoom(this, p1, p2);
+            }
+            
+        }
+
+        public virtual void Draw() {  }
     }
 }

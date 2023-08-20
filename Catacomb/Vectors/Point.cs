@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catacomb.Global;
 
 namespace Catacomb.Vectors
 {
@@ -59,6 +60,84 @@ namespace Catacomb.Vectors
         {
             double result = GetY() > other.GetY() ? GetY() : other.GetY();
             return result;
+        }
+
+        public bool AreEqual(Point other)
+        {
+            return (GetX() - other.GetX()) < Globals.TOLERANCE && (GetY() - other.GetY()) < Globals.TOLERANCE;
+        }
+
+        override public String ToString()
+        {
+            return "(" + GetX() + ", " + GetY() + ")";
+        }
+
+
+        public int compare(Point other)
+        {
+            double compareThis = GetX();
+            double compareOther = other.GetX();
+            if (Math.Abs(this.GetX() - other.GetX()) < Globals.TOLERANCE)
+            {
+                compareThis = this.GetY();
+                compareOther = other.GetY();
+            }
+            if(Math.Abs(compareThis - compareOther) < Globals.TOLERANCE)
+            {
+                return 0;
+            }
+            else if(compareThis > compareOther)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+            
+        }
+        public Point GetSmallerPoint(Point other)
+        {
+            int compare = this.compare(other);
+            if(compare > 0)
+            {
+                return other;
+            }
+
+            return this;
+        }
+
+        public Point GetBiggerPoint(Point other)
+        {
+            int compare = this.compare(other);
+            if(compare < 0)
+            {
+                return other;
+            }
+            return this;
+        }
+
+        public Point GetRotateCopy(double angle, double distance)
+        {
+            double newX = GetX() + (distance * Math.Cos(angle ));
+            double newY = GetY() + (distance * Math.Sin(angle ));
+
+            return new Point(newX, newY);
+        }
+
+        public Point MinusPoint(Point other)
+        {
+            double newX = GetX() - other.GetX();
+            double newY = GetY() - other.GetY();
+            return new Point(newX, newY);
+
+        }
+
+        public Point AddPoint(Point other)
+        {
+            double newX = GetX() + other.GetX();
+            double newY = GetY() + other.GetY();
+            return new Point(newX, newY);
         }
     }
 }

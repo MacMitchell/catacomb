@@ -13,7 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Catacomb.Maze;
+using Catacomb.Visuals;
 using Catacomb.Vectors;
+using Catacomb.Entities;
 namespace Catacomb
 {
     /// <summary>
@@ -38,15 +40,14 @@ namespace Catacomb
 
             Room testMaze   = builder.BuildMaze(25,5);
 
-
-            CatLine l1 = new CatLine(-1, -3, 2, 9);
-            CatLine l2 = new CatLine(-2.5, 2, 0, -3);
-
-            Console.WriteLine("\n==================\nINTERSECTION RESULT: " + l1.DoesIntersect(l2));
-
-
+            mazeWindow.KeyDown += MoveKeyPress;
 
             test.Run();
+
+        }
+        public static void MoveKeyPress(object sender, KeyEventArgs e)
+        {
+                player.Move(e.Key);  
 
         }
         private static Label textBox1;
@@ -56,8 +57,12 @@ namespace Catacomb
         private static Button right;
         private static Button up;
         private static Button down;
+        private static Canvas roomCanvas;
+        private static Player player;
         private static Window GetMazeTest()
         {
+            player = new Player(new Vectors.Point(5, 5));
+
             Window returnWindow = new Window();
             Canvas mainCanvas2 = new Canvas();
             mainCanvas2.Background = Brushes.Black;
@@ -140,11 +145,30 @@ namespace Catacomb
 
             returnWindow.Content = mainCanvas2;
 
-            updateLabels();
+            roomCanvas = new Canvas();
 
+            verticalStack.Children.Add(roomCanvas);
+            roomCanvas.Background = Brushes.Blue;
+            roomCanvas.Width = 500;
+            roomCanvas.Height = 500;
+
+
+            Wall test = new Wall(new Vectors.Point(5, 5), new Vectors.Point( 50, 50));
+            //roomCanvas.Children.Add(test.GetCanvas());
+
+            updateLabels();
+            
             return returnWindow;
         }
 
+        public static void updateRoomCanvas()
+        {
+            testMaze.Draw(new Vectors.Point(50,50),new Vectors.Point(250,250));
+            roomCanvas.Children.Clear();
+            player.Container = testMaze.RoomDrawn;
+            roomCanvas.Children.Add(testMaze.GetCanvas());
+            roomCanvas.Children.Add(player.GetCanvas());
+        }
         public static void updateLabels()
         {
             left.Background = testMaze.HasConnection(3) ? Brushes.White : Brushes.Red;
@@ -163,8 +187,10 @@ namespace Catacomb
             }
             testMaze = testMaze.GetConnectedRoom(direction);
             updateLabels();
+            updateRoomCanvas();
         }
     }
+   
     public partial class MainWindow : Window
     {
         Canvas mainCanvas;
@@ -240,4 +266,7 @@ namespace Catacomb
 
         
     }
+
+
+
 }
