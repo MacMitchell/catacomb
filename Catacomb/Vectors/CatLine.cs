@@ -92,6 +92,10 @@ namespace Catacomb.Vectors
                 return false;
             }
             Console.WriteLine(intersection.ToString());
+            if(IsPointWithinRange(intersection) && other.IsPointWithinRange(intersection))
+            {
+                Console.WriteLine("HERERERER");
+            }
             return IsPointWithinRange(intersection) && other.IsPointWithinRange(intersection);
         }
 

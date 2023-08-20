@@ -15,7 +15,7 @@ namespace Catacomb.Entities
         double width = 10;
         double height = 10;
         
-        public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, 0, 0)) {
+        public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, 10, 10)) {
             canvas.Width = width;
             canvas.Height = height;
             canvas.Background = Brushes.Orange;

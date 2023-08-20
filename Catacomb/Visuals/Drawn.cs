@@ -113,7 +113,6 @@ namespace Catacomb.Visuals
         }
         public virtual void Draw()
         {
-            Console.WriteLine("BACKGROUND COLOR: " + canvas.Background);
             Canvas.SetTop(canvas, position.GetY());
             Canvas.SetLeft(canvas, position.GetX());
         }

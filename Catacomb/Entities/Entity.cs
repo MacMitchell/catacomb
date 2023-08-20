@@ -32,7 +32,7 @@ namespace Catacomb.Entities
         public Entity(Point positionIn, Vector rep): base(rep)
         {
             canvas = new Canvas();
-            Velocity = 30;
+            Velocity = 1;
             Angle = 0;
             Position = positionIn;
         }
@@ -43,8 +43,8 @@ namespace Catacomb.Entities
         public virtual void move(double time)
         {
             double distance = velocity * time;
-            double newX = (distance - representive.GetEndPoint().GetX() + representive.GetStartPoint().GetX()) * Math.Cos(angle) + Position.GetX();
-            double newY = (distance - representive.GetEndPoint().GetY() + representive.GetStartPoint().GetY()) * Math.Sin(angle) + Position.GetY();
+            double newX = (distance ) * Math.Cos(angle) + Position.GetX();
+            double newY = (distance ) * Math.Sin(angle) + Position.GetY();
 
             
             Position = new Point(newX, newY);
@@ -68,13 +68,15 @@ namespace Catacomb.Entities
             CatRectangle rep = (CatRectangle)representive;
             //assuming it is a square
             double width = rep.GetWidth();
-            double newX = Position.GetX() + distance * Math.Cos(Angle);
-            double newY = Position.GetY() + distance * Math.Sin(Angle);
+            Point center = new Point(Position.GetX() + width / 2, Position.GetY() + width / 2);
+            center = center.GetRotateCopy(angle, width/2);
+            double newX =   center.GetX() + distance * Math.Cos(Angle);
+            double newY =   center.GetY() + distance * Math.Sin(Angle);
 
             newX += offsetX;
             newY += offsetY;
 
-            Point offsetPosition = Position.AddPoint(new Point(offsetX, offsetY));
+            Point offsetPosition = center.AddPoint(new Point(offsetX, offsetY));
             CatThickLine moveVector = new CatThickLine(offsetPosition, new Point(newX, newY), width);
             return moveVector;
 
