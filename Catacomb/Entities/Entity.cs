@@ -48,7 +48,6 @@ namespace Catacomb.Entities
 
             
             Position = new Point(newX, newY);
-            Console.WriteLine("New Position: " + Position.ToString());
             Draw();
         }
 
@@ -58,7 +57,6 @@ namespace Catacomb.Entities
             if (container.EntityMove(this, distance))
             {
                 move(time);
-            
             }
 
         }

@@ -33,9 +33,7 @@ namespace Catacomb.Vectors
 
         public bool DoesIntersect(Vector other)
         {
-            Console.WriteLine("Upper: " + upperLine.ToString() + ", Lower: " + lowerLine.ToString());
             if (other.DoesIntersect(upperLine) || other.DoesIntersect(lowerLine)){
-                Console.WriteLine("HERERERERERERERERERER");
                 return true;
             }
 

@@ -12,13 +12,14 @@ namespace Catacomb.Entities
 {
     public class Player :Entity
     {
-        double width = 10;
-        double height = 10;
+        private static double width = 25;
+        private static double height = 25;
         
-        public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, 10, 10)) {
+        public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, width,height)) {
             canvas.Width = width;
             canvas.Height = height;
             canvas.Background = Brushes.Orange;
+            Velocity = 5;
             Draw();
         }
 

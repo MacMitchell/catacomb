@@ -38,7 +38,7 @@ namespace Catacomb
             mazeWindow.Show();            
             MazeBuilder builder = new MazeBuilder();
 
-            Room testMaze   = builder.BuildMaze(25,5);
+            Room testMaze   = builder.BuildMaze(25,1);
 
             mazeWindow.KeyDown += MoveKeyPress;
 
@@ -47,7 +47,9 @@ namespace Catacomb
         }
         public static void MoveKeyPress(object sender, KeyEventArgs e)
         {
-                player.Move(e.Key);  
+                player.Move(e.Key);
+            Canvas.SetLeft(roomCanvas, -40);
+            Canvas.SetTop(roomCanvas, -40);
 
         }
         private static Label textBox1;
@@ -58,6 +60,7 @@ namespace Catacomb
         private static Button up;
         private static Button down;
         private static Canvas roomCanvas;
+        private static Canvas visibleCanvas;
         private static Player player;
         private static Window GetMazeTest()
         {
@@ -146,9 +149,18 @@ namespace Catacomb
             returnWindow.Content = mainCanvas2;
 
             roomCanvas = new Canvas();
+            visibleCanvas = new Canvas();
+            verticalStack.Children.Add(visibleCanvas);
 
-            verticalStack.Children.Add(roomCanvas);
-            roomCanvas.Background = Brushes.Blue;
+            roomCanvas.Width = 500;
+            roomCanvas.Height = 500;
+
+            visibleCanvas.Background = Brushes.Blue;
+
+            visibleCanvas.Width = 1000;
+            visibleCanvas.Height = 1000;
+
+            visibleCanvas.Children.Add(roomCanvas);
             roomCanvas.Width = 500;
             roomCanvas.Height = 500;
 

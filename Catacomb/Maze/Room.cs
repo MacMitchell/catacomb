@@ -17,9 +17,9 @@ namespace Catacomb.Maze
         private Connection bottom;
         private Connection left;
         private static int counter = 0;
-        private Drawn roomDrawn;
+        private DrawnRoom roomDrawn;
 
-        public Drawn RoomDrawn
+        public DrawnRoom RoomDrawn
         {
             get { return roomDrawn; }
         }
@@ -91,5 +91,11 @@ namespace Catacomb.Maze
         }
 
         public virtual void Draw() {  }
+
+        public static int GetOppositeDirection(int direction)
+        {
+            int newDir = direction >= 2 ? direction - 2 : direction + 2;
+            return newDir;
+        }
     }
 }

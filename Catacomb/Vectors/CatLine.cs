@@ -65,36 +65,26 @@ namespace Catacomb.Vectors
             if (IsSlopeZero())
             {
                 intersection = other.GetPointWithYVal(start.GetY());
-                Console.WriteLine("1");
             }
             else if (other.IsSlopeZero())
             {
                 intersection = GetPointWithYVal(other.GetStartPoint().GetY());
-                Console.WriteLine("2");
             }
             else if (IsSlopeInifite())
             {
                 intersection = other.GetPointWithXVal(start.GetX());
-                Console.WriteLine("3");
             }
             else if (IsSlopeInifite())
             {
                 intersection = GetPointWithXVal(other.GetStartPoint().GetX());
-                Console.WriteLine("4");
             }
             else
             {
                 intersection = GetIntersectPoint(other);
-                Console.WriteLine("5");
             }
             if(intersection == null)
             {
                 return false;
-            }
-            Console.WriteLine(intersection.ToString());
-            if(IsPointWithinRange(intersection) && other.IsPointWithinRange(intersection))
-            {
-                Console.WriteLine("HERERERER");
             }
             return IsPointWithinRange(intersection) && other.IsPointWithinRange(intersection);
         }

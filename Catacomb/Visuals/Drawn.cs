@@ -52,7 +52,6 @@ namespace Catacomb.Visuals
             
             if (!Trespassable && representive.DoesIntersect(other))
             {
-                Console.WriteLine(GetVectorType());
                 return true;
             }
             return false;
