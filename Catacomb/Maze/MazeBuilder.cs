@@ -60,7 +60,7 @@ namespace Catacomb.Maze
 
 
             }
-            return (Room)found[0];
+            return ((Room)found[0]);
         }
 
 

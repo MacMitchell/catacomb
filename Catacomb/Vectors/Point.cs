@@ -12,6 +12,16 @@ namespace Catacomb.Vectors
 
         private double x;
         private double y;
+
+        public double X
+        {
+            get { return X; }
+        }
+
+        public double Y
+        {
+            get { return Y; }
+        }
         public Point(double x, double y)
         {
             this.x = x;

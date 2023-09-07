@@ -108,7 +108,12 @@ namespace Catacomb.Visuals
 
         public virtual bool IsWithin(Vector other)
         {
-            return representive.IsWithin(other);
+            return representive.DoesIntersect(other);
+        }
+        public virtual bool IsWithin(Drawn other)
+        {
+            
+            return representive.DoesIntersect(other.representive);
         }
         public virtual void Draw()
         {

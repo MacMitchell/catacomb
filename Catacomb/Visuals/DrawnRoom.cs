@@ -16,6 +16,16 @@ namespace Catacomb.Visuals
         private static Random rand;
         private Room parent;
         private Tuple<Point, Point>[] connectionPoints;
+
+        public double Width
+        {
+            get { return ((CatRectangle)base.representive).GetWidth(); }
+        }
+
+        public double Height
+        {
+            get { return ((CatRectangle)base.representive).GetHeight(); }
+        }
         public DrawnRoom(Room parentIn, Point start, Point end) : base(new CatRectangle(start, end), true)
         {
 
@@ -80,16 +90,43 @@ namespace Catacomb.Visuals
             Point[] endVertPoints = { wallRect.GetBottomRight(), wallRect.GetBottomLeft() };
             for (int i = 0; i < startVertPoints.Length; i++)
             {
-                if (!parent.HasConnection((i * 2) + 1))
+                int direction = i * 2 + 1;
+                int oppositeDiection = Room.GetOppositeDirection(direction);
+                if (!parent.HasConnection(direction))
                 {
                     base.AddChild(new Wall(startVertPoints[i], endVertPoints[i]));
                     continue;
                 }
-                Tuple<Point, Point> points = GetConnectionPoints(i * 2 + 1, startVertPoints[i], endVertPoints[i]);
-                
 
-                base.AddChild(new Wall(startVertPoints[i], points.Item1));
-                base.AddChild(new Wall(points.Item2, endVertPoints[i]));
+                DrawnRoom otherRoom = parent.GetConnectedRoom(direction).RoomDrawn;
+                if (otherRoom == null || !otherRoom.HasConnectionPoints(oppositeDiection)){
+                    Tuple<Point, Point> points = GetConnectionPoints(i * 2 + 1, startVertPoints[i], endVertPoints[i]);
+
+
+                    base.AddChild(new Wall(startVertPoints[i], points.Item1));
+                    base.AddChild(new Wall(points.Item2, endVertPoints[i]));
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine(startVertPoints[i]);
+                    Tuple<Point, Point> connection = GetNeighborsConnectionPoints(direction);
+
+                    Point p1 = new Point(startVertPoints[i].GetX(), connection.Item1.GetY());
+                    Point p2 = (connection.Item1);
+
+                    Point p3 = connection.Item2;
+                    Point p4 = new Point(endVertPoints[i].GetX(), connection.Item2.GetY());
+
+                    Console.WriteLine(p1 + " , " + p2 + " , " + p3 + ", " + p4);
+
+                    base.AddChild(new Wall(startVertPoints[i], p1));
+                    base.AddChild(new Wall(p1, p2));
+
+                    base.AddChild(new Wall(p3, p4));
+                    base.AddChild(new Wall(p4, endVertPoints[i]));
+                }
+                
             }
         }
 
@@ -107,14 +144,18 @@ namespace Catacomb.Visuals
             return "DrawnRoom with Rep: " + representive.GetVectorType();
         }
 
-
+        private bool HasConnectionPoints(int dir)
+        {
+            bool result = connectionPoints[dir] != null;
+            return result;
+        }
 
         //Assume the neighbor has connection points that are NOT null
         private Tuple<Point,Point> GetNeighborsConnectionPoints(int dir)
         {
-            DrawnRoom neighbor = parent.GetConnectedRoom(dir).RoomDrawn;
+            DrawnRoom otherRoom = parent.GetConnectedRoom(dir).RoomDrawn;
 
-            Tuple<Point,Point> neightborConnection = neighbor.GetConnectionPoints(Room.GetOppositeDirection(dir));
+            Tuple<Point,Point> neightborConnection = otherRoom.GetConnectionPoints(Room.GetOppositeDirection(dir));
            
             //convert to room cordinates
             Point start = neightborConnection.Item1.MinusPoint(Position);
@@ -161,6 +202,35 @@ namespace Catacomb.Visuals
             Point start = current.AddPoint(localCordinates.Item1);
             Point end = current.AddPoint(localCordinates.Item2);
             return new Tuple<Point, Point>(start, end);
+        }
+
+        
+        //assum
+        public Tuple<Point,Point> PlaceNeighbor(int direction, double gap, Point p1, Point p2 )
+        {
+
+            CatRectangle tempRep = new CatRectangle(p1, p2);
+            Point start = tempRep.GetTopLeft();
+            Point end = tempRep.GetBottomRight();
+            double otherWidth = Math.Abs(start.GetX() - end.GetX());
+            double otherHeight = Math.Abs(start.GetY() - end.GetY());
+
+            
+
+            double newX = start.GetX();
+            double newY = start.GetY();
+            switch (direction)
+            {
+                case 0: newY = base.Position.GetY() - otherHeight - gap; break;
+                case 1: newX = base.Position.GetX() + Width + gap; break;
+                case 2: newY = base.Position.GetY() + Height + gap; break;
+                case 3: newX = base.Position.GetX() - otherWidth - gap; break;
+            }
+
+            Point newStart = new Point(newX, newY);
+            Point newEnd = new Point(newStart.GetX()+ otherWidth, newStart.GetY()+otherHeight);
+
+            return new Tuple<Point, Point>(newStart, newEnd);
         }
     }
 }

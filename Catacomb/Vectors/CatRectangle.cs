@@ -117,6 +117,7 @@ namespace Catacomb.Vectors
 
         public bool DoesIntersect(CatRectangle other)
         {
+            Console.WriteLine("RECTANGLE: " + ToString() + ", OTHER: " + other.ToString());
             Point otherStart = other.GetStartPoint();
             Point otherEnd = other.GetEndPoint();
             Point bottomLeft = new Point(otherStart.GetX(), otherEnd.GetY());

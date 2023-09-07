@@ -90,7 +90,10 @@ namespace Catacomb.Maze
             
         }
 
-        public virtual void Draw() {  }
+        public virtual void Draw(Point p1) {
+            Point p2 = p1.AddPoint(new Point(150, 150));
+            Draw(p1, p2);
+         }
 
         public static int GetOppositeDirection(int direction)
         {
