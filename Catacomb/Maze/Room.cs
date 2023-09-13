@@ -86,6 +86,7 @@ namespace Catacomb.Maze
             if(roomDrawn == null)
             {
                 roomDrawn = new DrawnRoom(this, p1, p2);
+                roomDrawn.Draw();
             }
             
         }

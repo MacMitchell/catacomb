@@ -177,5 +177,18 @@ namespace Catacomb.Vectors
         {
             return end.GetX() - start.GetX();
         }
+
+        public void expand(int direction, double distance)
+        {
+            
+            switch (direction)
+            {
+                case 0: start = start.AddPoint(new Point(0, -distance)); break;
+                case 1: end = end.AddPoint(new Point(distance, 0)); break;
+                case 2: end = end.AddPoint(new Point(0, distance)); break;
+                case 3: start = start.AddPoint(new Point(-distance, 0)); break;
+            }
+
+        }
     }
 }

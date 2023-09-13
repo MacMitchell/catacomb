@@ -36,14 +36,14 @@ namespace Catacomb.Entities
    
 
        
-        public void Move(Key e)
+        public void KeyPress(Key e)
         {
             switch (e)
             {
-                case Key.A:  Angle = Math.PI; base.Move(1); break;
-                case Key.S:  Angle = Math.PI/2; base.Move(1); break;
-                case Key.D:  Angle = 0;  base.Move(1); break;
-                case Key.W:  Angle = 3*Math.PI/2; base.Move(1); break;
+                case Key.A:  Angle = Math.PI;  break;
+                case Key.S:  Angle = Math.PI/2; break;
+                case Key.D:  Angle = 0;  break;
+                case Key.W:  Angle = 3*Math.PI/2; break;
             }
         }
     }

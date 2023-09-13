@@ -123,10 +123,18 @@ namespace Catacomb.Visuals
 
         public virtual bool EntityMove(Entity entityIn,double distance)
         {
-
             CatThickLine movementVector = entityIn.GetMovementVector(distance, -Position.GetX(), -Position.GetY());
-            return !DoesIntersect(movementVector);
-            
+
+            bool localIntersect = DoesEntityMoveIntersect(entityIn, distance);
+            return !localIntersect;
+        }
+
+        public virtual bool DoesEntityMoveIntersect(Entity entityIn, double distance)
+        {
+            CatThickLine movementVector = entityIn.GetMovementVector(distance, -Position.GetX(), -Position.GetY());
+
+            bool localIntersect = DoesIntersect(movementVector);
+            return localIntersect;
         }
     }
 }

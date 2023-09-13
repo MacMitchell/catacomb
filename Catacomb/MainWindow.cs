@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
+
 using Catacomb.Maze;
 using Catacomb.Visuals;
 using Catacomb.Vectors;
@@ -24,7 +25,16 @@ namespace Catacomb
     /// 
     public class Start
     {
-
+        private static Label textBox1;
+        private static Label textBox2;
+        private static CatMaze testMaze;
+        private static Button left;
+        private static Button right;
+        private static Button up;
+        private static Button down;
+        private static Canvas roomCanvas;
+        private static Canvas visibleCanvas;
+        private static Player player;
         [STAThread]
         static void Main(string[] args)
 
@@ -34,37 +44,50 @@ namespace Catacomb
             //test.MainWindow = window;
             Window mazeWindow = GetMazeTest();
             
+            //Maze tempMaze = m
             test.MainWindow = mazeWindow;
             mazeWindow.Show();            
-            MazeBuilder builder = new MazeBuilder();
-
-            Room testMaze   = builder.BuildMaze(25,1);
 
             mazeWindow.KeyDown += MoveKeyPress;
+            Thread mainThread = new Thread(Update);
+            mainThread.SetApartmentState(ApartmentState.STA);
+            mainThread.Start(testMaze);
 
             test.Run();
+            mainThread.Abort();            
+        }
+        public static void Update(Object data)
+
+        {
+            CatMaze mazeIn = (CatMaze)data;
+            MazeBuilder builder = new MazeBuilder();
+            CatMaze maze = new CatMaze(25, 1);
+            while (true)
+            {
+                DateTime currentTime = DateTime.Now;
+
+                DateTime temp = DateTime.Now;
+                TimeSpan timeDifference = temp - currentTime;
+                currentTime = DateTime.Now;
+                maze.move(1);
+                
+            }
 
         }
+
         public static void MoveKeyPress(object sender, KeyEventArgs e)
         {
-                player.Move(e.Key);
-            Canvas.SetLeft(roomCanvas, -40);
-            Canvas.SetTop(roomCanvas, -40);
+            /*Canvas.SetLeft(roomCanvas, -40);
+            Canvas.SetTop(roomCanvas, -40);*/
 
         }
-        private static Label textBox1;
-        private static Label textBox2;
-        private static Room testMaze;
-        private static Button left;
-        private static Button right;
-        private static Button up;
-        private static Button down;
-        private static Canvas roomCanvas;
-        private static Canvas visibleCanvas;
-        private static Player player;
+        private static double currentTime; 
+
+
+
+        
         private static Window GetMazeTest()
         {
-            player = new Player(new Vectors.Point(5, 5));
 
             Window returnWindow = new Window();
             Canvas mainCanvas2 = new Canvas();
@@ -73,7 +96,7 @@ namespace Catacomb
             mainCanvas2.Height = returnWindow.Height;
 
             MazeBuilder builder = new MazeBuilder();
-            testMaze = builder.BuildMaze(15, 3);
+            testMaze = new CatMaze(15, 3);
 
             textBox1 = new Label();
             textBox1.Foreground = Brushes.White;
@@ -169,37 +192,41 @@ namespace Catacomb
             //roomCanvas.Children.Add(test.GetCanvas());
 
             updateLabels();
-            
+
+            roomCanvas.Children.Clear();
+            roomCanvas.Children.Add(testMaze.GetCanvas());
+            //roomCanvas.Children.Add(player.GetCanvas());
+            //player.Container = testMaze.Start.RoomDrawn;
             return returnWindow;
         }
 
         public static void updateRoomCanvas()
         {
-            testMaze.Draw(new Vectors.Point(50,50),new Vectors.Point(250,250));
+            //testMaze.Draw(new Vectors.Point(50,50),new Vectors.Point(250,250));
             roomCanvas.Children.Clear();
-            player.Container = testMaze.RoomDrawn;
+            //player.Container = testMaze.Start.RoomDrawn;
             roomCanvas.Children.Add(testMaze.GetCanvas());
-            roomCanvas.Children.Add(player.GetCanvas());
+            //roomCanvas.Children.Add(player.GetCanvas());
         }
         public static void updateLabels()
         {
-            left.Background = testMaze.HasConnection(3) ? Brushes.White : Brushes.Red;
-            right.Background = testMaze.HasConnection(1) ? Brushes.White : Brushes.Red;
-            up.Background = testMaze.HasConnection(0) ? Brushes.White : Brushes.Red;
-            down.Background = testMaze.HasConnection(2) ? Brushes.White : Brushes.Red;
-            textBox1.Content = testMaze.GetRoomType();
-            textBox2.Content = testMaze.getId();
+           // left.Background = testMaze.HasConnection(3) ? Brushes.White : Brushes.Red;
+            //right.Background = testMaze.HasConnection(1) ? Brushes.White : Brushes.Red;
+            //up.Background = testMaze.HasConnection(0) ? Brushes.White : Brushes.Red;
+            //down.Background = testMaze.HasConnection(2) ? Brushes.White : Brushes.Red;
+            //textBox1.Content = testMaze.GetRoomType();
+            //textBox2.Content = testMaze.getId();
         }
         public static void Move(int direction)
         {
             
-            if (!testMaze.HasConnection(direction))
+            /*if (!testMaze.HasConnection(direction))
             {
                 return;
             }
             testMaze = testMaze.GetConnectedRoom(direction);
             updateLabels();
-            updateRoomCanvas();
+            updateRoomCanvas();*/
         }
     }
    

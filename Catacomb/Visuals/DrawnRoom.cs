@@ -8,6 +8,7 @@ using Catacomb.Vectors;
 using System.Windows.Controls;
 using Catacomb.Global;
 using System.Collections;
+using Catacomb.Entities;
 
 namespace Catacomb.Visuals
 {
@@ -42,18 +43,15 @@ namespace Catacomb.Visuals
             connectionPoints[1] = null;
             connectionPoints[2] = null;
             connectionPoints[3] = null;
-            //TEMP
-            CreateHorizontalWalls();
-            CreateVerticalWalls();
-            Draw();
+            
         }
 
-        private void CreateHorizontalWalls()
+        private void CreateHorizontalWalls(CatRectangle wallRect)
         {
             CatRectangle rep = (CatRectangle)representive;
             double doorLength = 50;
 
-            CatRectangle wallRect = new CatRectangle(0 - Globals.LINE_THICKNESS / 2, 0, rep.GetWidth() + Globals.LINE_THICKNESS / 2, rep.GetHeight());
+            //CatRectangle wallRect = new CatRectangle(0 - Globals.LINE_THICKNESS / 2, 0, rep.GetWidth() + Globals.LINE_THICKNESS / 2, rep.GetHeight());
             //CatRectangle wallRect = new CatRectangle(0,0 , rep.GetWidth(), rep.GetHeight());
 
 
@@ -61,24 +59,49 @@ namespace Catacomb.Visuals
             Point[] endHoriPoints = { wallRect.GetTopRight(), wallRect.GetBottomRight() };
             for (int i = 0; i < startHoriPoints.Length; i++)
             {
+                int direction = i * 2;
+                int oppositeDiection = Room.GetOppositeDirection(direction);
                 if (!parent.HasConnection(i * 2))
                 {
                     base.AddChild(new Wall(startHoriPoints[i], endHoriPoints[i]));
                     continue;
                 }
+                DrawnRoom otherRoom = parent.GetConnectedRoom(direction).RoomDrawn;
+                if (otherRoom == null || !otherRoom.HasConnectionPoints(oppositeDiection))
+                {
 
-                Tuple<Point, Point> connectionPoints = GetConnectionPoints(i * 2, startHoriPoints[i], endHoriPoints[i]);
 
-                base.AddChild(new Wall(startHoriPoints[i], connectionPoints.Item1));
-                base.AddChild(new Wall(connectionPoints.Item2, endHoriPoints[i]));
+                    Tuple<Point, Point> connectionPoints = GetConnectionPoints(i * 2, startHoriPoints[i], endHoriPoints[i]);
+
+                    base.AddChild(new Wall(startHoriPoints[i], connectionPoints.Item1));
+                    base.AddChild(new Wall(connectionPoints.Item2, endHoriPoints[i]));
+                }
+                else
+                {
+                    Tuple<Point, Point> connection = GetNeighborsConnectionPoints(direction);
+
+                    Point p1 = new Point(connection.Item1.GetX(), startHoriPoints[i].GetY());
+                    Point p2 = (connection.Item1);
+
+                    Point p3 = connection.Item2;
+                    Point p4 = new Point(connection.Item2.GetX(), endHoriPoints[i].GetY());
+
+                    double distance = Math.Abs(startHoriPoints[i].GetY() - connection.Item1.GetY());
+                    rep.expand(direction, distance);
+                    base.AddChild(new Wall(startHoriPoints[i], p1));
+                    base.AddChild(new Wall(p1, p2));
+
+                    base.AddChild(new Wall(p3, p4));
+                    base.AddChild(new Wall(p4, endHoriPoints[i]));
+                }
             }
         }
 
-        private void CreateVerticalWalls()
+        private void CreateVerticalWalls(CatRectangle wallRect)
         {
 
             CatRectangle rep = (CatRectangle)representive;
-            CatRectangle wallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
+            //CatRectangle wallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
             //CatRectangle wallRect = new CatRectangle(0, 0,  rep.GetWidth(), rep.GetHeight());
 
 
@@ -109,7 +132,6 @@ namespace Catacomb.Visuals
                 }
                 else
                 {
-                    Console.WriteLine(startVertPoints[i]);
                     Tuple<Point, Point> connection = GetNeighborsConnectionPoints(direction);
 
                     Point p1 = new Point(startVertPoints[i].GetX(), connection.Item1.GetY());
@@ -117,9 +139,8 @@ namespace Catacomb.Visuals
 
                     Point p3 = connection.Item2;
                     Point p4 = new Point(endVertPoints[i].GetX(), connection.Item2.GetY());
-
-                    Console.WriteLine(p1 + " , " + p2 + " , " + p3 + ", " + p4);
-
+                    double distance = Math.Abs(startVertPoints[i].GetX() - connection.Item1.GetX());
+                    rep.expand(direction, distance);
                     base.AddChild(new Wall(startVertPoints[i], p1));
                     base.AddChild(new Wall(p1, p2));
 
@@ -132,7 +153,15 @@ namespace Catacomb.Visuals
 
         public override void Draw()
         {
+            CatRectangle rep = (CatRectangle)representive;
+            CatRectangle horiWallRect = new CatRectangle(0 - Globals.LINE_THICKNESS / 2, 0, rep.GetWidth() + Globals.LINE_THICKNESS / 2, rep.GetHeight());
+            CatRectangle vertWallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
+
+            CreateHorizontalWalls(horiWallRect);
+            CreateVerticalWalls(vertWallRect);
+            
             base.Draw();
+
         }
 
         public override bool DoesIntersect(Vector other)
@@ -231,6 +260,28 @@ namespace Catacomb.Visuals
             Point newEnd = new Point(newStart.GetX()+ otherWidth, newStart.GetY()+otherHeight);
 
             return new Tuple<Point, Point>(newStart, newEnd);
+        }
+
+        public override bool EntityMove(Entity entityIn, double distance)
+        {
+            Vector globalMovement = entityIn.GetMovementVector(distance, 0, 0);
+            for (int i = 0; i < Globals.CONNECTION_LIMIT; i++)
+            {
+                if (!parent.HasConnection(i))
+                {
+                    continue;
+                }
+                Room connectedRoom = parent.GetConnectedRoom(i);
+                if (connectedRoom.RoomDrawn.IsWithin(globalMovement))
+                {
+                    if (parent.GetConnectedRoom(i).RoomDrawn.DoesEntityMoveIntersect(entityIn, distance))
+                    {
+                        return false;
+                    }
+                }
+            }
+            
+            return base.EntityMove(entityIn,distance);
         }
     }
 }

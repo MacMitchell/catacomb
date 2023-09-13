@@ -49,14 +49,43 @@ namespace Catacomb.Entities
             
             Position = new Point(newX, newY);
             Draw();
+            
         }
 
         public virtual void Move(double time)
         {
             double distance = time * velocity;
-            if (container.EntityMove(this, distance))
+            if(container.EntityMove(this, distance))
             {
                 move(time);
+            }
+            double correctTime = 0;
+
+
+            //if they cant move, this shortens the movement and tries again.
+            //TODO: make to programatically get the correct distance to move to instead of this
+            for (int i=0; i < 10; i++)
+            {
+                double currentTime = time / 2;
+
+                double currentDistance = distance / 2;
+                if (container.EntityMove(this, currentDistance))
+                {
+                    correctTime = currentTime;
+                    currentDistance *= 1.5;
+                    currentTime *= 1.5;
+                   
+                }
+                else
+                {
+                    currentDistance *= 0.5;
+                    currentTime *= 0.5;
+                }
+            }
+            correctTime -= 0.1;
+            if(correctTime > 0)
+            {
+                move(correctTime);
             }
 
         }
@@ -80,9 +109,13 @@ namespace Catacomb.Entities
 
         }
 
+        public override void Draw()
+        {
+            base.Draw();
+        }
     }
 
-    
+   
 
 
 }
