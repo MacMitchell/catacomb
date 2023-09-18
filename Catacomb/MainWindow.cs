@@ -11,7 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Threading;
+
+using System.Timers;
 
 using Catacomb.Maze;
 using Catacomb.Visuals;
@@ -23,6 +24,8 @@ namespace Catacomb
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
+    public delegate void SetContent(Canvas newContent);
+
     public class Start
     {
         private static Label textBox1;
@@ -40,41 +43,38 @@ namespace Catacomb
 
         {
             Application test = new Application();
+            CatacombMain cat = new CatacombMain();
             //MainWindow window = new MainWindow();
             //test.MainWindow = window;
-            Window mazeWindow = GetMazeTest();
+            //Window mazeWindow = GetMazeTest();
+            test.MainWindow = cat;
+            //test.MainWindow = mazeWindow;
+            //mazeWindow.Show();
+
+
+            //mazeWindow.KeyDown += MoveKeyPress;
+            //Thread mainThread = new Thread(Update);
+
             
-            //Maze tempMaze = m
-            test.MainWindow = mazeWindow;
-            mazeWindow.Show();            
-
-            mazeWindow.KeyDown += MoveKeyPress;
-            Thread mainThread = new Thread(Update);
-            mainThread.SetApartmentState(ApartmentState.STA);
-            mainThread.Start(testMaze);
-
+            cat.StartUp();
             test.Run();
-            mainThread.Abort();            
         }
-        public static void Update(Object data)
+
+
+
+
+
+        public static void Update(object sender, EventArgs e)
 
         {
-            CatMaze mazeIn = (CatMaze)data;
-            MazeBuilder builder = new MazeBuilder();
-            CatMaze maze = new CatMaze(25, 1);
-            while (true)
-            {
                 DateTime currentTime = DateTime.Now;
 
                 DateTime temp = DateTime.Now;
                 TimeSpan timeDifference = temp - currentTime;
                 currentTime = DateTime.Now;
-                maze.move(1);
-                
-            }
-
+                testMaze.move(1);
+                Console.WriteLine("HERERERERERE");
         }
-
         public static void MoveKeyPress(object sender, KeyEventArgs e)
         {
             /*Canvas.SetLeft(roomCanvas, -40);

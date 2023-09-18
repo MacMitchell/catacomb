@@ -45,6 +45,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +57,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CatacombMain.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Global\Globals.cs" />

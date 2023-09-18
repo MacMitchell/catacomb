@@ -29,7 +29,7 @@ namespace Catacomb.Maze
             MazeBuilder builder = new MazeBuilder();
             start = builder.BuildMaze(size, step);
             canvas = null;
-            player = new Player(new Point(200, 200));
+            player = new Player(new Point(225, 225));
             Draw();
         }
         
