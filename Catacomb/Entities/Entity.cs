@@ -12,6 +12,12 @@ namespace Catacomb.Entities
     public abstract class Entity :Drawn
     {
         private double  velocity;
+        private double maxVelocity;
+        public double MaxVelocity
+        {
+            get { return maxVelocity; }
+            set { maxVelocity = value; }
+        }
         public double Velocity {
             get { return velocity; }
             set { velocity = value; }
@@ -33,6 +39,7 @@ namespace Catacomb.Entities
         {
             canvas = new Canvas();
             Velocity = 1;
+            maxVelocity = 1;
             Angle = 0;
             Position = positionIn;
         }
@@ -40,16 +47,17 @@ namespace Catacomb.Entities
         /**
          * THIS FUNCTION ASSUMES THAT THE ENTITY CAN MOVE
          */
-        public virtual void move(double time)
+        public virtual void MoveMe(double time)
         {
             double distance = velocity * time;
             double newX = (distance ) * Math.Cos(angle) + Position.GetX();
             double newY = (distance ) * Math.Sin(angle) + Position.GetY();
 
-            
+            Point temp = Position;
             Position = new Point(newX, newY);
-            Draw();
-            
+
+            // Draw();
+            Update();
         }
 
         public virtual void Move(double time)
@@ -57,8 +65,9 @@ namespace Catacomb.Entities
             double distance = time * velocity;
             if(container.EntityMove(this, distance))
             {
-                move(time);
+                MoveMe(time);
             }
+            return;
             double correctTime = 0;
 
 
@@ -85,7 +94,7 @@ namespace Catacomb.Entities
             correctTime -= 0.1;
             if(correctTime > 0)
             {
-                move(correctTime);
+                MoveMe(correctTime);
             }
 
         }
@@ -113,6 +122,8 @@ namespace Catacomb.Entities
         {
             base.Draw();
         }
+
+        public virtual void Update() { }
     }
 
    

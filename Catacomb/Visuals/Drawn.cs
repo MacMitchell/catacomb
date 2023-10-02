@@ -129,6 +129,9 @@ namespace Catacomb.Visuals
             return !localIntersect;
         }
 
+        /**
+         * override this function if you want to change how a room intersects with an entity moving
+         */
         public virtual bool DoesEntityMoveIntersect(Entity entityIn, double distance)
         {
             CatThickLine movementVector = entityIn.GetMovementVector(distance, -Position.GetX(), -Position.GetY());

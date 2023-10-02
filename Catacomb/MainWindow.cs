@@ -96,7 +96,7 @@ namespace Catacomb
             mainCanvas2.Height = returnWindow.Height;
 
             MazeBuilder builder = new MazeBuilder();
-            testMaze = new CatMaze(15, 3);
+            testMaze = new CatMaze(15, 3, new Player(new Vectors.Point(225,225)));
 
             textBox1 = new Label();
             textBox1.Foreground = Brushes.White;

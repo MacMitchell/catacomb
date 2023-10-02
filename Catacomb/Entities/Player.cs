@@ -19,7 +19,8 @@ namespace Catacomb.Entities
             canvas.Width = width;
             canvas.Height = height;
             canvas.Background = Brushes.Orange;
-            Velocity = 5;
+            Velocity = 0;
+            MaxVelocity = 150;
             Draw();
         }
 
@@ -27,15 +28,21 @@ namespace Catacomb.Entities
         public override void Draw()
         {
             //position is in the middle of the player
-            double distanceToX = width / 2;
-            double distanceToY = height / 2;
-            representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
+            Update();
             base.Draw();
         }
 
-   
+        public override void Update()
+        {
+            double distanceToX = width / 2;
+            double distanceToY = height / 2;
+            representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
 
-       
+        }
+
+
+
+
         public void KeyPress(Key e)
         {
             switch (e)

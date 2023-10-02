@@ -15,12 +15,12 @@ namespace Catacomb.Vectors
 
         public double X
         {
-            get { return X; }
+            get { return x; }
         }
 
         public double Y
         {
-            get { return Y; }
+            get { return y; }
         }
         public Point(double x, double y)
         {

@@ -277,6 +277,7 @@ namespace Catacomb.Visuals
                     if (parent.GetConnectedRoom(i).RoomDrawn.DoesEntityMoveIntersect(entityIn, distance))
                     {
                         return false;
+                        
                     }
                 }
             }

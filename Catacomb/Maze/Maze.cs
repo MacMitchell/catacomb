@@ -22,14 +22,23 @@ namespace Catacomb.Maze
             get{return start;}
             set{start=  value;}
         }
+        private Point cameraPos;
+        public Point CameraPos
+        {
+            get { return cameraPos; }
+            set { cameraPos = value; }
+        }
 
-        public CatMaze(int size, int step)
+        public CatMaze(int size, int step,Player playIn)
         {
             rand = new Random();
             MazeBuilder builder = new MazeBuilder();
             start = builder.BuildMaze(size, step);
             canvas = null;
-            player = new Player(new Point(225, 225));
+            player = playIn;
+            player.Position = (new Point(225, 225));
+
+            
             Draw();
         }
         
@@ -47,6 +56,9 @@ namespace Catacomb.Maze
             canvas.Background = Global.Globals.BACKGROUND_COLOR;
             canvas.Width = 1000;
             canvas.Height = 1000;
+
+            cameraPos = new Point(0, 0);
+
             Point p1 = new Point(200, 200);
             Point p2 = new Point(350, 350);
             start.Draw(p1,p2 );
@@ -71,20 +83,30 @@ namespace Catacomb.Maze
         {
             player.Draw();
             player.Container = Start.RoomDrawn;
-            canvas.Children.Add(player.GetCanvas());
+            
+            //canvas.Children.Add(player.GetCanvas());
+            
         }
 
         public void move(double time)
         {
-            canvas.Children.Remove(player.GetCanvas());
+            double posNowX = player.Position.X;
+            double posNowY = player.Position.Y;
             player.Move(time);
-            canvas.Children.Add(player.GetCanvas());
+            Point posAfter = player.Position;
+            Point differentPoint = new Point((posAfter.X - posNowX)*-1,( posAfter.Y - posNowY)*-1);
+            CameraPos = CameraPos.AddPoint(differentPoint);
+            Canvas.SetLeft(canvas,CameraPos.X);
+            Canvas.SetTop(canvas,CameraPos.Y);
+
+            Console.WriteLine("Camera: " + cameraPos.ToString());
         }
 
         public  void MoveKeyPress(object sender, KeyEventArgs e)
         {
             player.KeyPress(e.Key);
         }
+
 
     }
 }
