@@ -11,21 +11,56 @@ namespace Catacomb.Maze
 {
     public class Room 
     {
-
+       
         private Connection top;
         private Connection right;
         private Connection bottom;
         private Connection left;
         private static int counter = 0;
         private DrawnRoom roomDrawn;
+        private bool isDrawn = false;
+
+        public bool IsDrawn
+        {
+            get { return isDrawn; }
+        }
+        public double MaxWidth
+        {
+            get { return 800; }
+        }
+
+        public double MaxHeight
+        {
+            get { return 800; }
+        }
+
+        public double MinWidth
+        {
+            get { return 100; }
+        }
+        public double MinHeight
+        {
+            get { return 100; }
+        }
 
         public DrawnRoom RoomDrawn
         {
             get { return roomDrawn; }
         }
+        public CatRectangle Representive
+        {
+            get { if(roomDrawn == null)
+                {
+                    return null;
+                }
+                return (CatRectangle)roomDrawn.representive;
+            }
+        }
+
         private int id;
         public Room()
         {
+            
             id = counter++;
             top = null;
             right = null;
@@ -33,6 +68,8 @@ namespace Catacomb.Maze
             left = null;
             roomDrawn = null;
         }
+
+      
         public int getId()
         {
             return id;
@@ -41,9 +78,9 @@ namespace Catacomb.Maze
         public void connect(Room other, int direction)
         {
             Connection connect = new Connection(this, other);
-            switch(direction)
+            switch (direction)
             {
-                case 0: top = connect; other.bottom = connect;break;
+                case 0: top = connect; other.bottom = connect; break;
                 case 1: right = connect; other.left = connect; break;
                 case 2: bottom = connect; other.top = connect; break;
                 case 3: left = connect; other.right = connect; break;
@@ -53,6 +90,7 @@ namespace Catacomb.Maze
 
         public Connection GetConnection(int direction)
         {
+            //return connections[direction];
             switch(direction)
             {
                 case 0: return top;
@@ -81,21 +119,32 @@ namespace Catacomb.Maze
         }
         
 
-        public virtual void Draw(Point p1, Point p2)
+        public virtual void Create(Point p1, Point p2)
         {
-            if(roomDrawn == null)
+            roomDrawn = new DrawnRoom(this,p1, p2);
+        }
+
+        public virtual void Create(Point p1)
+        {
+            Point p2 = new Point(250, 250);
+            p2 = p1.AddPoint(p2);
+            Create(p1, p2);
+        }
+
+        public virtual void Draw()
+        {
+            if(!isDrawn)
             {
-                roomDrawn = new DrawnRoom(this, p1, p2);
+                isDrawn = true;
                 roomDrawn.Draw();
             }
             
         }
 
-        public virtual void Draw(Point p1) {
-            Point p2 = p1.AddPoint(new Point(150, 150));
-            Draw(p1, p2);
-         }
+        public virtual void RemoveConnection(int direction)
+        {
 
+        }
         public static int GetOppositeDirection(int direction)
         {
             int newDir = direction >= 2 ? direction - 2 : direction + 2;

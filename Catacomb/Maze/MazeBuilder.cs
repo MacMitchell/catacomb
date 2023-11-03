@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catacomb.Vectors;
+using System.Windows.Controls;
 
 namespace Catacomb.Maze
 {
@@ -14,10 +15,14 @@ namespace Catacomb.Maze
     {
         private static Random rand;
 
+        public double margin = 100;
+        public double gap = 150;
+        private static int connectionLimit = Global.Globals.CONNECTION_LIMIT;
+        private List<List<Room>> availableParents;
         public MazeBuilder()
         {
             rand = new Random();
-               
+            
         }
 
         public Room BuildMaze(int size, int step)
@@ -64,6 +69,100 @@ namespace Catacomb.Maze
         }
 
 
+        public void BuildRoom(List<Room> createdRooms, Room current,Canvas mazeCanvas)
+        {
+            createdRooms.Add(current);
+            current.Draw();
+            mazeCanvas.Children.Add(current.GetCanvas());
+            for (int i =0;i < Global.Globals.CONNECTION_LIMIT; i++)
+            {
+                if (!current.HasConnection(i) || current.GetConnectedRoom(i).IsDrawn)
+                {
+                    continue;
+                }
+                bool result = CreateRoomNeighbors(createdRooms, current, i);
+                if (result)
+                {
+                    BuildRoom(createdRooms, current.GetConnectedRoom(i), mazeCanvas);
+                }
+                else
+                {
+                    current.RoomDrawn.CloseConnectionPoints(i);
+                }
+            }
+        }
+
+        public void BuildRooms(Room start,Canvas parentCanvas)
+        {
+            List<Room> createdRooms = new List<Room>(); 
+            Point origin = new Point(0, 0);
+
+            availableParents = new List<List<Room>>(connectionLimit);
+            for(int i =0;i< connectionLimit; i++)
+            {
+                availableParents.Add(new List<Room>());
+            }
+            start.Create(origin);
+            BuildRoom(createdRooms, start,parentCanvas);
+        }
+
+        /**
+         * @param i: i is the direction that the room is being created from the perspective of the parent 
+         */
+        public bool CreateRoomNeighbors(List<Room> createdRooms, Room parent, int i)
+        { 
+            Point origin = parent.RoomDrawn.GetNeighborsOrigin(i, gap);
+            CatRectangle newRoom = CreateMaxSizeRoom(parent, origin, i);
+            for(int k =0; k < createdRooms.Count; k++)
+            {
+                CatRectangle otherRoom = (CatRectangle)createdRooms[k].RoomDrawn.Representive;
+                if (otherRoom.IsWithin(newRoom))
+                {
+                    otherRoom.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
+                }
+            }
+            if(newRoom.GetWidth()  < parent.MinWidth || newRoom.GetHeight() < parent.MinHeight)
+            {
+                //need to delete the room then
+                Console.WriteLine("TOO SMALL");
+                return false;
+            }
+            parent.GetConnectedRoom(i).Create(newRoom.GetStartPoint(), newRoom.GetEndPoint());
+            return true;
+        }
+
+
+        private CatRectangle CreateMaxSizeRoom(Room roomIn, Point origin, int direction)
+        {
+
+            int limit = Global.Globals.CONNECTION_LIMIT;
+            int startPos = Math.Abs(random(0, 3));
+
+            double[] expandDirection = new double[limit];
+            double[] dimension = { roomIn.MaxHeight,  roomIn.MaxWidth };
+
+            for(int i =0; i < limit; i++)
+            {
+                int currentIndex = (startPos + i) % 4;
+                if(currentIndex == (direction+2)%4)
+                {
+                    currentIndex = (currentIndex + 2) % 4;
+                }
+                int dimensionIndex = (startPos + i) % 2;
+                expandDirection[currentIndex] = random(50.0, dimension[dimensionIndex]);
+                dimension[dimensionIndex] -= expandDirection[currentIndex];
+            }
+
+            Point start = new Point(-expandDirection[3], -expandDirection[0]);
+            Point end = new Point(expandDirection[1], expandDirection[2]);
+
+            //setting points referenced to the origin
+            start = start.AddPoint(origin);
+            end = end.AddPoint(origin);
+            
+            return new CatRectangle(start,end);
+        }
+
         
         private int[] GetVertAndHoriDistance(int min, int max)
         {
@@ -89,6 +188,13 @@ namespace Catacomb.Maze
             int number = rand.Next(max) + min;
             int result = max >= min ? number * sign : 0;
             return result;
+        }
+
+        private double random(double min, double max)
+        {
+            double number = (rand.NextDouble()* max) + min;
+            //double result = max >= min ? number : 0;
+            return number;
         }
     }
 }

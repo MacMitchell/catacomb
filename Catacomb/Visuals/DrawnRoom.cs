@@ -151,6 +151,17 @@ namespace Catacomb.Visuals
             }
         }
 
+
+        /**
+         * This function make a new wall connecting the connection points in the given direction
+         * This is used when you dont want the player to go the room in the given direction
+         * @param direction it is the direction relative to this room
+         */
+        public void CloseConnectionPoints(int direction)
+        {
+            Tuple<Point, Point> connectionPoint = connectionPoints[direction];
+            base.AddChild(new Wall(connectionPoint.Item1, connectionPoint.Item2));
+        }
         public override void Draw()
         {
             CatRectangle rep = (CatRectangle)representive;
@@ -189,6 +200,7 @@ namespace Catacomb.Visuals
             //convert to room cordinates
             Point start = neightborConnection.Item1.MinusPoint(Position);
             Point end = neightborConnection.Item2.MinusPoint(Position);
+            connectionPoints[dir] = new Tuple<Point, Point>(start, end);
             return new Tuple<Point, Point>(start, end);
         }
 
@@ -215,6 +227,7 @@ namespace Catacomb.Visuals
             }
         }
 
+       
         private Tuple<Point, Point> GetConnectionPoints(int index, Point start, Point end)
         {
             CreateConnectionPoints(index, start, end);
@@ -262,17 +275,36 @@ namespace Catacomb.Visuals
             return new Tuple<Point, Point>(newStart, newEnd);
         }
 
+
+        public Point GetNeighborsOrigin(int direction, double gap)
+        { 
+            Tuple<Point,Point> connection = GetConnectionPoints(direction);
+            double newX = (connection.Item1.X + connection.Item2.X)/2;
+            double newY = (connection.Item1.Y + connection.Item2.Y)/2;
+            switch (direction)
+            {
+                case 0: newY = newY  - gap; break;
+                case 1: newX = newX + gap; break;
+                case 2: newY = newY  + gap; break;
+                case 3: newX = newX - gap; break;
+            }
+
+            Point newStart = new Point(newX, newY);
+
+            return newStart;
+        }
+
         public override bool EntityMove(Entity entityIn, double distance)
         {
             Vector globalMovement = entityIn.GetMovementVector(distance, 0, 0);
             for (int i = 0; i < Globals.CONNECTION_LIMIT; i++)
             {
-                if (!parent.HasConnection(i))
+                if (!parent.HasConnection(i) )
                 {
                     continue;
                 }
                 Room connectedRoom = parent.GetConnectedRoom(i);
-                if (connectedRoom.RoomDrawn.IsWithin(globalMovement))
+                if (connectedRoom.RoomDrawn != null && connectedRoom.RoomDrawn.IsWithin(globalMovement))
                 {
                     if (parent.GetConnectedRoom(i).RoomDrawn.DoesEntityMoveIntersect(entityIn, distance))
                     {

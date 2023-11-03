@@ -14,10 +14,15 @@ namespace Catacomb.Visuals
     {
         protected ArrayList components;
         protected Canvas canvas;
-        protected Vector representive;
+        public Vector representive;
         protected double scalar = 1;
         private Point position;
         private bool trespassable;
+        
+        public Vector Representive
+        {
+            get { return representive; }
+        }
         public bool Trespassable
         {
             get { return trespassable; }

@@ -31,6 +31,7 @@ namespace Catacomb.Maze
                 throw new RoomExecption();
             }
         }
+        
         public Room GetOther(Room roomIn)
         {
             if (r1 == roomIn)

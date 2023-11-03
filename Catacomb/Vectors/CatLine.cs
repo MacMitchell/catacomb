@@ -11,6 +11,15 @@ namespace Catacomb.Vectors
     
         private Point start;
         private Point end;
+
+        public Point Start
+        {
+            get { return start; }
+        }
+        public Point End
+        {
+            get { return end; }
+        }
         public CatLine(Point start, Point end)
         {
             if(start.GetX() > end.GetX())

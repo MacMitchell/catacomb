@@ -29,8 +29,8 @@ namespace Catacomb.Entities
             set { angle = value; }
         }
 
-        private Drawn container;
-        public Drawn Container
+        private DrawnRoom container;
+        public DrawnRoom Container
         {
             get { return container; }
             set { container = value; }

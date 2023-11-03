@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Catacomb.Vectors;
 using Catacomb.Entities;
 using System.Windows.Input;
+using System.Collections;
 
 namespace Catacomb.Maze
 {
@@ -33,6 +34,8 @@ namespace Catacomb.Maze
         {
             rand = new Random();
             MazeBuilder builder = new MazeBuilder();
+
+            size = 10;
             start = builder.BuildMaze(size, step);
             canvas = null;
             player = playIn;
@@ -61,21 +64,23 @@ namespace Catacomb.Maze
 
             Point p1 = new Point(200, 200);
             Point p2 = new Point(350, 350);
-            start.Draw(p1,p2 );
-            canvas.Children.Add(start.GetCanvas());
-            
-            for(int i =0; i < 4; i++)
+            //start.Create(p1, p2);
+            //start.Draw( );
+            //canvas.Children.Add(start.GetCanvas());
+            List<Room> createdRooms = new List<Room>();
+            //createdRooms.Add(start);
+            MazeBuilder builder = new MazeBuilder();
+            builder.BuildRooms(start,canvas);
+           /* for(int i =0; i < 4; i++)
             {
                 if (start.HasConnection(i))
                 {
-                    double length =  rand.NextDouble() * 1000+100;
-                    double width = rand.NextDouble() * 1000 + 100;
-                    Point random = new Point(length, width);
-                    Tuple<Point, Point> position = start.RoomDrawn.PlaceNeighbor(i, 25, p1, p2.AddPoint(random));
-                    start.GetConnectedRoom(i).Draw(position.Item1, position.Item2);
+                    MazeBuilder builder = new MazeBuilder();
+                    builder.CreateRoomNeighbors(createdRooms,start, i);
+                    start.GetConnectedRoom(i).Draw();
                     canvas.Children.Add(start.GetConnectedRoom(i).GetCanvas());
                 }
-            }
+            }*/
             SetUpPlayer();
         }
 
@@ -98,8 +103,6 @@ namespace Catacomb.Maze
             CameraPos = CameraPos.AddPoint(differentPoint);
             Canvas.SetLeft(canvas,CameraPos.X);
             Canvas.SetTop(canvas,CameraPos.Y);
-
-            Console.WriteLine("Camera: " + cameraPos.ToString());
         }
 
         public  void MoveKeyPress(object sender, KeyEventArgs e)

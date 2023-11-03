@@ -13,6 +13,16 @@ namespace Catacomb.Vectors
         //references the bottom right corner of the rectangle
         private Point end;
 
+        public Point Center
+        {
+            get
+            {
+                double x = (start.X + end.X) / 2;
+                double y = (start.Y + end.Y) / 2;
+                return new Point(x, y);
+            }
+        }
+
 
         public CatRectangle(Point start, Point end)
         {
@@ -25,14 +35,28 @@ namespace Catacomb.Vectors
             this.end = new Point(maxX, maxY);
         }
 
+        public Point TopLeft
+        {
+            get { return start; }
+        }
         public Point GetTopLeft()
         {
             return start;
         }
 
+
+        public Point TopRight
+        {
+            get { return new Point(end.GetX(), start.GetY()); }
+        }
         public Point GetTopRight()
         {
             return new Point(end.GetX(), start.GetY());
+        }
+
+        public Point BottomLeft
+        {
+            get { return new Point(start.GetX(), end.GetY()); }
         }
 
         public Point GetBottomLeft()
@@ -40,6 +64,10 @@ namespace Catacomb.Vectors
             return new Point(start.GetX(), end.GetY());
         }
 
+        public Point BottomRight
+        {
+            get { return end; }
+        }
         public Point GetBottomRight()
         {
             return end;
@@ -61,6 +89,10 @@ namespace Catacomb.Vectors
             if (other.GetVectorType() == "Line")
             {
                 return DoesIntersect((CatLine)other);
+            }
+            if(other.GetVectorType() == GetVectorType())
+            {
+                return DoesIntersect((CatRectangle)other);
             }
             return other.DoesIntersect(this);
         }
@@ -90,6 +122,19 @@ namespace Catacomb.Vectors
                 return true;
             }
 
+            CatLine[] lines = { new CatLine(TopLeft, TopRight),new CatLine(TopLeft, BottomLeft), 
+                                new CatLine(BottomLeft,BottomRight), new CatLine(TopRight,BottomRight)};
+            foreach ( CatLine line in lines)
+            {
+                if (other.DoesIntersect(line))
+                {
+                    return true;
+                }
+
+            }
+            return false;
+
+            /*
             double[] yIntercepts = { start.GetY(), end.GetY() };
             double[] xIntercepts = { start.GetX(), end.GetX() };
 
@@ -110,14 +155,15 @@ namespace Catacomb.Vectors
                     return true;
                 }
             }
-            return false;
+             return false;
+            */
+
         }
 
 
 
         public bool DoesIntersect(CatRectangle other)
         {
-            Console.WriteLine("RECTANGLE: " + ToString() + ", OTHER: " + other.ToString());
             Point otherStart = other.GetStartPoint();
             Point otherEnd = other.GetEndPoint();
             Point bottomLeft = new Point(otherStart.GetX(), otherEnd.GetY());
@@ -159,6 +205,22 @@ namespace Catacomb.Vectors
 
         public bool IsWithin(Vector other)
         {
+            if(other.GetVectorType() == "Line")
+            {
+                return IsWithin((CatLine)other);
+            }
+            return DoesIntersect(other);
+        }
+
+        public bool IsWithin(CatLine other)
+        {
+            if (IsPointInRectangle(other.Start)){
+                return true;
+            }
+            if (IsPointInRectangle(other.End))
+            {
+                return true;
+            }
             return DoesIntersect(other);
         }
 
@@ -178,6 +240,16 @@ namespace Catacomb.Vectors
             return end.GetX() - start.GetX();
         }
 
+
+        /**
+         * 0: expand/shrink the top  
+         * 1: expand/shrink the rightSide
+         * 2: expand/shrink the bottom
+         * 3: expand/shrink the leftside
+         * 
+         * 
+         * Negative numbers will shrink the rectangle
+         */
         public void expand(int direction, double distance)
         {
             
@@ -190,5 +262,54 @@ namespace Catacomb.Vectors
             }
 
         }
+
+        public void expandInAllDirection(double distance)
+        {
+            for(int i =0;  i < 4; i++)
+            {
+                expand(i, distance / 2);
+            }
+        }
+
+        public void ShrinkInvasiveCatRectangle(CatRectangle other, Tuple<Point,Point> connectionPoints, double margin = 0) 
+        {
+            //First get direction this rectangle is to other
+            double deltaX = Math.Abs(this.Center.X - other.Center.X);
+            double deltaY = Math.Abs(this.Center.Y - other.Center.Y);
+            //if(deltaY > deltaX || PassThroughVert(other))
+            //TODO ASAP: Update this intersect so it will actual see if they intersect, not see if they are within
+            if(new CatLine(other.GetTopLeft(),other.GetBottomLeft()).DoesIntersect(this) || new CatLine(other.GetTopRight(), other.GetBottomRight()).DoesIntersect(this))
+            {
+                if(connectionPoints.Item1.Y > Center.Y)
+                {
+                    double newY = Math.Abs(other.start.Y - (end.Y + margin));
+                    other.expand(0, -newY);
+                }
+                else
+                {
+                    double newY =  other.end.Y - (start.Y + margin);
+                    other.expand(2, -newY);
+                }
+            }
+            else
+            {
+                if(connectionPoints.Item1.X < Center.X)
+                {
+                    double newX = (other.end.X + margin) - start.X;
+                    other.expand(1, -newX);
+                }
+                else
+                {
+                    double newX = (end.X + margin) - other.start.X;
+                    other.expand(3, -newX);
+                }
+            }
+        }
+
+        private bool PassThroughVert(CatRectangle other)
+        {
+            return other.start.Y < start.Y && end.Y < other.start.Y && other.end.Y > start.Y && other.end.Y > end.Y;
+        }
+        
     }
 }
