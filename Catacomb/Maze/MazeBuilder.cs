@@ -80,6 +80,7 @@ namespace Catacomb.Maze
                 {
                     continue;
                 }
+                //SOMETIMES THIS COLLIDES WITH THE STARTER ROOM, FIX PLEASE 
                 bool result = CreateRoomNeighbors(createdRooms, current, i);
                 if (result)
                 {
@@ -118,6 +119,10 @@ namespace Catacomb.Maze
                 CatRectangle otherRoom = (CatRectangle)createdRooms[k].RoomDrawn.Representive;
                 if (otherRoom.IsWithin(newRoom))
                 {
+                    if(createdRooms[k].getId() == 0 && parent.getId() == 0)
+                    {
+                        Console.WriteLine("Why HERE??");
+                    }
                     otherRoom.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
                 }
             }
@@ -149,7 +154,7 @@ namespace Catacomb.Maze
                     currentIndex = (currentIndex + 2) % 4;
                 }
                 int dimensionIndex = (startPos + i) % 2;
-                expandDirection[currentIndex] = random(50.0, dimension[dimensionIndex]);
+                expandDirection[currentIndex] = random(Math.Max(50.0,roomIn.MinWidth), dimension[dimensionIndex]);
                 dimension[dimensionIndex] -= expandDirection[currentIndex];
             }
 

@@ -20,7 +20,7 @@ namespace Catacomb.Entities
             canvas.Height = height;
             canvas.Background = Brushes.Orange;
             Velocity = 0;
-            MaxVelocity = 250;
+            MaxVelocity = 1250;
             Draw();
         }
 

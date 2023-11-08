@@ -273,6 +273,7 @@ namespace Catacomb.Vectors
 
         public void ShrinkInvasiveCatRectangle(CatRectangle other, Tuple<Point,Point> connectionPoints, double margin = 0) 
         {
+           
             //First get direction this rectangle is to other
             double deltaX = Math.Abs(this.Center.X - other.Center.X);
             double deltaY = Math.Abs(this.Center.Y - other.Center.Y);
