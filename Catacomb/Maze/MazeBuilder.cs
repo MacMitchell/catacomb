@@ -128,7 +128,8 @@ namespace Catacomb.Maze
                     otherRoom.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
                 }
             }
-            if(newRoom.GetWidth()  < parent.MinWidth || newRoom.GetHeight() < parent.MinHeight)
+            if(!isRoomGood(newRoom,parent,i))
+            //if(newRoom.GetWidth()  < parent.MinWidth || newRoom.GetHeight() < parent.MinHeight)
             {
                 //need to delete the room then
                 Console.WriteLine("TOO SMALL");
@@ -148,7 +149,7 @@ namespace Catacomb.Maze
             double[] expandDirection = new double[limit];
             double[] dimension = { roomIn.MaxHeight,  roomIn.MaxWidth };
 
-            double minSizeToFitConnection = 50.0;
+            double minSizeToFitConnection = CalculateMinSize(roomIn, direction);//50.0 + Global.Globals.LINE_THICKNESS;
 
             for(int i =0; i < limit; i++)
             {
@@ -213,26 +214,47 @@ namespace Catacomb.Maze
             {
                 double connectionX1 = connectionPoints.Item1.X;
                 double connectionX2 = connectionPoints.Item2.X;
-                if(connectionX1 > roomBounds.TopLeft.X && connectionX2 > roomBounds.TopLeft.X &&
-                    connectionX1 < roomBounds.TopRight.X && connectionX2 > roomBounds.TopRight.X)
+                if(connectionX1 < roomBounds.TopLeft.X || connectionX2 < roomBounds.TopLeft.X ||
+                    connectionX1 > roomBounds.TopRight.X || connectionX2 > roomBounds.TopRight.X)
                 {
-                    return true;
+                    return false;
                 }
             }
             else
             {
                 double connectionY1 = connectionPoints.Item1.Y;
                 double connectionY2 = connectionPoints.Item2.Y;
-                if(connectionY1 > roomBounds.TopLeft.Y && connectionY2 > roomBounds.TopLeft.Y &&
-                    connectionY1 < roomBounds.BottomRight.Y && connectionY2 < roomBounds.BottomRight.Y)
+                if(connectionY1 < roomBounds.TopLeft.Y || connectionY2 < roomBounds.TopLeft.Y ||
+                    connectionY1 > roomBounds.BottomRight.Y || connectionY2 > roomBounds.BottomRight.Y)
                 {
-                    return true;
+                    return false;
                 }
+                
             }
-            return false;
+            return true;
 
         }
 
+
+
+        /**
+         * direction is the direction of the child relative to the child
+         */
+        private double CalculateMinSize(Room parent, int direction)
+        {
+            double connectionDistance = 0.0;
+           Tuple<Point,Point> connectionPoints =  parent.RoomDrawn.GetConnectionPoints(direction);
+            if (direction % 2 == 0)
+            {
+                connectionDistance =  Math.Abs(connectionPoints.Item1.X - connectionPoints.Item2.X);
+            }
+            else
+            {
+                connectionDistance =  Math.Abs(connectionPoints.Item1.Y - connectionPoints.Item2.Y);
+            }
+            connectionDistance += Global.Globals.LINE_THICKNESS;
+            return connectionDistance;
+        }
 
         private Room GetChildFromParent(Room parent, int direction)
         {
@@ -259,7 +281,16 @@ namespace Catacomb.Maze
 
         private double random(double min, double max)
         {
-            double number = (rand.NextDouble()* max) + min;
+            if(max < min)
+            {
+                return min;
+            }
+            double difference = max - min;
+            double number = (rand.NextDouble()* difference) + min;
+            if(number < min)
+            {
+                Console.WriteLine("NOT SUPPOSE TO HAPPEND");
+            }
             //double result = max >= min ? number : 0;
             return number;
         }
