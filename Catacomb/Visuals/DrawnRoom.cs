@@ -46,6 +46,64 @@ namespace Catacomb.Visuals
             
         }
 
+
+        private void DrawConnection(Point start, Point end, int direction)
+        {
+            if (!parent.HasConnection(direction))
+            {
+                base.AddChild(new Wall(start, end));
+                return;
+            }
+
+            DrawnRoom otherRoom = parent.GetConnectedRoom(direction).RoomDrawn;
+            int oppositeDirection = Room.GetOppositeDirection(direction);
+
+
+            if(otherRoom == null || !otherRoom.HasConnectionPoints(oppositeDirection))
+            {
+                Tuple<Point, Point> connectionPoints = GetConnectionPoints(direction, start, end);
+
+                base.AddChild(new Wall(start, connectionPoints.Item1));
+                base.AddChild(new Wall(connectionPoints.Item2, end));
+            }
+            else
+            {
+                Tuple<Point, Point> connectionPoints = GetNeighborsConnectionPoints(direction);
+
+                Point p1;
+                Point p4;
+                double distance = 0;
+
+                if(direction %2 == 0)
+                {
+                    p1 = new Point(connectionPoints.Item1.X, start.Y);
+                    p4 = new Point(connectionPoints.Item2.X, end.Y);
+                    distance = Math.Abs(start.Y - connectionPoints.Item1.Y);
+                }
+                else
+                {
+                    p1 = new Point(start.X, connectionPoints.Item1.Y);
+                    p4 = new Point(end.X, connectionPoints.Item2.Y);
+                    distance = Math.Abs(start.X - connectionPoints.Item1.X);
+
+                }
+                Point p2 = (connectionPoints.Item1);
+
+                Point p3 = connectionPoints.Item2;
+                
+
+                ((CatRectangle) representive).expand(direction, distance);
+
+
+                base.AddChild(new Wall(start, p1));
+                base.AddChild(new Wall(p1, p2));
+
+
+                base.AddChild(new Wall(p3, p4));
+                base.AddChild(new Wall(p4, end));
+
+            }
+        }
         private void CreateHorizontalWalls(CatRectangle wallRect)
         {
             CatRectangle rep = (CatRectangle)representive;
@@ -168,8 +226,14 @@ namespace Catacomb.Visuals
             CatRectangle horiWallRect = new CatRectangle(0 - Globals.LINE_THICKNESS / 2, 0, rep.GetWidth() + Globals.LINE_THICKNESS / 2, rep.GetHeight());
             CatRectangle vertWallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
 
-            CreateHorizontalWalls(horiWallRect);
-            CreateVerticalWalls(vertWallRect);
+            //CreateHorizontalWalls(horiWallRect);
+            //CreateVerticalWalls(vertWallRect);
+            DrawConnection(horiWallRect.TopLeft, horiWallRect.TopRight, 0);
+            DrawConnection(horiWallRect.BottomLeft, horiWallRect.BottomRight, 2);
+
+            DrawConnection(vertWallRect.TopLeft, vertWallRect.BottomLeft, 3);
+            DrawConnection(vertWallRect.TopRight, vertWallRect.BottomRight, 1);
+
             
             base.Draw();
 

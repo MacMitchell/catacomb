@@ -114,6 +114,8 @@ namespace Catacomb.Maze
         { 
             Point origin = parent.RoomDrawn.GetNeighborsOrigin(i, gap);
             CatRectangle newRoom = CreateMaxSizeRoom(parent, origin, i);
+            Point start = newRoom.TopLeft;
+            Point end = newRoom.BottomRight;
             for(int k =0; k < createdRooms.Count; k++)
             {
                 CatRectangle otherRoom = (CatRectangle)createdRooms[k].RoomDrawn.Representive;
@@ -146,6 +148,8 @@ namespace Catacomb.Maze
             double[] expandDirection = new double[limit];
             double[] dimension = { roomIn.MaxHeight,  roomIn.MaxWidth };
 
+            double minSizeToFitConnection = 50.0;
+
             for(int i =0; i < limit; i++)
             {
                 int currentIndex = (startPos + i) % 4;
@@ -154,7 +158,7 @@ namespace Catacomb.Maze
                     currentIndex = (currentIndex + 2) % 4;
                 }
                 int dimensionIndex = (startPos + i) % 2;
-                expandDirection[currentIndex] = random(Math.Max(50.0,roomIn.MinWidth), dimension[dimensionIndex]);
+                expandDirection[currentIndex] = random(Math.Max(minSizeToFitConnection, roomIn.MinWidth), dimension[dimensionIndex]);
                 dimension[dimensionIndex] -= expandDirection[currentIndex];
             }
 
@@ -182,9 +186,67 @@ namespace Catacomb.Maze
 
             direction[index] = move2;
             return direction;
+        }
+
+
+        /**
+         *  The direction is relative to parent
+         * 
+         */
+        private bool isRoomGood(CatRectangle roomBounds, Room parent, int direction)
+        {
+            Room newRoom = GetChildFromParent(parent, direction);
+            //check if it is big enough
+
+            if(roomBounds.GetWidth() < newRoom.MinWidth || roomBounds.GetHeight() < newRoom.MinHeight)
+            {
+                return false;
+            }
+
+
+            //check to see that it didnt shrink so much that the connection to room is no longer good
+
+            Tuple<Point, Point> connectionPoints = parent.RoomDrawn.GetConnectionPoints(direction);
+            
+            //the connection is vertical
+            if(direction % 2 == 0)
+            {
+                double connectionX1 = connectionPoints.Item1.X;
+                double connectionX2 = connectionPoints.Item2.X;
+                if(connectionX1 > roomBounds.TopLeft.X && connectionX2 > roomBounds.TopLeft.X &&
+                    connectionX1 < roomBounds.TopRight.X && connectionX2 > roomBounds.TopRight.X)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                double connectionY1 = connectionPoints.Item1.Y;
+                double connectionY2 = connectionPoints.Item2.Y;
+                if(connectionY1 > roomBounds.TopLeft.Y && connectionY2 > roomBounds.TopLeft.Y &&
+                    connectionY1 < roomBounds.BottomRight.Y && connectionY2 < roomBounds.BottomRight.Y)
+                {
+                    return true;
+                }
+            }
+            return false;
 
         }
 
+
+        private Room GetChildFromParent(Room parent, int direction)
+        {
+            return parent.GetConnectedRoom(direction);
+        }
+
+        /**
+         * This method takes a nearly created room and will determine if it can be a new parent for rooms that were 'destoryed
+         * the two points are the points that were first attempted to be for the room.
+         */
+        private void setRoomUpForFosterParent(Room potentialParent, Point originalStart, Point originalEnd)
+        {
+
+        }
  /** Create a random number that will be equal or less than max. It will be equal or greater than the min
   *     The number has an equal chance to be negative or positive*/
         private int random(int min, int max)
