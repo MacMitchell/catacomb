@@ -23,6 +23,7 @@ namespace Catacomb.Maze
         public bool IsDrawn
         {
             get { return isDrawn; }
+            set { isDrawn = false; }
         }
         public double MaxWidth
         {

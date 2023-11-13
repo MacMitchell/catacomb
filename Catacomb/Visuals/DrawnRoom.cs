@@ -16,8 +16,10 @@ namespace Catacomb.Visuals
     {
         private static Random rand;
         private Room parent;
-        private Tuple<Point, Point>[] connectionPoints;
+        public Tuple<Point, Point>[] connectionPoints;
+        private Tuple<Point,Point> originalRep;
 
+        public String testString = "";
         public double Width
         {
             get { return ((CatRectangle)base.representive).GetWidth(); }
@@ -29,7 +31,7 @@ namespace Catacomb.Visuals
         }
         public DrawnRoom(Room parentIn, Point start, Point end) : base(new CatRectangle(start, end), true)
         {
-
+            originalRep = new Tuple<Point, Point>(start, end);
             parent = parentIn;
             canvas = new Canvas();
             canvas.Width = start.GetMaxX(end) - start.GetMinX(end); //+ 5* Globals.LINE_THICKNESS;
@@ -38,12 +40,13 @@ namespace Catacomb.Visuals
             rand = new Random();
 
 
-            connectionPoints = new Tuple<Point, Point>[4];
-            connectionPoints[0] = null;
-            connectionPoints[1] = null;
-            connectionPoints[2] = null;
-            connectionPoints[3] = null;
-            
+            connectionPoints = new Tuple<Point, Point>[Globals.CONNECTION_LIMIT];
+            for(int i =0; i < Globals.CONNECTION_LIMIT; i++)
+            {
+                connectionPoints[i] = null;
+            }
+            testString  = parent.getId().ToString() + "\n" + representive.ToString();
+
         }
 
 
@@ -234,6 +237,12 @@ namespace Catacomb.Visuals
             DrawConnection(vertWallRect.TopLeft, vertWallRect.BottomLeft, 3);
             DrawConnection(vertWallRect.TopRight, vertWallRect.BottomRight, 1);
 
+            if (Globals.DEBUG)
+            {
+                TextBox testBox = new TextBox();
+                testBox.Text = testString;//parent.getId().ToString() + "\n" + representive.ToString();
+                canvas.Children.Add(testBox);
+            }
             
             base.Draw();
 
@@ -379,6 +388,20 @@ namespace Catacomb.Visuals
             }
             
             return base.EntityMove(entityIn,distance);
+        }
+
+        public override bool  Erase()
+        {
+
+
+            base.representive = new CatRectangle(originalRep.Item1, originalRep.Item2);
+            for (int i = 0; i < Globals.CONNECTION_LIMIT; i++)
+            {
+                connectionPoints[i] = null;
+            }
+
+            parent.IsDrawn = false;
+            return base.Erase();
         }
     }
 }

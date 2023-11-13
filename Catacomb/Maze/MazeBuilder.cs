@@ -14,7 +14,7 @@ namespace Catacomb.Maze
     public class MazeBuilder
     {
         private static Random rand;
-
+        private int limit = Global.Globals.CONNECTION_LIMIT;
         public double margin = 100;
         public double gap = 150;
         private static int connectionLimit = Global.Globals.CONNECTION_LIMIT;
@@ -22,7 +22,11 @@ namespace Catacomb.Maze
         public MazeBuilder()
         {
             rand = new Random();
-            
+            availableParents = new List<List<Room>>();
+            for (int i = 0; i < limit; i++)
+            {
+                availableParents.Add(new List<Room>());
+            }
         }
 
         public Room BuildMaze(int size, int step)
@@ -98,11 +102,6 @@ namespace Catacomb.Maze
             List<Room> createdRooms = new List<Room>(); 
             Point origin = new Point(0, 0);
 
-            availableParents = new List<List<Room>>(connectionLimit);
-            for(int i =0;i< connectionLimit; i++)
-            {
-                availableParents.Add(new List<Room>());
-            }
             start.Create(origin);
             BuildRoom(createdRooms, start,parentCanvas);
         }
@@ -129,13 +128,16 @@ namespace Catacomb.Maze
                 }
             }
             if(!isRoomGood(newRoom,parent,i))
-            //if(newRoom.GetWidth()  < parent.MinWidth || newRoom.GetHeight() < parent.MinHeight)
             {
                 //need to delete the room then
                 Console.WriteLine("TOO SMALL");
                 return false;
             }
-            parent.GetConnectedRoom(i).Create(newRoom.GetStartPoint(), newRoom.GetEndPoint());
+            Room createRoom = GetChildFromParent(parent, i);
+            //parent.GetConnectedRoom(i).Create(newRoom.GetStartPoint(), newRoom.GetEndPoint());
+            createRoom.Create(newRoom.GetStartPoint(), newRoom.GetEndPoint());
+            setRoomUpForFosterParent(createRoom, start, end);
+            
             return true;
         }
 
@@ -267,7 +269,20 @@ namespace Catacomb.Maze
          */
         private void setRoomUpForFosterParent(Room potentialParent, Point originalStart, Point originalEnd)
         {
-
+            if(!potentialParent.HasConnection(0) && Global.Globals.AreDoublesEqual(originalStart.Y, potentialParent.RoomDrawn.GetStartPoint().Y)){
+                availableParents[0].Add(potentialParent);
+            }
+            if(!potentialParent.HasConnection(1) && Global.Globals.AreDoublesEqual(originalEnd.X, potentialParent.RoomDrawn.GetEndPoint().X)){
+                availableParents[1].Add(potentialParent);
+            }
+            if(!potentialParent.HasConnection(2) && Global.Globals.AreDoublesEqual(originalEnd.Y, potentialParent.RoomDrawn.GetEndPoint().Y))
+            {
+                availableParents[2].Add(potentialParent);
+            }
+            if(!potentialParent.HasConnection(3) && Global.Globals.AreDoublesEqual(originalStart.X, potentialParent.RoomDrawn.GetStartPoint().X))
+            {
+                availableParents[3].Add(potentialParent);
+            }
         }
  /** Create a random number that will be equal or less than max. It will be equal or greater than the min
   *     The number has an equal chance to be negative or positive*/
@@ -287,10 +302,6 @@ namespace Catacomb.Maze
             }
             double difference = max - min;
             double number = (rand.NextDouble()* difference) + min;
-            if(number < min)
-            {
-                Console.WriteLine("NOT SUPPOSE TO HAPPEND");
-            }
             //double result = max >= min ? number : 0;
             return number;
         }

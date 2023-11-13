@@ -144,5 +144,12 @@ namespace Catacomb.Visuals
             bool localIntersect = DoesIntersect(movementVector);
             return localIntersect;
         }
+
+        public virtual bool Erase()
+        {
+            canvas.Children.Clear();
+            components.Clear();
+            return true;
+        }
     }
 }
