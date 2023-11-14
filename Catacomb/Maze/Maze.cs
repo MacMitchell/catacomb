@@ -39,7 +39,7 @@ namespace Catacomb.Maze
             start = builder.BuildMaze(size, step);
             canvas = null;
             player = playIn;
-            player.Position = (new Point(225, 225));
+            player.Position = (new Point(150, 150));
 
             
             Draw();

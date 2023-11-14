@@ -107,9 +107,9 @@ namespace Catacomb.Maze
             switch(direction)
             {
                 case 0: top = null; other.bottom = null;  break;
-                case 1: left = null; other.right = null; break;
+                case 1: right = null; other.left = null; break;
                 case 2: bottom = null; other.top = null; break;
-                case 3: right = null; other.left = null; break;
+                case 3: left = null; other.right = null; break;
 
             }
             return true;
@@ -158,6 +158,8 @@ namespace Catacomb.Maze
 
         public virtual void CloseConnection(int direction)
         {
+
+            Console.WriteLine(id + ": called close connection in direction: " + direction + "\n");
             Room otherRoom = GetConnectedRoom(direction);
             if (otherRoom.isDrawn)
             {
@@ -165,7 +167,6 @@ namespace Catacomb.Maze
             }
             RemoveConnection(direction);
 
-            
             RoomDrawn.CloseConnectionPoints(direction);    
         }
 

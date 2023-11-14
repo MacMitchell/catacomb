@@ -83,6 +83,7 @@ namespace Catacomb.Maze
         {
             createdRooms.Add(current);
             current.Draw();
+
             mazeCanvas.Children.Add(current.GetCanvas());
             for (int i =0;i < Global.Globals.CONNECTION_LIMIT; i++)
             {
@@ -94,17 +95,26 @@ namespace Catacomb.Maze
                 bool result = CreateRoomNeighbors(createdRooms, current, i);
                 if (result)
                 {
+                    Console.WriteLine(current.getId() + " successfuly built room in direction: " + i + "\n");
                     BuildRoom(createdRooms, current.GetConnectedRoom(i), mazeCanvas);
                 }
                 else
                 {
                     freeRooms.Add(new Tuple<Room, int>(current.GetConnectedRoom(i), i));
+
+                    //sometimes it is not called when it fails to build
                     current.CloseConnection(i);
                     //current.RoomDrawn.CloseConnectionPoints(i);
                 }
+             
             }
         }
 
+        /**
+         * Time complexity is n^2. Things improve to make it faster
+         *      1. Dont erase the whole room when it doesnt fit
+         *      2. improve the check with collisions, dont need to check all rooms. Probably the biggest time save
+         */
         public void BuildRooms(Room start,Canvas parentCanvas)
         {
             List<Room> createdRooms = new List<Room>(); 
