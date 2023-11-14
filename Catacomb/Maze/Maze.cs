@@ -35,7 +35,7 @@ namespace Catacomb.Maze
             rand = new Random();
             MazeBuilder builder = new MazeBuilder();
 
-            size = 10;
+            size = 100;
             start = builder.BuildMaze(size, step);
             canvas = null;
             player = playIn;

@@ -100,6 +100,20 @@ namespace Catacomb.Maze
                 default : return left;
             }
         }
+
+        public bool RemoveConnection(int direction)
+        {
+            Room other = GetConnectedRoom(direction);
+            switch(direction)
+            {
+                case 0: top = null; other.bottom = null;  break;
+                case 1: left = null; other.right = null; break;
+                case 2: bottom = null; other.top = null; break;
+                case 3: right = null; other.left = null; break;
+
+            }
+            return true;
+        }
         public Room GetConnectedRoom(int direction)
         {
             return GetConnection(direction).GetOther(this);  
@@ -142,10 +156,19 @@ namespace Catacomb.Maze
             
         }
 
-        public virtual void RemoveConnection(int direction)
+        public virtual void CloseConnection(int direction)
         {
+            Room otherRoom = GetConnectedRoom(direction);
+            if (otherRoom.isDrawn)
+            {
+                otherRoom.RoomDrawn.CloseConnectionPoints(GetOppositeDirection(direction));
+            }
+            RemoveConnection(direction);
 
+            
+            RoomDrawn.CloseConnectionPoints(direction);    
         }
+
         public static int GetOppositeDirection(int direction)
         {
             int newDir = direction >= 2 ? direction - 2 : direction + 2;

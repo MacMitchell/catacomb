@@ -18,6 +18,11 @@ namespace Catacomb.Maze
         public double margin = 100;
         public double gap = 150;
         private static int connectionLimit = Global.Globals.CONNECTION_LIMIT;
+
+        
+        //list of rooms that could not be built. The int value for the direction the PARENT needs to be. i.e. grab from availableParent[int]
+        private List<Tuple<Room, int>> freeRooms; 
+        
         private List<List<Room>> availableParents;
         public MazeBuilder()
         {
@@ -27,6 +32,7 @@ namespace Catacomb.Maze
             {
                 availableParents.Add(new List<Room>());
             }
+            freeRooms = new List<Tuple<Room, int>>();
         }
 
         public Room BuildMaze(int size, int step)
@@ -92,7 +98,9 @@ namespace Catacomb.Maze
                 }
                 else
                 {
-                    current.RoomDrawn.CloseConnectionPoints(i);
+                    freeRooms.Add(new Tuple<Room, int>(current.GetConnectedRoom(i), i));
+                    current.CloseConnection(i);
+                    //current.RoomDrawn.CloseConnectionPoints(i);
                 }
             }
         }
@@ -104,8 +112,40 @@ namespace Catacomb.Maze
 
             start.Create(origin);
             BuildRoom(createdRooms, start,parentCanvas);
+
+            BuildMissingRooms(createdRooms, parentCanvas);
         }
 
+
+        private void BuildMissingRooms(List<Room> createdRooms, Canvas parentCanvas)
+        {
+            while(freeRooms.Count != 0)
+            {
+                int direction = freeRooms[0].Item2;
+                Room currentRoom = freeRooms[0].Item1;
+                bool successful = false;
+                while (!successful)
+                {
+                    int sizeOfAvailableParents = availableParents[direction].Count;
+                    int currentParent = unsignedRandom(0, sizeOfAvailableParents);
+
+                    Room newParent = availableParents[direction][currentParent];
+                    availableParents[direction].RemoveAt(currentParent);
+                    newParent.connect(currentRoom, direction);
+
+                    newParent.RoomDrawn.Erase();
+                    newParent.Draw();
+
+                    successful = CreateRoomNeighbors(createdRooms, newParent, direction);
+                    if (!successful)
+                    {
+                        newParent.CloseConnection(direction);
+                    }
+                }
+                freeRooms.RemoveAt(0);
+                BuildRoom(createdRooms, currentRoom, parentCanvas);
+            }
+        }
         /**
          * @param i: i is the direction that the room is being created from the perspective of the parent 
          */
@@ -120,17 +160,11 @@ namespace Catacomb.Maze
                 CatRectangle otherRoom = (CatRectangle)createdRooms[k].RoomDrawn.Representive;
                 if (otherRoom.IsWithin(newRoom))
                 {
-                    if(createdRooms[k].getId() == 0 && parent.getId() == 0)
-                    {
-                        Console.WriteLine("Why HERE??");
-                    }
                     otherRoom.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
                 }
             }
             if(!isRoomGood(newRoom,parent,i))
             {
-                //need to delete the room then
-                Console.WriteLine("TOO SMALL");
                 return false;
             }
             Room createRoom = GetChildFromParent(parent, i);
@@ -145,7 +179,6 @@ namespace Catacomb.Maze
         private CatRectangle CreateMaxSizeRoom(Room roomIn, Point origin, int direction)
         {
 
-            int limit = Global.Globals.CONNECTION_LIMIT;
             int startPos = Math.Abs(random(0, 3));
 
             double[] expandDirection = new double[limit];
@@ -153,7 +186,7 @@ namespace Catacomb.Maze
 
             double minSizeToFitConnection = CalculateMinSize(roomIn, direction);//50.0 + Global.Globals.LINE_THICKNESS;
 
-            for(int i =0; i < limit; i++)
+            for(int i =0; i < connectionLimit; i++)
             {
                 int currentIndex = (startPos + i) % 4;
                 if(currentIndex == (direction+2)%4)
@@ -294,6 +327,11 @@ namespace Catacomb.Maze
             return result;
         }
 
+        private int unsignedRandom(int min, int max)
+        {
+            int number = rand.Next(max) + min;
+            return number;
+        }
         private double random(double min, double max)
         {
             if(max < min)
