@@ -10,12 +10,12 @@ namespace Catacomb.Global
     public static class Globals
     {
 
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
         public const double TOLERANCE = 0.00005;
 
 
         //Visual globals
-        public const double LINE_THICKNESS = 5.0;
+        public const double LINE_THICKNESS = 10.0;
         public  static SolidColorBrush LINE_COLOR = Brushes.White;
         public static SolidColorBrush BACKGROUND_COLOR = Brushes.Black;
         public const  int CONNECTION_LIMIT = 4; 

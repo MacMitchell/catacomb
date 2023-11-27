@@ -59,15 +59,50 @@ namespace Catacomb.Entities
             // Draw();
             Update();
         }
-
+        /**
+         * TODO: make it so the player moves in x and y direction seperate. 
+         * EX: if there is a way to player right and they hold right and down, they should still move down
+         * HOW TO IMPLEMENT (MAYBE): make two movement vectors, one for x movment, one for y movement
+         */
         public virtual void Move(double time)
         {
             double distance = time * velocity;
             if(container.EntityMove(this, distance))
             {
                 MoveMe(time);
+                return;
             }
+            
+            double a = 0;
+            double b = distance;
+            double minTime = 0;
+            double maxTime = time;
+            for(int i =1; i <= 5; i++)
+            {
+                double c  = (a + b) / 2;
+                double tempTime = (minTime + maxTime) / 2;
+                if (container.EntityMove(this, c))
+                {
+                    a = c;
+                    minTime = tempTime;
+                }
+                else
+                {
+                    b = c;
+                    maxTime = tempTime;
+                }
+            }
+            if (container.EntityMove(this, a))
+            {
+                MoveMe(minTime);
+            }
+
+            Console.WriteLine("unable to move!");
+            
             return;
+
+
+
             double correctTime = 0;
 
 
@@ -108,6 +143,8 @@ namespace Catacomb.Entities
             center = center.GetRotateCopy(angle, width/2);
             double newX =   center.GetX() + distance * Math.Cos(Angle);
             double newY =   center.GetY() + distance * Math.Sin(Angle);
+
+            
 
             newX += offsetX;
             newY += offsetY;

@@ -279,7 +279,7 @@ namespace Catacomb.Visuals
 
         private void CreateConnectionPoints(int index, Point start, Point end)
         {
-            double doorLength = 50;
+            double doorLength = 100;
             if (index % 2 != 0)
             {
                 double x = start.GetX();
@@ -377,8 +377,11 @@ namespace Catacomb.Visuals
                     continue;
                 }
                 Room connectedRoom = parent.GetConnectedRoom(i);
+                //checks if the movement vector is in the other room
                 if (connectedRoom.RoomDrawn != null && connectedRoom.RoomDrawn.IsWithin(globalMovement))
                 {
+                    //does the movement vector intersect a door?
+                    entityIn.Container = parent.GetConnectedRoom(i).RoomDrawn;
                     if (parent.GetConnectedRoom(i).RoomDrawn.DoesEntityMoveIntersect(entityIn, distance))
                     {
                         return false;
