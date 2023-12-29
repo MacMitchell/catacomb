@@ -25,23 +25,23 @@ namespace Catacomb.Maze
             get { return isDrawn; }
             set { isDrawn = false; }
         }
-        public double MaxWidth
+        public virtual double MaxWidth
+        {
+            get {return 1600; }
+        }
+
+        public virtual double MaxHeight
+        {
+            get { return 1600; }
+        }
+
+        public virtual double MinWidth
         {
             get { return 800; }
         }
-
-        public double MaxHeight
+        public virtual double MinHeight
         {
             get { return 800; }
-        }
-
-        public double MinWidth
-        {
-            get { return 100; }
-        }
-        public double MinHeight
-        {
-            get { return 100; }
         }
 
         public DrawnRoom RoomDrawn
@@ -174,6 +174,11 @@ namespace Catacomb.Maze
         {
             int newDir = direction >= 2 ? direction - 2 : direction + 2;
             return newDir;
+        }
+
+        public virtual Room Clone()
+        {
+            return new Room();
         }
     }
 }

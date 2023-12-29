@@ -45,7 +45,7 @@ namespace Catacomb.Visuals
             {
                 connectionPoints[i] = null;
             }
-            testString  = parent.getId().ToString() + "\n" + representive.ToString();
+            testString  = parent.getId().ToString()+": " + parent.ToString() + "\n" + representive.ToString();
 
         }
 

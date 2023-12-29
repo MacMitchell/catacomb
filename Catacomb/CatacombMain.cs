@@ -74,7 +74,7 @@ namespace Catacomb
         void SetUpMaze()
         {
             int numberOfRooms = 25;
-            int stepSize = 1;
+            int stepSize = 2;
             double width = base.ActualWidth;
             double height = base.ActualHeight;
 

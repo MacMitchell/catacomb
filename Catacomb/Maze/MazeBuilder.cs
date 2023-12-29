@@ -35,25 +35,32 @@ namespace Catacomb.Maze
             freeRooms = new List<Tuple<Room, int>>();
         }
 
+        /**
+         *  Places down the rooms next to one another, it does not draw the maze
+         */ 
         public Room BuildMaze(int size, int step)
         {
             ArrayList found = new ArrayList();
             found.Add(new Room());
 
+        
             while (found.Count < size)
             {
 
                 int index = rand.Next(found.Count);
                 Room current = (Room) found[index];
+                //get two random numbers with the max size of the step. One number for the horizontal direction, the other for vertical direction
                 int[] placement = GetVertAndHoriDistance(1, step);
+                //decide which direction to go first
                 int direction = rand.Next(4);
                 for(int i = 0; i < placement[0]; i++)
                 {
                     if (!current.HasConnection(direction))
-                    {                    
+                    {
                         //TODO: make another function to make the rooms
 
-                        Room newRoom = i == placement[0]-1?  new Room() : new Hallway();
+                        //Room newRoom = i == placement[0]-1?  new Room() : new Hallway();
+                        Room newRoom = GetFillerRoom();
                         found.Add(newRoom);
                         current.connect(newRoom,direction);
                     }
@@ -66,7 +73,7 @@ namespace Catacomb.Maze
                     if (!current.HasConnection(direction))
                     {
                         //TODO: make another function to make the rooms
-                        Room newRoom = i == placement[1] - 1 ? new Room() : new Hallway();
+                        Room newRoom = i == placement[1] - 1 ? GetKeyRoom() : GetFillerRoom();
                         found.Add(newRoom);
                         current.connect(newRoom, direction);
                     }
@@ -79,6 +86,16 @@ namespace Catacomb.Maze
         }
 
 
+
+        public Room GetFillerRoom()
+        {
+            return new Hallway();
+        }
+
+        public Room GetKeyRoom()
+        {
+            return new Room();
+        }
         public void BuildRoom(List<Room> createdRooms, Room current,Canvas mazeCanvas)
         {
             createdRooms.Add(current);
@@ -186,15 +203,15 @@ namespace Catacomb.Maze
         }
 
 
-        private CatRectangle CreateMaxSizeRoom(Room roomIn, Point origin, int direction)
+        private CatRectangle CreateMaxSizeRoom(Room parent, Point origin, int direction)
         {
 
             int startPos = Math.Abs(random(0, 3));
-
+            Room roomIn = GetChildFromParent(parent, direction);
             double[] expandDirection = new double[limit];
             double[] dimension = { roomIn.MaxHeight,  roomIn.MaxWidth };
 
-            double minSizeToFitConnection = CalculateMinSize(roomIn, direction);//50.0 + Global.Globals.LINE_THICKNESS;
+            double minSizeToFitConnection = CalculateMinSize(parent, direction);//50.0 + Global.Globals.LINE_THICKNESS;
 
             for(int i =0; i < connectionLimit; i++)
             {
@@ -243,7 +260,6 @@ namespace Catacomb.Maze
         {
             Room newRoom = GetChildFromParent(parent, direction);
             //check if it is big enough
-
             if(roomBounds.GetWidth() < newRoom.MinWidth || roomBounds.GetHeight() < newRoom.MinHeight)
             {
                 return false;

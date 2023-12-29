@@ -10,7 +10,7 @@ namespace Catacomb.Global
     public static class Globals
     {
 
-        public const bool DEBUG = false;
+        public const bool DEBUG = true;
         public const double TOLERANCE = 0.00005;
 
 
