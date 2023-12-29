@@ -36,9 +36,11 @@ namespace Catacomb
 
             base.Height = Screen.PrimaryScreen.WorkingArea.Size.Height;
             base.Width = Screen.PrimaryScreen.WorkingArea.Size.Width;
+
             base.Title = "UwU";
             mainCanvas.Width = base.Width;
             mainCanvas.Height = base.Height;
+            Console.WriteLine("width: " + base.Width + " Height: " + base.Height);
             up = 0;
             down = 0;
             left = 0;
@@ -60,6 +62,7 @@ namespace Catacomb
 
         public void StartUp()
         {
+
             player = new Player(new Vectors.Point(0, 0));
             mainCanvas.Children.Remove(player.GetCanvas());
 
@@ -70,7 +73,17 @@ namespace Catacomb
 
         void SetUpMaze()
         {
-            currentMaze = new CatMaze(25, 1,player);
+            int numberOfRooms = 25;
+            int stepSize = 1;
+            double width = base.ActualWidth;
+            double height = base.ActualHeight;
+
+            //currentMaze = new CatMaze(25, 1,player);
+            currentMaze = new CatMaze();
+
+            currentMaze.startPoint = new Vectors.Point((width / 2), (height /2));
+
+            currentMaze.Create(numberOfRooms, stepSize, player);
             currentMaze.Draw();
             base.Content = mainCanvas;
             mainCanvas.Children.Add(currentMaze.GetCanvas());
@@ -91,9 +104,6 @@ namespace Catacomb
             SetPlayerAngle();
             currentMaze.move(dif);
             
-            
-            
-
             
             updateFinish = true;
         }

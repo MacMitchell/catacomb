@@ -37,7 +37,6 @@ namespace Catacomb.Entities
             double distanceToX = width / 2;
             double distanceToY = height / 2;
             representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
-
         }
 
 

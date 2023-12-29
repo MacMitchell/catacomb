@@ -19,6 +19,10 @@ namespace Catacomb.Maze
         private Canvas canvas;
         private Random rand;
         private Player player;
+        public Point startPoint;
+
+        private MazeBuilder builder;
+
         public Room Start{
             get{return start;}
             set{start=  value;}
@@ -30,20 +34,25 @@ namespace Catacomb.Maze
             set { cameraPos = value; }
         }
 
-        public CatMaze(int size, int step,Player playIn)
-        {
+        public CatMaze() {
             rand = new Random();
-            MazeBuilder builder = new MazeBuilder();
+            builder = new MazeBuilder();
 
+            startPoint = new Point(150, 150);
+        }
+        public void Create(int size, int step, Player playIn)
+        {
             size = 100;
             start = builder.BuildMaze(size, step);
             canvas = null;
             player = playIn;
-            player.Position = (new Point(150, 150));
+            Console.WriteLine("StartPoint width: " + startPoint.X + " height  " + startPoint.Y ); 
+            player.Position = startPoint;//new Point(150, 150);
 
-            
+
             Draw();
         }
+
         
         public Canvas GetCanvas()
         {
@@ -70,27 +79,16 @@ namespace Catacomb.Maze
             List<Room> createdRooms = new List<Room>();
             //createdRooms.Add(start);
             MazeBuilder builder = new MazeBuilder();
-            builder.BuildRooms(start,canvas);
-           /* for(int i =0; i < 4; i++)
-            {
-                if (start.HasConnection(i))
-                {
-                    MazeBuilder builder = new MazeBuilder();
-                    builder.CreateRoomNeighbors(createdRooms,start, i);
-                    start.GetConnectedRoom(i).Draw();
-                    canvas.Children.Add(start.GetConnectedRoom(i).GetCanvas());
-                }
-            }*/
+
+            
+            builder.BuildRooms(start,canvas,startPoint.AddPoint(new Point(-50,-50)));
             SetUpPlayer();
         }
 
         private void SetUpPlayer()
         {
             player.Draw();
-            player.Container = Start.RoomDrawn;
-            
-            //canvas.Children.Add(player.GetCanvas());
-            
+            player.Container = Start.RoomDrawn;            
         }
 
         public void move(double time)
@@ -98,6 +96,7 @@ namespace Catacomb.Maze
             double posNowX = player.Position.X;
             double posNowY = player.Position.Y;
             player.Move(time);
+
             Point posAfter = player.Position;
             Point differentPoint = new Point((posAfter.X - posNowX)*-1,( posAfter.Y - posNowY)*-1);
             CameraPos = CameraPos.AddPoint(differentPoint);

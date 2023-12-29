@@ -95,7 +95,6 @@ namespace Catacomb.Maze
                 bool result = CreateRoomNeighbors(createdRooms, current, i);
                 if (result)
                 {
-                    Console.WriteLine(current.getId() + " successfuly built room in direction: " + i + "\n");
                     BuildRoom(createdRooms, current.GetConnectedRoom(i), mazeCanvas);
                 }
                 else
@@ -115,11 +114,12 @@ namespace Catacomb.Maze
          *      1. Dont erase the whole room when it doesnt fit
          *      2. improve the check with collisions, dont need to check all rooms. Probably the biggest time save
          */
-        public void BuildRooms(Room start,Canvas parentCanvas)
+        public void BuildRooms(Room start, Canvas parentCanvas, Point origin = null)
         {
-            List<Room> createdRooms = new List<Room>(); 
-            Point origin = new Point(0, 0);
-
+            List<Room> createdRooms = new List<Room>();
+            if (origin == null) { 
+                origin = new Point(0, 0);
+            }
             start.Create(origin);
             BuildRoom(createdRooms, start,parentCanvas);
 
