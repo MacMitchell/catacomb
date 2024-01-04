@@ -17,7 +17,7 @@ namespace Catacomb.Maze
         private Connection bottom;
         private Connection left;
         private static int counter = 0;
-        private DrawnRoom roomDrawn;
+        protected DrawnRoom roomDrawn;
         private bool isDrawn = false;
 
         public bool IsDrawn
@@ -58,7 +58,7 @@ namespace Catacomb.Maze
             }
         }
 
-        private int id;
+        public int id;
         public Room()
         {
             
@@ -159,7 +159,6 @@ namespace Catacomb.Maze
         public virtual void CloseConnection(int direction)
         {
 
-            Console.WriteLine(id + ": called close connection in direction: " + direction + "\n");
             Room otherRoom = GetConnectedRoom(direction);
             if (otherRoom.isDrawn)
             {

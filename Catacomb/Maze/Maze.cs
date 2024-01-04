@@ -42,11 +42,10 @@ namespace Catacomb.Maze
         }
         public void Create(int size, int step, Player playIn)
         {
-            size = 100;
+            
             start = builder.BuildMaze(size, step);
             canvas = null;
             player = playIn;
-            Console.WriteLine("StartPoint width: " + startPoint.X + " height  " + startPoint.Y ); 
             player.Position = startPoint;//new Point(150, 150);
 
 

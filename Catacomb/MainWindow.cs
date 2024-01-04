@@ -73,7 +73,6 @@ namespace Catacomb
                 TimeSpan timeDifference = temp - currentTime;
                 currentTime = DateTime.Now;
                 testMaze.move(1);
-                Console.WriteLine("HERERERERERE");
         }
         public static void MoveKeyPress(object sender, KeyEventArgs e)
         {

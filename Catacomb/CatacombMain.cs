@@ -40,7 +40,6 @@ namespace Catacomb
             base.Title = "UwU";
             mainCanvas.Width = base.Width;
             mainCanvas.Height = base.Height;
-            Console.WriteLine("width: " + base.Width + " Height: " + base.Height);
             up = 0;
             down = 0;
             left = 0;
@@ -73,8 +72,8 @@ namespace Catacomb
 
         void SetUpMaze()
         {
-            int numberOfRooms = 25;
-            int stepSize = 2;
+            int numberOfRooms = 50;
+            int stepSize = 5;
             double width = base.ActualWidth;
             double height = base.ActualHeight;
 

@@ -97,7 +97,6 @@ namespace Catacomb.Entities
                 MoveMe(minTime);
             }
 
-            Console.WriteLine("unable to move!");
             
             return;
 

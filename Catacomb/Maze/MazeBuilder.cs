@@ -57,9 +57,6 @@ namespace Catacomb.Maze
                 {
                     if (!current.HasConnection(direction))
                     {
-                        //TODO: make another function to make the rooms
-
-                        //Room newRoom = i == placement[0]-1?  new Room() : new Hallway();
                         Room newRoom = GetFillerRoom();
                         found.Add(newRoom);
                         current.connect(newRoom,direction);
@@ -87,8 +84,12 @@ namespace Catacomb.Maze
 
 
 
+        /**
+         * Gets the room that seperates a key room from another key room
+         */
         public Room GetFillerRoom()
         {
+
             return new Hallway();
         }
 
@@ -195,7 +196,7 @@ namespace Catacomb.Maze
                 return false;
             }
             Room createRoom = GetChildFromParent(parent, i);
-            //parent.GetConnectedRoom(i).Create(newRoom.GetStartPoint(), newRoom.GetEndPoint());
+
             createRoom.Create(newRoom.GetStartPoint(), newRoom.GetEndPoint());
             setRoomUpForFosterParent(createRoom, start, end);
             
@@ -203,6 +204,9 @@ namespace Catacomb.Maze
         }
 
 
+        /**
+         * The direction is relative to the parent 
+         */
         private CatRectangle CreateMaxSizeRoom(Room parent, Point origin, int direction)
         {
 
@@ -211,7 +215,18 @@ namespace Catacomb.Maze
             double[] expandDirection = new double[limit];
             double[] dimension = { roomIn.MaxHeight,  roomIn.MaxWidth };
 
-            double minSizeToFitConnection = CalculateMinSize(parent, direction);//50.0 + Global.Globals.LINE_THICKNESS;
+            double minSizeToFitConnection = CalculateMinSize(parent, direction);
+            minSizeToFitConnection = minSizeToFitConnection/2.0;
+
+            //set up an array to remember the min values
+            double[] minValues = {roomIn.MinHeight/2,roomIn.MinWidth/2 };
+            minValues[direction % 2] *= 2;
+
+            minValues[0] = Math.Max(minValues[0], minSizeToFitConnection);
+            minValues[1] =   Math.Max(minValues[1],minSizeToFitConnection);
+
+            dimension[0] -= minValues[0];
+            dimension[1] -= minValues[1];
 
             for(int i =0; i < connectionLimit; i++)
             {
@@ -221,7 +236,9 @@ namespace Catacomb.Maze
                     currentIndex = (currentIndex + 2) % 4;
                 }
                 int dimensionIndex = (startPos + i) % 2;
-                expandDirection[currentIndex] = random(Math.Max(minSizeToFitConnection, roomIn.MinWidth), dimension[dimensionIndex]);
+                //expandDirection[currentIndex] = random(Math.Max(minSizeToFitConnection, roomIn.MinWidth), dimension[dimensionIndex]);
+                expandDirection[currentIndex] = random(minValues[dimensionIndex], dimension[dimensionIndex]);
+                
                 dimension[dimensionIndex] -= expandDirection[currentIndex];
             }
 
@@ -262,6 +279,7 @@ namespace Catacomb.Maze
             //check if it is big enough
             if(roomBounds.GetWidth() < newRoom.MinWidth || roomBounds.GetHeight() < newRoom.MinHeight)
             {
+                Console.WriteLine("Room NOT big enough\n");
                 return false;
             }
 
@@ -278,6 +296,8 @@ namespace Catacomb.Maze
                 if(connectionX1 < roomBounds.TopLeft.X || connectionX2 < roomBounds.TopLeft.X ||
                     connectionX1 > roomBounds.TopRight.X || connectionX2 > roomBounds.TopRight.X)
                 {
+                    Console.WriteLine("Room NOT fit connection\n");
+
                     return false;
                 }
             }
@@ -288,6 +308,7 @@ namespace Catacomb.Maze
                 if(connectionY1 < roomBounds.TopLeft.Y || connectionY2 < roomBounds.TopLeft.Y ||
                     connectionY1 > roomBounds.BottomRight.Y || connectionY2 > roomBounds.BottomRight.Y)
                 {
+                    Console.WriteLine("Room NOT fit connection\n");
                     return false;
                 }
                 
