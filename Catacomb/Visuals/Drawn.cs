@@ -17,7 +17,7 @@ namespace Catacomb.Visuals
         public Vector representive;
         protected double scalar = 1;
         private Point position;
-        private bool trespassable;
+        protected bool trespassable;
         
         public Vector Representive
         {

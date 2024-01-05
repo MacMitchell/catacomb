@@ -65,29 +65,6 @@ namespace Catacomb.Maze
             //base.AddChild(new Wall(new Point(50, 50),new Point( 100, 50)));
             //base.AddChild(new Wall(new Point(75, 25),new Point( 75, 75)));
             return;
-
-            CatRectangle rep = (CatRectangle)representive;
-            double radiusOfRoom = 150.0/2.0;
-            Point repCenter = convertPointToLocal(rep.Center);
-            Point start = repCenter.MinusPoint(new Point(radiusOfRoom, radiusOfRoom));
-            Point end = repCenter.AddPoint(new Point(radiusOfRoom, radiusOfRoom));
-
-
-            rep = new CatRectangle(start, end);
-
-            Point repEnd = convertPointToLocal(rep.BottomRight);
-            //rep = new CatRectangle(new Point(0, 0), repEnd);
-            CatRectangle horiWallRect = new CatRectangle(0 - Globals.LINE_THICKNESS / 2, 0, rep.GetWidth() + Globals.LINE_THICKNESS / 2, rep.GetHeight());
-            CatRectangle vertWallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
-
-            DrawConnection(rep.TopLeft, rep.TopRight, 0);
-            DrawConnection(rep.BottomLeft, rep.BottomRight, 2);
-
-            DrawConnection(rep.TopLeft, rep.BottomLeft, 3);
-            DrawConnection(rep.TopRight, rep.BottomRight, 1);
-            canvas.Background = Brushes.Blue;
-            
-
         }
 
         /**
@@ -127,5 +104,7 @@ namespace Catacomb.Maze
 
             }
         }
+
+        
     }
 }

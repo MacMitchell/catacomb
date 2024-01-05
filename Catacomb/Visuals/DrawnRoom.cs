@@ -99,8 +99,7 @@ namespace Catacomb.Visuals
                 
 
                 ((CatRectangle) representive).expand(direction, distance);
-
-
+                DrawFloor(new CatRectangle(p2, p4));
                 base.AddChild(new Wall(start, p1));
                 base.AddChild(new Wall(p1, p2));
 
@@ -139,6 +138,7 @@ namespace Catacomb.Visuals
         protected virtual void DrawRoom()
         {
             DrawRep();
+            
         }
 
         protected virtual void DrawRep()
@@ -148,6 +148,9 @@ namespace Catacomb.Visuals
             CatRectangle horiWallRect = new CatRectangle(0 - Globals.LINE_THICKNESS / 2, 0, rep.GetWidth() + Globals.LINE_THICKNESS / 2, rep.GetHeight());
             CatRectangle vertWallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
 
+
+            CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
+            DrawFloor(localRep);
 
             DrawConnection(horiWallRect.TopLeft, horiWallRect.TopRight, 0);
             DrawConnection(horiWallRect.BottomLeft, horiWallRect.BottomRight, 2);
@@ -351,6 +354,11 @@ namespace Catacomb.Visuals
 
             parent.IsDrawn = false;
             return base.Erase();
+        }
+        protected virtual void DrawFloor(CatRectangle floor)
+        {
+            base.AddChild(new Floor(floor));
+            
         }
     }
 }

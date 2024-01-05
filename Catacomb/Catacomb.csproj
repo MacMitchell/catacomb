@@ -75,6 +75,7 @@
     <Compile Include="Vectors\Point.cs" />
     <Compile Include="Visuals\Drawn.cs" />
     <Compile Include="Visuals\DrawnRoom.cs" />
+    <Compile Include="Visuals\Floor.cs" />
     <Compile Include="Visuals\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
