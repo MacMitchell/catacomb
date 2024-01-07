@@ -18,7 +18,10 @@ namespace Catacomb.Visuals
         protected double scalar = 1;
         private Point position;
         protected bool trespassable;
-        
+        public virtual int DrawnId
+        {
+            get { return 0; }
+        }
         public Vector Representive
         {
             get { return representive; }
@@ -151,5 +154,19 @@ namespace Catacomb.Visuals
             components.Clear();
             return true;
         }
+
+        public Drawn GetChildDrawnWithDrawnId(int drawnId)
+        {
+            for(int i =0; i < components.Count; i++)
+            {
+                Drawn child = (Drawn)components[i];
+                if(child.DrawnId == drawnId)
+                {
+                    return child;
+                }
+            }
+            return null;
+        }
+        
     }
 }

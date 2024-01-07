@@ -11,7 +11,11 @@ namespace Catacomb.Visuals
     {
         Rectangle floor;
         public SolidColorBrush color;
-
+        public static int drawnId = 2;
+        public override int DrawnId
+        {
+            get { return 2; }
+        }
 
         public Floor(CatRectangle rep): base(rep)
         {

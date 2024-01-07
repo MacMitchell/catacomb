@@ -18,7 +18,6 @@ namespace Catacomb.Visuals
         protected Room parent;
         public Tuple<Point, Point>[] connectionPoints;
         private Tuple<Point,Point> originalRep;
-
         public String testString = "";
         public double Width
         {
@@ -359,6 +358,30 @@ namespace Catacomb.Visuals
         {
             base.AddChild(new Floor(floor));
             
+        }
+
+
+        /**
+         * Returns the point in local cordinates
+         */
+        public virtual Point CreateSpawnPoint(double width, double height)
+        {
+            Floor floor =(Floor) GetChildDrawnWithDrawnId(Floor.drawnId);
+
+            CatRectangle floorRep = (CatRectangle) floor.Representive;
+            double offset = Globals.LINE_THICKNESS / 2 + width / 2;
+
+            double minX = floorRep.TopLeft.X;
+            double maxX = floorRep.TopRight.X;
+
+            double minY = floorRep.TopLeft.Y;
+            double maxY = floorRep.BottomLeft.Y;
+
+            double x = rand.NextDouble() * (maxX - minX) + minX;
+            double y = rand.NextDouble() * (maxY - minY) + minY;
+
+            return new Point(x, y);
+
         }
     }
 }

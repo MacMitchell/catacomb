@@ -13,7 +13,12 @@ namespace Catacomb.Visuals
     class Wall : Drawn
     {
         Line l;
-
+        public static int drawnId = 1;
+        
+        public override int DrawnId
+        {
+            get { return drawnId; }
+        }
         public Wall(Point start, Point end,double width = Globals.LINE_THICKNESS):base(new CatThickLine(start,end,width),false)
         {
             l = new Line();

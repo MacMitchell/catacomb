@@ -131,6 +131,8 @@ namespace Catacomb.Maze
          * Time complexity is n^2. Things improve to make it faster
          *      1. Dont erase the whole room when it doesnt fit
          *      2. improve the check with collisions, dont need to check all rooms. Probably the biggest time save
+         *      
+         *  BUG: When checking for collisions, it does not check the connection between rooms, so the part that connects rooms can cross other another room
          */
         public void BuildRooms(Room start, Canvas parentCanvas, Point origin = null)
         {
