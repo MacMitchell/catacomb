@@ -136,15 +136,31 @@ namespace Catacomb.Maze
          */
         public void BuildRooms(Room start, Canvas parentCanvas, Point origin = null)
         {
-            List<Room> createdRooms = new List<Room>();
-            if (origin == null) { 
-                origin = new Point(0, 0);
-            }
-            start.Create(origin);
-            BuildRoom(createdRooms, start,parentCanvas);
+            //Sometimes it fails, i dont feel like fixing it for awhile, i just want to add more content
+            //If i do a room size of 1000 and a room size of 25, the odds of crashing are about the same. I guess less available foster parents
+            Boolean done = false;
+            while (!done)
+            {
+                try
+                {
+                    List<Room> createdRooms = new List<Room>();
+                    if (origin == null)
+                    {
+                        origin = new Point(0, 0);
+                    }
+                    start.Create(origin);
+                    BuildRoom(createdRooms, start, parentCanvas);
 
-            BuildMissingRooms(createdRooms, parentCanvas);
+                    BuildMissingRooms(createdRooms, parentCanvas);
+                    done = true;
+                }
+                catch
+                {
+                    Console.WriteLine("Failed to build maze");
+                }
+            }
         }
+
 
 
         private void BuildMissingRooms(List<Room> createdRooms, Canvas parentCanvas)
@@ -181,16 +197,33 @@ namespace Catacomb.Maze
          */
         public bool CreateRoomNeighbors(List<Room> createdRooms, Room parent, int i)
         { 
+
             Point origin = parent.RoomDrawn.GetNeighborsOrigin(i, gap);
             CatRectangle newRoom = CreateMaxSizeRoom(parent, origin, i);
+
+            //Make a CatRectangle to represent the connection area
+
+
             Point start = newRoom.TopLeft;
             Point end = newRoom.BottomRight;
+            CatRectangle connectionRep = parent.RoomDrawn.CreateConnectionRep(i, gap);
             for(int k =0; k < createdRooms.Count; k++)
             {
-                CatRectangle otherRoom = (CatRectangle)createdRooms[k].RoomDrawn.Representive;
-                if (otherRoom.IsWithin(newRoom))
+                //we grab the repersentive because the within method for DrawnRoom is used by players and monsters :^)
+                Room otherRoom = createdRooms[k];
+
+                CatRectangle potentialConflict = (CatRectangle)createdRooms[k].RoomDrawn.Representive;
+                
+
+                if (potentialConflict.IsWithin(connectionRep) && otherRoom.id != parent.id)
                 {
-                    otherRoom.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
+                    Console.WriteLine("Connection CONFLICT!");
+                    return false;
+                }
+
+                if (potentialConflict.IsWithin(newRoom))
+                {
+                    potentialConflict.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
                 }
             }
             if(!isRoomGood(newRoom,parent,i))

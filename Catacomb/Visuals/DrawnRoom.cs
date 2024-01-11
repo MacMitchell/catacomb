@@ -308,6 +308,37 @@ namespace Catacomb.Visuals
             return newStart;
         }
 
+        public CatRectangle CreateConnectionRep(int direction, double gap)
+        {
+
+            //The GOAL is to create a square that goes from the parent room to the child room that encompasses the connection
+            Tuple<Point, Point> connectionPoints = GetConnectionPoints(direction);
+            double distance = connectionPoints.Item1.GetDistance(connectionPoints.Item2)/2.0;
+            
+            //These points reference the center of the connection points, will need to offset each point
+            Point otherRoomPoint = GetNeighborsOrigin(direction, gap);
+            Point thisRoomPoint = GetNeighborsOrigin(direction,0);
+
+            switch (direction)
+            {
+                //top and bottom
+                case 0:
+                case 2:
+                    thisRoomPoint = thisRoomPoint.AddPoint(new Point(distance, 0));
+                    otherRoomPoint = otherRoomPoint.AddPoint(new Point(-distance, 0));
+                    break;
+
+
+                //left and right
+                case 1:
+                case 3:
+                    thisRoomPoint = thisRoomPoint.AddPoint(new Point(0, distance));
+                    otherRoomPoint = otherRoomPoint.AddPoint(new Point(0, -distance));
+                    break;
+            }
+            return new CatRectangle(thisRoomPoint, otherRoomPoint);
+        }
+
         public override bool EntityMove(Entity entityIn, double distance)
         {
             Vector globalMovement = entityIn.GetMovementVector(distance, 0, 0);
@@ -358,30 +389,6 @@ namespace Catacomb.Visuals
         {
             base.AddChild(new Floor(floor));
             
-        }
-
-
-        /**
-         * Returns the point in local cordinates
-         */
-        public virtual Point CreateSpawnPoint(double width, double height)
-        {
-            Floor floor =(Floor) GetChildDrawnWithDrawnId(Floor.drawnId);
-
-            CatRectangle floorRep = (CatRectangle) floor.Representive;
-            double offset = Globals.LINE_THICKNESS / 2 + width / 2;
-
-            double minX = floorRep.TopLeft.X;
-            double maxX = floorRep.TopRight.X;
-
-            double minY = floorRep.TopLeft.Y;
-            double maxY = floorRep.BottomLeft.Y;
-
-            double x = rand.NextDouble() * (maxX - minX) + minX;
-            double y = rand.NextDouble() * (maxY - minY) + minY;
-
-            return new Point(x, y);
-
         }
     }
 }
