@@ -54,7 +54,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Vector\RoomTests.cs" />
+    <Compile Include="Rooms\RoomTests.cs" />
     <Compile Include="Vector\VectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -12,7 +12,7 @@ namespace Catacomb.Visuals
 {
     public abstract class Drawn : Vector
     {
-        protected ArrayList components;
+        protected List<Drawn> components;
         protected Canvas canvas;
         public Vector representive;
         protected double scalar = 1;
@@ -40,7 +40,7 @@ namespace Catacomb.Visuals
         {
             canvas = new Canvas();
             representive = rep;
-            components = new ArrayList();
+            components = new List<Drawn>();
             Position = rep.GetStartPoint();
             trespassable = false;
                  

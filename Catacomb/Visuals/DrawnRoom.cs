@@ -18,6 +18,9 @@ namespace Catacomb.Visuals
         protected Room parent;
         public Tuple<Point, Point>[] connectionPoints;
         private Tuple<Point,Point> originalRep;
+
+        protected List<CatRectangle> potentialSpawnAreas;
+        
         public String testString = "";
         public double Width
         {
@@ -44,8 +47,10 @@ namespace Catacomb.Visuals
             {
                 connectionPoints[i] = null;
             }
-            testString  = parent.getId().ToString()+": " + parent.ToString() + "\n" + representive.ToString();
 
+            potentialSpawnAreas = new List<CatRectangle>();
+
+            testString  = parent.getId().ToString()+": " + parent.ToString() + "\n" + representive.ToString();
         }
 
 
@@ -149,6 +154,7 @@ namespace Catacomb.Visuals
 
 
             CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
+            potentialSpawnAreas.Add(localRep);
             DrawFloor(localRep);
 
             DrawConnection(horiWallRect.TopLeft, horiWallRect.TopRight, 0);
@@ -389,6 +395,24 @@ namespace Catacomb.Visuals
         {
             base.AddChild(new Floor(floor));
             
+        }
+
+        public virtual Point GenerateSpawnPoint(double width, double height, double offset = Globals.LINE_THICKNESS)
+        {
+            CatRectangle potentialArea = potentialSpawnAreas[0];
+
+            double minX = potentialArea.TopLeft.X + offset + (width / 2.0);
+            double maxX = potentialArea.TopRight.X - offset - (width / 2.0);
+
+            double minY = potentialArea.TopLeft.Y + offset + (height / 2.0);
+            double maxY = potentialArea.BottomRight.Y - offset - (height / 2.0);
+
+            double distanceX = maxX - minX;
+            double distanceY = maxY - minY;
+
+            double randomX = rand.NextDouble() * distanceX + minX;
+            double randomY = rand.NextDouble() * distanceY + minY;
+            return new Point(randomX, randomY);
         }
     }
 }
