@@ -134,16 +134,17 @@ namespace Catacomb.Maze
          *      
          *  BUG: When checking for collisions, it does not check the connection between rooms, so the part that connects rooms can cross other another room
          */
-        public void BuildRooms(Room start, Canvas parentCanvas, Point origin = null)
+        public List<Room> BuildRooms(Room start, Canvas parentCanvas, Point origin = null)
         {
             //Sometimes it fails, i dont feel like fixing it for awhile, i just want to add more content
             //If i do a room size of 1000 and a room size of 25, the odds of crashing are about the same. I guess less available foster parents
             Boolean done = false;
+            List<Room> createdRooms = new List<Room>();
             while (!done)
             {
                 try
                 {
-                    List<Room> createdRooms = new List<Room>();
+                    
                     if (origin == null)
                     {
                         origin = new Point(0, 0);
@@ -159,6 +160,7 @@ namespace Catacomb.Maze
                     Console.WriteLine("Failed to build maze");
                 }
             }
+            return createdRooms;
         }
 
 
@@ -217,7 +219,6 @@ namespace Catacomb.Maze
 
                 if (potentialConflict.IsWithin(connectionRep) && otherRoom.id != parent.id)
                 {
-                    Console.WriteLine("Connection CONFLICT!");
                     return false;
                 }
 

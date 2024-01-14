@@ -380,6 +380,10 @@ namespace Catacomb.Visuals
             return pointIn.MinusPoint(Position);
         }
 
+        public Point convertPointToGlobal(Point pointIn)
+        {
+            return pointIn.AddPoint(Position);
+        }
         public override bool  Erase()
         {
             base.representive = new CatRectangle(originalRep.Item1, originalRep.Item2);
@@ -401,18 +405,20 @@ namespace Catacomb.Visuals
         {
             CatRectangle potentialArea = potentialSpawnAreas[0];
 
-            double minX = potentialArea.TopLeft.X + offset + (width / 2.0);
-            double maxX = potentialArea.TopRight.X - offset - (width / 2.0);
+            double minX = potentialArea.TopLeft.X + offset; //+ (width / 2.0);
+            double maxX = potentialArea.TopRight.X - offset - (width / 1.0);
 
-            double minY = potentialArea.TopLeft.Y + offset + (height / 2.0);
-            double maxY = potentialArea.BottomRight.Y - offset - (height / 2.0);
+            double minY = potentialArea.TopLeft.Y + offset;//+ (height / 2.0);
+            double maxY = potentialArea.BottomRight.Y - offset - (height / 1.0);
 
             double distanceX = maxX - minX;
             double distanceY = maxY - minY;
 
             double randomX = rand.NextDouble() * distanceX + minX;
             double randomY = rand.NextDouble() * distanceY + minY;
-            return new Point(randomX, randomY);
+            Point localSpawnPoint = new Point(randomX, randomY);
+
+            return convertPointToGlobal(localSpawnPoint);
         }
     }
 }

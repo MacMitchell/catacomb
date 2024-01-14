@@ -21,6 +21,7 @@ namespace Catacomb.Maze
         private Player player;
         public Point startPoint;
 
+        private List<Room> allRooms;        
         private MazeBuilder builder;
 
         public Room Start{
@@ -80,7 +81,7 @@ namespace Catacomb.Maze
             MazeBuilder builder = new MazeBuilder();
 
             
-            builder.BuildRooms(start,canvas,startPoint.AddPoint(new Point(-50,-50)));
+            allRooms = builder.BuildRooms(start,canvas,startPoint.AddPoint(new Point(-50,-50)));
             SetUpPlayer();
         }
 
@@ -103,6 +104,34 @@ namespace Catacomb.Maze
             Canvas.SetTop(canvas,CameraPos.Y);
         }
 
+        public virtual void CreateMonster() 
+        {
+            //find a room
+            Room monsterRoom = GetMonsterRoom();
+
+            Monster createdMonster = CreateMonster(monsterRoom);
+
+            Point spawnPoint = monsterRoom.RoomDrawn.GenerateSpawnPoint(createdMonster.Width, createdMonster.Height);
+            createdMonster.PlaceMonster(spawnPoint);
+            Console.WriteLine(spawnPoint.ToString() + "\n");
+            canvas.Children.Add(createdMonster.GetCanvas());
+        }
+
+
+        /**
+         *Returns a room to create a monster in. Needs the maze to be built first 
+         */
+        protected virtual Room GetMonsterRoom()
+        {
+            int index = rand.Next(0, allRooms.Count);
+            return allRooms[index];
+        }
+
+        protected virtual Monster CreateMonster(Room roomin)
+        {
+            Monster newMonster = new Monster(50, 50, 100);
+            return newMonster;
+        }
         public  void MoveKeyPress(object sender, KeyEventArgs e)
         {
             player.KeyPress(e.Key);

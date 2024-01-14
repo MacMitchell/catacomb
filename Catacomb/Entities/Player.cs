@@ -12,34 +12,18 @@ namespace Catacomb.Entities
 {
     public class Player :Entity
     {
-        private static double width = 25;
-        private static double height = 25;
-        
-        public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, width,height)) {
-            canvas.Width = width;
-            canvas.Height = height;
-            canvas.Background = Brushes.Orange;
+
+        private static double playerWidth = 25;
+        private static double playerHeight= 25;
+        public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, playerWidth, playerHeight)) {
+            canvas.Width = Width;
+            canvas.Height = Height;
+            //canvas.Background = Brushes.Orange;
+            SetColor(Brushes.Orange);
             Velocity = 0;
             MaxVelocity = 800;
             Draw();
         }
-
-
-        public override void Draw()
-        {
-            //position is in the middle of the player
-            Update();
-            base.Draw();
-        }
-
-        public override void Update()
-        {
-            double distanceToX = width / 2;
-            double distanceToY = height / 2;
-            representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
-        }
-
-
 
 
         public void KeyPress(Key e)

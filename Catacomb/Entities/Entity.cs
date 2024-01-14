@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Catacomb.Vectors;
 using Catacomb.Visuals;
 
@@ -29,6 +30,21 @@ namespace Catacomb.Entities
             set { angle = value; }
         }
 
+
+        private double width = 25;
+        private double height = 25;
+        public double Width
+        {
+            get { return width; }
+            set { width = value; }
+        }
+
+        public double Height
+        {
+            get { return height; }
+            set { height = value; }
+        }
+
         private DrawnRoom container;
         public DrawnRoom Container
         {
@@ -44,6 +60,7 @@ namespace Catacomb.Entities
             Position = positionIn;
         }
 
+        
         /**
          * THIS FUNCTION ASSUMES THAT THE ENTITY CAN MOVE
          */
@@ -156,10 +173,20 @@ namespace Catacomb.Entities
 
         public override void Draw()
         {
+            Update();
             base.Draw();
         }
 
-        public virtual void Update() { }
+        protected void SetColor( SolidColorBrush color)
+        {
+            canvas.Background = color;
+        }
+        public virtual void Update()
+        {
+            double distanceToX = Width / 2;
+            double distanceToY = Height / 2;
+            representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
+        }
     }
 
    

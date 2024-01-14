@@ -72,7 +72,7 @@ namespace Catacomb
 
         void SetUpMaze()
         {
-            int numberOfRooms = 1000;
+            int numberOfRooms = 100;
             int stepSize = 5;
             double width = base.ActualWidth;
             double height = base.ActualHeight;
@@ -85,7 +85,11 @@ namespace Catacomb
 
                 currentMaze.Create(numberOfRooms, stepSize, player);
                 currentMaze.Draw();
-            
+                
+            for(int i =0; i < 100; i++)
+            {
+                currentMaze.CreateMonster();
+            }
             base.Content = mainCanvas;
             mainCanvas.Children.Add(currentMaze.GetCanvas());
             //base.Content = currentMaze.GetCanvas();
