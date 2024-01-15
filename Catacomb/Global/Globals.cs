@@ -23,7 +23,11 @@ namespace Catacomb.Global
         public static bool AreDoublesEqual(double d1, double d2)
         {
             return Math.Abs(d1 -  d2) < TOLERANCE;
-    }
+        }
+        public static bool IsDoubleZero(double d1)
+        {
+            return Math.Abs(d1) < TOLERANCE;
+        }
     }
     
 }

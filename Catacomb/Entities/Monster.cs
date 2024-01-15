@@ -12,6 +12,13 @@ namespace Catacomb.Entities
 {
     public class Monster : Entity
     {
+        private Movement movementAI;
+        public Movement MovementAI
+        {
+            get { return movementAI; }
+            set { movementAI = value; }
+            
+        }
         public Monster(double width, double height,double maxVelocity) : base(new Point(0,0), new CatRectangle(0, 0, width, height))
         {
             Width = width;
@@ -28,6 +35,19 @@ namespace Catacomb.Entities
         {
             Position = spawnPoint;
             Draw();
+        }
+
+        public override void Move(double time)
+        {
+            if(MovementAI != null)
+            {
+                if (movementAI.SetUpMove(time))
+                {
+                    Velocity = MaxVelocity;
+                    base.Move(time);
+                    Draw();
+                }
+            }   
         }
     }
 }

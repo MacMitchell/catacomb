@@ -23,7 +23,7 @@ namespace Catacomb.Maze
 
         private List<Room> allRooms;        
         private MazeBuilder builder;
-
+        protected List<Monster> monsters;
         public Room Start{
             get{return start;}
             set{start=  value;}
@@ -35,10 +35,12 @@ namespace Catacomb.Maze
             set { cameraPos = value; }
         }
 
+        //TODO currently the maze uses the MazeBuilder to help create itself
+        //Ideally, when the user creates a maze, it uses a MazeBuilder to create a maze
         public CatMaze() {
             rand = new Random();
             builder = new MazeBuilder();
-
+            monsters = new List<Monster>();
             startPoint = new Point(150, 150);
         }
         public void Create(int size, int step, Player playIn)
@@ -102,6 +104,11 @@ namespace Catacomb.Maze
             CameraPos = CameraPos.AddPoint(differentPoint);
             Canvas.SetLeft(canvas,CameraPos.X);
             Canvas.SetTop(canvas,CameraPos.Y);
+
+            foreach(Monster m in monsters)
+            {
+                m.Move(time);
+            }
         }
 
         public virtual void CreateMonster() 
@@ -110,14 +117,25 @@ namespace Catacomb.Maze
             Room monsterRoom = GetMonsterRoom();
 
             Monster createdMonster = CreateMonster(monsterRoom);
+            createdMonster.MovementAI = new BasicMovement(createdMonster, player);
+            createdMonster.Container = monsterRoom.RoomDrawn;
 
             Point spawnPoint = monsterRoom.RoomDrawn.GenerateSpawnPoint(createdMonster.Width, createdMonster.Height);
+            if(spawnPoint == null)
+            {
+                return;
+            }
             createdMonster.PlaceMonster(spawnPoint);
-            Console.WriteLine(spawnPoint.ToString() + "\n");
-            canvas.Children.Add(createdMonster.GetCanvas());
+
+            AddMonster(createdMonster);
         }
 
+        protected void AddMonster(Monster monsterIn)
+        {
+            canvas.Children.Add(monsterIn.GetCanvas());
+            monsters.Add(monsterIn);
 
+        }
         /**
          *Returns a room to create a monster in. Needs the maze to be built first 
          */

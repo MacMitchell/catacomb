@@ -149,5 +149,45 @@ namespace Catacomb.Vectors
             double newY = GetY() + other.GetY();
             return new Point(newX, newY);
         }
+
+        public static double GetAngleBetweenPoints(Point reference, Point other)
+        {
+            double distanceX = other.X -reference.X;
+            double distanceY = reference.Y - other.Y;
+            if (Global.Globals.IsDoubleZero(distanceX))
+            {
+                if(distanceY > 0)
+                {
+                    return Math.PI / 2;
+                }
+                return 3 * Math.PI / 2;
+                
+            }
+            if (Globals.IsDoubleZero(distanceY))
+            {
+                if(distanceX > 0)
+                {
+                    return 0;
+                }
+                return Math.PI;
+            }
+            double relativeAngle = Math.Atan(Math.Abs(distanceY)/Math.Abs(distanceX));
+            if(distanceX > 0 && distanceY > 0)
+            {
+                return relativeAngle;
+            }
+            else if(distanceX <0 && distanceY > 0)
+            {
+                return Math.PI - relativeAngle;
+            }
+            else if(distanceX < 0 && distanceY < 0)
+            {
+                return Math.PI + relativeAngle;
+            }
+            else
+            {
+                return 2 * Math.PI - relativeAngle;
+            }
+        }
     }
 }

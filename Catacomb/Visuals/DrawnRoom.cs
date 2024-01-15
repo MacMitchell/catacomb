@@ -410,7 +410,10 @@ namespace Catacomb.Visuals
 
             double minY = potentialArea.TopLeft.Y + offset;//+ (height / 2.0);
             double maxY = potentialArea.BottomRight.Y - offset - (height / 1.0);
-
+            if(maxX < minX || maxY < minY)
+            {
+                return null;
+            }
             double distanceX = maxX - minX;
             double distanceY = maxY - minY;
 
