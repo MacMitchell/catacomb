@@ -8,5 +8,5 @@ You explore a randomized maze with infinite floors. Each floor will contain trea
 
 ## What I have Achieved so Far
 - It creates a randomized maze when you start the program. The maze only has two different rooms currently. It will be updated with more rooms
-- Monsters spawn in the maze and they will chase the player. However, if you 'touch' the player, nothing happens because...
+- Monsters spawn in the maze and they will chase the player. However, when a monster 'grabs' the player, nothing happens because...
 - Combat is not implemented yet
