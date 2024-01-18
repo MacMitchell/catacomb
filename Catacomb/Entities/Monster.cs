@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Catacomb.Vectors;
 using Catacomb.Global;
 using System.Windows.Media;
+using Catacomb.Maze;
 
 namespace Catacomb.Entities
 {
@@ -48,6 +49,18 @@ namespace Catacomb.Entities
                     Draw();
                 }
             }   
+        }
+        public Monster DoesCollideWithPlayer(List<Room> roomsToCheck, Player playIn)
+        {
+            if (!roomsToCheck.Contains(this.Container.parent))
+            {
+                return null;
+            }
+            if (this.IsWithin(playIn))
+            {
+                return this;
+            }
+            return null;
         }
     }
 }

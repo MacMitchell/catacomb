@@ -111,6 +111,30 @@ namespace Catacomb.Maze
             }
         }
 
+
+        public Monster CheckForCombat()
+        {
+            Room playerRoom = player.Container.parent;
+            List<Room> roomsToCheck = new List<Room>();
+            roomsToCheck.Add(playerRoom);
+            for(int i =0;i< Global.Globals.CONNECTION_LIMIT; i++)
+            {
+                if (playerRoom.HasConnection(i))
+                {
+                    roomsToCheck.Add(playerRoom.GetConnectedRoom(i));
+                }
+            }
+            foreach(Monster m in monsters)
+            {
+                Monster temp = m.DoesCollideWithPlayer(roomsToCheck, player);
+                if(temp != null)
+                {
+                    return m;
+                }
+            }
+            return null;
+
+        }
         public virtual void CreateMonster() 
         {
             //find a room
@@ -147,7 +171,10 @@ namespace Catacomb.Maze
 
         protected virtual Monster CreateMonster(Room roomin)
         {
-            Monster newMonster = new Monster(50, 50, 100);
+            double minSpeed = 100.0;
+            double maxSpeed = 500.0;
+            double speed = rand.NextDouble() * maxSpeed + minSpeed;
+            Monster newMonster = new Monster(35, 35, speed);
             return newMonster;
         }
         public  void MoveKeyPress(object sender, KeyEventArgs e)

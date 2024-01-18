@@ -179,5 +179,14 @@ namespace Catacomb.Maze
         {
             return new Room();
         }
+        public override bool Equals(object obj)
+        {
+            if(obj == null)
+            {
+                return false;
+            }
+            Room otherRoom = (Room)obj;
+            return id == otherRoom.id;
+        }
     }
 }

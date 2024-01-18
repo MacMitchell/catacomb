@@ -15,12 +15,13 @@ namespace Catacomb.Visuals
     public class DrawnRoom : Drawn
     {
         private static Random rand;
-        protected Room parent;
+        public  Room parent;
         public Tuple<Point, Point>[] connectionPoints;
         private Tuple<Point,Point> originalRep;
 
         protected List<CatRectangle> potentialSpawnAreas;
-        
+
+
         public String testString = "";
         public double Width
         {
@@ -40,6 +41,7 @@ namespace Catacomb.Visuals
             canvas.Height = start.GetMaxY(end) - start.GetMinY(end);// + 5* Globals.LINE_THICKNESS;
             canvas.Background = Globals.BACKGROUND_COLOR;
             rand = new Random();
+
 
 
             connectionPoints = new Tuple<Point, Point>[Globals.CONNECTION_LIMIT];
@@ -359,12 +361,13 @@ namespace Catacomb.Visuals
                 if (connectedRoom.RoomDrawn != null && connectedRoom.RoomDrawn.IsWithin(globalMovement))
                 {
                     //does the movement vector intersect a door?
-                    entityIn.Container = parent.GetConnectedRoom(i).RoomDrawn;
                     if (parent.GetConnectedRoom(i).RoomDrawn.DoesEntityMoveIntersect(entityIn, distance))
                     {
                         return false;
                         
                     }
+                    entityIn.Container = parent.GetConnectedRoom(i).RoomDrawn;
+
                 }
             }
             

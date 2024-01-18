@@ -64,10 +64,19 @@ namespace Catacomb.Entities
                 monster.Angle = CalculateAngleFromPlayer();
                 movementCounter = 100;
                 movementPoint = player.Position;
+                return true;
             }
-            if(movementCounter > 0)
+            //DOES not see the player but has recently seen them
+            if(movementCounter >0)
             {
-                movementCounter--;
+                
+                if(movementPoint.GetDistance(monster.Position) < 25)
+                {
+                    movementCounter = 0;
+                    return false;
+                }
+                
+                //movementCounter--;
                 return true;
             }
             return false;

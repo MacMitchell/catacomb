@@ -108,8 +108,9 @@ namespace Catacomb
             currentTime = DateTime.Now;
             SetPlayerAngle();
             currentMaze.move(dif);
-            
-            
+
+            Monster combat = currentMaze.CheckForCombat();
+           
             updateFinish = true;
         }
 
