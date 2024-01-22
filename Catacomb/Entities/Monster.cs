@@ -8,6 +8,7 @@ using Catacomb.Vectors;
 using Catacomb.Global;
 using System.Windows.Media;
 using Catacomb.Maze;
+using Catacomb.CombatStuff;
 
 namespace Catacomb.Entities
 {
@@ -61,6 +62,11 @@ namespace Catacomb.Entities
                 return this;
             }
             return null;
+        }
+
+        public override CombatEntity GetCombatEntity()
+        {
+            return new CombatEntity("Monster",100);
         }
     }
 }

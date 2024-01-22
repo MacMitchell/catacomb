@@ -10,6 +10,7 @@ using Catacomb.Vectors;
 
 using Catacomb.Maze;
 using Catacomb.Entities;
+using Catacomb.CombatStuff;
 using System.Windows.Controls;
 
 namespace Catacomb
@@ -27,7 +28,8 @@ namespace Catacomb
         DateTime currentTime;
         private bool updateFinish = true;
         Canvas mainCanvas;
-
+        int mode = 0;
+        Combat currentCombat;
         public CatacombMain() : base()
         {
 
@@ -46,7 +48,7 @@ namespace Catacomb
             right = 0;
 
             base.WindowState = (WindowState)FormWindowState.Maximized;
-            base.Background = Global.Globals.BACKGROUND_COLOR;
+            base.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
             time = new System.Windows.Forms.Timer();
 
             time.Interval = 10;
@@ -101,19 +103,38 @@ namespace Catacomb
             {
                 return;
             }
-            updateFinish = false;
-            DateTime temp = DateTime.Now;
-            double dif = (temp - currentTime).TotalSeconds;
-            
-            currentTime = DateTime.Now;
-            SetPlayerAngle();
-            currentMaze.move(dif);
+            if (mode == 0)
+            {
+                updateFinish = false;
+                DateTime temp = DateTime.Now;
+                double dif = (temp - currentTime).TotalSeconds;
 
-            Monster combat = currentMaze.CheckForCombat();
-           
+                currentTime = DateTime.Now;
+                SetPlayerAngle();
+                currentMaze.move(dif);
+
+                Monster combat = currentMaze.CheckForCombat();
+                if (combat != null)
+                {
+                    SetUpCombat(player, combat);
+                    mode = 1;
+                }
+            }
+            if(mode == 1)
+            {
+
+            }
+
             updateFinish = true;
         }
 
+
+        void SetUpCombat(Player playIn, Monster monsterIn)
+        {
+            currentCombat = new Combat(base.ActualWidth,base.ActualHeight,playIn.GetCombatEntity(), monsterIn.GetCombatEntity());
+            base.Content = currentCombat.CombatGrid;
+
+        }
         void SetPlayerAngle()
         {
             int divider = right + down + left + up;

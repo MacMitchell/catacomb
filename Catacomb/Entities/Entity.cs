@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Catacomb.Vectors;
 using Catacomb.Visuals;
-
+using Catacomb.CombatStuff;
 namespace Catacomb.Entities
 {
     public abstract class Entity :Drawn
@@ -187,6 +187,8 @@ namespace Catacomb.Entities
             double distanceToY = Height / 2;
             representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
         }
+
+        public abstract CombatEntity GetCombatEntity();
     }
 
    

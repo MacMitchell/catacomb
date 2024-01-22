@@ -58,6 +58,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CatacombMain.cs" />
+    <Compile Include="CombatStuff\Attack.cs" />
+    <Compile Include="CombatStuff\Combat.cs" />
+    <Compile Include="CombatStuff\CombatEntity.cs" />
+    <Compile Include="CombatStuff\Command.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\Player.cs" />

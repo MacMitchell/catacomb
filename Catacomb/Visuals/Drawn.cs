@@ -73,7 +73,7 @@ namespace Catacomb.Visuals
                 Drawn current = (Drawn)components[i];
                 if (current.DoesIntersect(other))
                 {
-
+                    
                     return true;
                 }
             }

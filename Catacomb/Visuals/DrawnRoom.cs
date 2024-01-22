@@ -39,7 +39,7 @@ namespace Catacomb.Visuals
             canvas = new Canvas();
             canvas.Width = start.GetMaxX(end) - start.GetMinX(end); //+ 5* Globals.LINE_THICKNESS;
             canvas.Height = start.GetMaxY(end) - start.GetMinY(end);// + 5* Globals.LINE_THICKNESS;
-            canvas.Background = Globals.BACKGROUND_COLOR;
+            canvas.Background = Globals.MAZE_BACKGROUND_COLOR;
             rand = new Random();
 
 
@@ -408,10 +408,10 @@ namespace Catacomb.Visuals
         {
             CatRectangle potentialArea = potentialSpawnAreas[0];
 
-            double minX = potentialArea.TopLeft.X + offset; //+ (width / 2.0);
+            double minX = potentialArea.TopLeft.X + offset*2; //+ (width / 2.0);
             double maxX = potentialArea.TopRight.X - offset - (width / 1.0);
 
-            double minY = potentialArea.TopLeft.Y + offset;//+ (height / 2.0);
+            double minY = potentialArea.TopLeft.Y + offset*2;//+ (height / 2.0);
             double maxY = potentialArea.BottomRight.Y - offset - (height / 1.0);
             if(maxX < minX || maxY < minY)
             {

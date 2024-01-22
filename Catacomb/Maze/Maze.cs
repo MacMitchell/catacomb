@@ -67,7 +67,7 @@ namespace Catacomb.Maze
                 return;
             }
             canvas = new Canvas();
-            canvas.Background = Global.Globals.BACKGROUND_COLOR;
+            canvas.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
             canvas.Width = 1000;
             canvas.Height = 1000;
 
@@ -165,10 +165,28 @@ namespace Catacomb.Maze
          */
         protected virtual Room GetMonsterRoom()
         {
-            int index = rand.Next(0, allRooms.Count);
+            List<Room> dontSpawnHere = GetInspawnableRooms();
+            int index;
+            while (true)
+            {
+                index = rand.Next(0, allRooms.Count);
+                Room monsterRoom = allRooms[index];
+                if (!dontSpawnHere.Contains(monsterRoom))
+                {
+                    break;
+                }
+            }
             return allRooms[index];
         }
-
+        /**
+         * Returns a list of rooms that you do not want ANY monster to spawn in
+         * This base method returns the start room and all rooms connecting to the start room
+         */
+        protected virtual List<Room> GetInspawnableRooms()
+        {
+            return start.GetAllConnectedRooms(true);
+            
+        }
         protected virtual Monster CreateMonster(Room roomin)
         {
             double minSpeed = 100.0;

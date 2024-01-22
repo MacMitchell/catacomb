@@ -179,6 +179,22 @@ namespace Catacomb.Maze
         {
             return new Room();
         }
+        public List<Room> GetAllConnectedRooms(bool inclusive = false)
+        {
+            List<Room> allRooms = new List<Room>();
+            if (inclusive)
+            {
+                allRooms.Add(this);
+            }
+            for(int i =0; i < Global.Globals.CONNECTION_LIMIT; i++)
+            {
+                if (HasConnection(i))
+                {
+                    allRooms.Add(GetConnectedRoom(i));
+                }
+            }
+            return allRooms;
+        }
         public override bool Equals(object obj)
         {
             if(obj == null)

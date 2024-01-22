@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using Catacomb.Visuals;
+using Catacomb.CombatStuff;
 
 namespace Catacomb.Entities
 {
@@ -36,5 +38,11 @@ namespace Catacomb.Entities
                 case Key.W:  Angle = 3*Math.PI/2; break;
             }
         }
+
+        public override CombatEntity GetCombatEntity()
+        {
+            return new CombatEntity("Player",200);
+        }
+
     }
 }
