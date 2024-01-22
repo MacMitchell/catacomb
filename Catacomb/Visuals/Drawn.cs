@@ -16,6 +16,7 @@ namespace Catacomb.Visuals
         protected Canvas canvas;
         public Vector representive;
         protected double scalar = 1;
+        //The position is the top left of the entity
         private Point position;
         protected bool trespassable;
         public virtual int DrawnId

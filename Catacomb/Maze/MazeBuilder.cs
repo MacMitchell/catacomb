@@ -158,6 +158,7 @@ namespace Catacomb.Maze
                 catch
                 {
                     Console.WriteLine("Failed to build maze");
+                    createdRooms = new List<Room>();
                 }
             }
             return createdRooms;

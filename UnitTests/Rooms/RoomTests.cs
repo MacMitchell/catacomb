@@ -56,22 +56,24 @@ namespace RoomTest
             r1.Draw();
             CatRectangle rep = (CatRectangle)r1.RoomDrawn.Representive;
 
-            double width = 5;
-            double height = 5;
-            for (; width < 50; width++, height++)
+            for (int j = 0; j < 10; j++)
             {
-                Point spawnPoint = r1.RoomDrawn.GenerateSpawnPoint(width, height);
-                Assert.IsTrue(rep.IsPointInRectangle(spawnPoint));
+                double width = 5;
+                double height = 5;
+                for (; width < 50; width++, height++)
+                {
+                    //The spawn point is the top left of the monster
+                    Point spawnPoint = r1.RoomDrawn.GenerateSpawnPoint(width, height);
+                    Assert.IsTrue(rep.IsPointInRectangle(spawnPoint));
 
-                //the spawn point is the center of the new entity; thus, we will test creating a CatRectangle with giving size and make sure it works
-                Point sizeReference = new Point(width / 2.0, height / 2.0);
-                Point start = spawnPoint.MinusPoint(sizeReference);
-                Point end = spawnPoint.AddPoint(sizeReference);
+                    Point sizeReference = new Point(width, height);
+                    Point end = spawnPoint.AddPoint(sizeReference);
 
-                CatRectangle monster = new CatRectangle(start, end);
+                    CatRectangle monster = new CatRectangle(spawnPoint, end);
 
-                Assert.IsTrue(r1.RoomDrawn.IsWithin(monster));
-                Assert.IsFalse(r1.RoomDrawn.DoesIntersect(monster));
+                    Assert.IsTrue(r1.RoomDrawn.IsWithin(monster));
+                    Assert.IsFalse(r1.RoomDrawn.DoesIntersect(monster));
+                }
             }
         }
         /*

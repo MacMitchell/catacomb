@@ -116,8 +116,8 @@ namespace Catacomb
                 Monster combat = currentMaze.CheckForCombat();
                 if (combat != null)
                 {
-                    SetUpCombat(player, combat);
-                    mode = 1;
+                    //SetUpCombat(player, combat);
+                    //mode = 1;
                 }
             }
             if(mode == 1)
