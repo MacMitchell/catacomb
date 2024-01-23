@@ -140,11 +140,12 @@ namespace Catacomb.Maze
             //If i do a room size of 1000 and a room size of 25, the odds of crashing are about the same. I guess less available foster parents
             Boolean done = false;
             List<Room> createdRooms = new List<Room>();
+            
             while (!done)
             {
                 try
                 {
-                    
+
                     if (origin == null)
                     {
                         origin = new Point(0, 0);
@@ -154,13 +155,21 @@ namespace Catacomb.Maze
 
                     BuildMissingRooms(createdRooms, parentCanvas);
                     done = true;
+                    Console.WriteLine("Successfull");
                 }
                 catch
                 {
                     Console.WriteLine("Failed to build maze");
                     createdRooms = new List<Room>();
+                    availableParents = new List<List<Room>>();
+                    for (int i = 0; i < limit; i++)
+                    {
+                        availableParents.Add(new List<Room>());
+                    }
+                    freeRooms = new List<Tuple<Room, int>>();
                 }
             }
+            
             return createdRooms;
         }
 
