@@ -119,7 +119,6 @@ namespace Catacomb
                 
                 SetPlayerAngle();
                 currentMaze.move(dif);
-                Console.WriteLine("MOVING!");
                 Monster combat = currentMaze.CheckForCombat();
                 if (combat != null)
                 {
@@ -132,7 +131,6 @@ namespace Catacomb
             {
                 if (nextCombatCommand)
                 {
-                    Console.WriteLine("COMBAT STARTED");
 
                     nextCombatCommand = false;
                     int currentResult = currentCombat.ExecuteNext();
