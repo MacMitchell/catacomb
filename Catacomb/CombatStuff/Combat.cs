@@ -67,6 +67,7 @@ namespace Catacomb.CombatStuff
             SetUpAbility();
 
             SetUpAttacks();
+            UpdateStats();
         }
         void SetUpEntity(CombatEntity entity, Boolean player)
         {

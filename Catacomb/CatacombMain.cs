@@ -109,16 +109,17 @@ namespace Catacomb
             {
                 return;
             }
+            DateTime temp = DateTime.Now;
+            double dif = (temp - currentTime).TotalSeconds;
+
+            currentTime = DateTime.Now;
             if (mode == 0)
             {
                 updateFinish = false;
-                DateTime temp = DateTime.Now;
-                double dif = (temp - currentTime).TotalSeconds;
-
-                currentTime = DateTime.Now;
+                
                 SetPlayerAngle();
                 currentMaze.move(dif);
-
+                Console.WriteLine("MOVING!");
                 Monster combat = currentMaze.CheckForCombat();
                 if (combat != null)
                 {
@@ -131,6 +132,8 @@ namespace Catacomb
             {
                 if (nextCombatCommand)
                 {
+                    Console.WriteLine("COMBAT STARTED");
+
                     nextCombatCommand = false;
                     int currentResult = currentCombat.ExecuteNext();
                     if(currentResult == Command.MONSTER_DIED || currentResult == Command.PLAYER_DIED)
