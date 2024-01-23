@@ -29,8 +29,13 @@ namespace Catacomb
         private bool updateFinish = true;
         Canvas mainCanvas;
         int mode = 0;
+
+
         Combat currentCombat;
         Boolean nextCombatCommand = false;
+        Monster currentCombatMonster = null;
+
+
         public CatacombMain() : base()
         {
 
@@ -127,7 +132,13 @@ namespace Catacomb
                 if (nextCombatCommand)
                 {
                     nextCombatCommand = false;
-                    currentCombat.ExecuteNext();
+                    int currentResult = currentCombat.ExecuteNext();
+                    if(currentResult == Command.MONSTER_DIED || currentResult == Command.PLAYER_DIED)
+                    {
+                        mode = 0;
+                        RemoveMonster(currentCombatMonster);
+                        PlaceBackMaze();
+                    }
                 }
             }
 
@@ -135,10 +146,23 @@ namespace Catacomb
         }
 
 
+        void RemoveMonster(Monster deadMonster)
+        {
+            currentMaze.RemoveMonster(deadMonster);
+        }
+
+        void PlaceBackMaze()
+        {
+            base.Content = mainCanvas;
+        }
         void SetUpCombat(Player playIn, Monster monsterIn)
         {
             currentCombat = new Combat(base.ActualWidth,base.ActualHeight,playIn.Fighter, monsterIn.Fighter);
-            base.Content = currentCombat.CombatGrid;
+            currentCombatMonster = monsterIn;
+            
+            
+            base.Content  = (currentCombat.CombatGrid);
+           
 
         }
         void SetPlayerAngle()

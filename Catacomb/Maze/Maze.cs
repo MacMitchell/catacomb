@@ -195,6 +195,19 @@ namespace Catacomb.Maze
             Monster newMonster = new Monster(35, 35, speed);
             return newMonster;
         }
+
+        public void RemoveMonster(Monster deadMonster)
+        {
+            for(int i =0; i < monsters.Count; i++)
+            {
+                if (monsters[i].equals(deadMonster))
+                {
+                    canvas.Children.Remove(monsters[i].GetCanvas());
+                    monsters.RemoveAt(i);
+                    break;
+                }
+            }
+        }
         public  void MoveKeyPress(object sender, KeyEventArgs e)
         {
             player.KeyPress(e.Key);

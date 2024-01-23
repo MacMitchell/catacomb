@@ -117,7 +117,7 @@ namespace Catacomb.CombatStuff
             Attack nextAttack = castor.GetAttack(this);
             nextAttack.Castor = castor;
             nextAttack.Target = target;
-            Description = "Select Player Attack (press space to tackle";
+            Description = "Select Player Attack (press space to tackle)";
         }
     }
 }

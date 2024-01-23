@@ -8,11 +8,22 @@ namespace Catacomb.CombatStuff
 {
     public abstract class Command
     {
+
+        public static int INGORE_COMMAND = 0;
+        public static int MONSTER_DIED = 1;
+        public static int PLAYER_DIED = 2;
+        
+
+
+
+
         public List<Command> children;
         private Command next;
         private Command prev;
         private Command parent;
         private string description;
+
+
         public string Description { get => description; set => description = value; }
 
         public int id;

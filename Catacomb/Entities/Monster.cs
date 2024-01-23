@@ -15,7 +15,7 @@ namespace Catacomb.Entities
     public class Monster : Entity
     {
         private Movement movementAI;
-
+        
         public override CombatEntity Fighter
         {
             get { if(fighter== null)

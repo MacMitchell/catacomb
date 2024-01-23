@@ -15,7 +15,8 @@ namespace Catacomb.Entities
         private double  velocity;
         private double maxVelocity;
         protected CombatEntity fighter;
-
+        public int id;
+        public static int idCounter = 0;
         public virtual CombatEntity Fighter
         {
             get { return fighter; }
@@ -65,9 +66,11 @@ namespace Catacomb.Entities
             maxVelocity = 1;
             Angle = 0;
             Position = positionIn;
+            id = idCounter++;
+
         }
 
-        
+
         /**
          * THIS FUNCTION ASSUMES THAT THE ENTITY CAN MOVE
          */
@@ -196,6 +199,11 @@ namespace Catacomb.Entities
         }
 
         public abstract CombatEntity GetCombatEntity();
+
+        public bool equals(Entity other)
+        {
+            return id == other.id;
+        }
     }
 
    

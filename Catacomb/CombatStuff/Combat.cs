@@ -17,13 +17,16 @@ namespace Catacomb.CombatStuff
         TextBlock monsterText;
         TextBlock playerText;
 
-        CombatEntity player;
-        CombatEntity monster;
+        private CombatEntity player;
+        private CombatEntity monster;
 
         public Grid CombatGrid
         {
             get { return combatGrid; }
         }
+
+        public CombatEntity Player { get => player; }
+        public CombatEntity Monster { get => monster;  }
 
         CommandIterator it;
         public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn)
@@ -59,8 +62,8 @@ namespace Catacomb.CombatStuff
             combatGrid.Children.Add(monsterText);
             monsterText.Foreground = Brushes.White;
 
-            SetUpEntity(player, true);
-            SetUpEntity(monster, false);
+            SetUpEntity(Player, true);
+            SetUpEntity(Monster, false);
             SetUpAbility();
 
             SetUpAttacks();
@@ -88,7 +91,7 @@ namespace Catacomb.CombatStuff
 
 
 
-            abilityText.Text = player.Name + " VS. " + monster.Name;
+            abilityText.Text = Player.Name + " VS. " + Monster.Name;
             abilityText.Foreground = Brushes.White;
         }
 
@@ -121,8 +124,8 @@ namespace Catacomb.CombatStuff
 
         public void UpdateStats()
         {
-            monsterText.Text = monster.GenerateStats();
-            playerText.Text = player.GenerateStats();
+            monsterText.Text = Monster.GenerateStats();
+            playerText.Text = Player.GenerateStats();
         }
         public void SetUpTurn()
         {
@@ -130,17 +133,26 @@ namespace Catacomb.CombatStuff
             SetUpAttacks();
         }
 
-        public void ExecuteNext()
+        public int ExecuteNext()
         {
             if(it.CurrentCommand == null)
             {
                 SetUpTurn();
             }
-            it.CurrentCommand.Execute(player, monster);
+            it.CurrentCommand.Execute(Player, Monster);
             Console.WriteLine(it.CurrentCommand.Description);
             abilityText.Text = it.CurrentCommand.Description;
             UpdateStats();
             it.Next();
+            if(Monster.Health <= 0)
+            {
+                return Command.MONSTER_DIED;
+            }
+            if(Player.Health <= 0)
+            {
+                return Command.PLAYER_DIED;
+            }
+            return Command.INGORE_COMMAND;
         }
         public void SetUpAttacks()
         {
