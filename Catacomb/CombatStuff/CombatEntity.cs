@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace Catacomb.CombatStuff
 {
 
-    
-    public class CombatEntity { 
+
+    public class CombatEntity {
         private string name;
         public string Name
         {
@@ -16,6 +16,7 @@ namespace Catacomb.CombatStuff
             set { name = value; }
         }
 
+        
         public double MaxHealth { get => maxHealth; set => maxHealth = value; }
         public double Health { get => health; set => health = value; }
         public double AttackStat { get => attackStat; set => attackStat = value; }
@@ -30,6 +31,7 @@ namespace Catacomb.CombatStuff
         public double MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
         public double Armor { get => armor; set => armor = value; }
         public double MaxArmor { get => maxArmor; set => maxArmor = value; }
+        public bool IsPlayer { get => isPlayer; set => isPlayer = value; }
 
         private double maxHealth;
         private double health;
@@ -46,9 +48,15 @@ namespace Catacomb.CombatStuff
         private double armor;
         private double maxArmor;
 
-        public CombatEntity(string nameIn,double defaultValue = 0)
+        private Boolean isPlayer;
+
+        public delegate Attack AttackGenerator(CombatEntity castor, Command parent);
+        protected List<AttackGenerator> generateAttacks;
+        public CombatEntity(string nameIn, double defaultValue = 0)
         {
+            isPlayer = false;
             Name = nameIn;
+            generateAttacks = new List<AttackGenerator>();
             InializeValues(defaultValue);
         }
         public virtual void InializeValues(double defaultValue = 0)
@@ -68,6 +76,28 @@ namespace Catacomb.CombatStuff
             magicResist = defaultValue;
             defense = defaultValue;
             speed = defaultValue;
+        }
+
+        public void AddAttack(AttackGenerator newAttack) 
+        {
+            generateAttacks.Add(newAttack);
+        }
+        public Attack GetAttack(Command parentIn)
+        {
+            return generateAttacks[0](this,parentIn);
+        }
+
+        public virtual string GenerateStats()
+        {
+            string output = Name + "\nHealth: " +
+                            Health + "/" + MaxHealth +
+                            "\nArmor: " + Armor + "/" + MaxArmor +
+                            "\nAttack: " + AttackStat + "/" + maxAttackStat +
+                            "\nMagic: " + MagicStat + "/" + MaxMagicResist +
+                            "\nDefense: " + Defense + "/" + MaxDefense +
+                            "\nMagic Resist: " + MagicResist + "/" + MaxMagicResist +
+                            "\nSpeed: " + Speed + "/" + MaxSpeed;
+            return output;
         }
     }
 }

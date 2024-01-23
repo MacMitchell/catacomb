@@ -8,26 +8,32 @@ namespace Catacomb.CombatStuff
 {
     public class Attack : Command
     {
-		private double damage; //the damage the attack does (+:reduces health)
-		private double selfHeal; //how much the one is attacking will heal (negative value will cause self damage)
-		private double poison; //how much the attack will poison its target (+: increases poison)
-		private double mentalBreak; //how much mentalbreak the attack will apply to the target (+: increases mental break)
-		private double armorChange; //how much will the attack change the target armor after the damage is done (+: reduces armor)
-		private double selfArmorChange; //how much the attack will change the armor of the user (+: reduces armor)
-		private double defenseStatChange; //how much the attack will change the defense value of its target (+:reduces)
-		private double magicResistStatChange;//how much the attack will change the magic resist of its target(+: reduces)
-		private double selfMagicResistStatChange; //(+: reduces)
-		private double selfDefenseStatChange; //how much the attack will change the defense of the user (+: reduces)
-		private double attackStatChange; //how much the attack will change the attack value of its target (+: reduces)
-		private double selfAttackStatChange; //how much the attack will change the attack value of the user (+: reduces)
-		private double magicAttackStatChange; // (+: reduces )
-		private double selfMagicAttackStatChange; //(+: reduces)
-		private double speedStatChange;//changes the speed stat of the target (+: reduces)
-		private double selfSpeedStatChange; //(+: reduces)
+        private double damage; //the damage the attack does (+:reduces health)
+        private double selfHeal; //how much the one is attacking will heal (negative value will cause self damage)
+        private double poison; //how much the attack will poison its target (+: increases poison)
+        private double mentalBreak; //how much mentalbreak the attack will apply to the target (+: increases mental break)
+        private double armorChange; //how much will the attack change the target armor after the damage is done (+: reduces armor)
+        private double selfArmorChange; //how much the attack will change the armor of the user (+: reduces armor)
+        private double defenseStatChange; //how much the attack will change the defense value of its target (+:reduces)
+        private double magicResistStatChange;//how much the attack will change the magic resist of its target(+: reduces)
+        private double selfMagicResistStatChange; //(+: reduces)
+        private double selfDefenseStatChange; //how much the attack will change the defense of the user (+: reduces)
+        private double attackStatChange; //how much the attack will change the attack value of its target (+: reduces)
+        private double selfAttackStatChange; //how much the attack will change the attack value of the user (+: reduces)
+        private double magicAttackStatChange; // (+: reduces )
+        private double selfMagicAttackStatChange; //(+: reduces)
+        private double speedStatChange;//changes the speed stat of the target (+: reduces)
+        private double selfSpeedStatChange; //(+: reduces)
         private List<Attack> children;
         private string name;
-        private string description;
-        public Attack(Command inputCommand = null):base(inputCommand)
+
+        public delegate void ExecuteAttackDelegate(CombatEntity castor, CombatEntity target);
+        public ExecuteAttackDelegate ExecuteAttack;
+        private CombatEntity castor;
+        private CombatEntity target;
+
+
+        public Attack(Command inputCommand = null) : base(inputCommand)
         {
             this.damage = 0;
             this.selfHeal = 0;
@@ -45,8 +51,55 @@ namespace Catacomb.CombatStuff
             this.selfMagicAttackStatChange = 0;
             this.speedStatChange = 0;
             this.selfSpeedStatChange = 0;
+            castor = null;
+            target = null;
+            ExecuteAttack = DefaultExecuteAttack;
         }
 
+
+
+        public virtual void DefaultExecuteAttack(CombatEntity castorIn, CombatEntity targetIn)
+        {
+            Target = targetIn;
+            Castor = castorIn;
+
+            Target.Armor += armorChange;
+            Castor.Armor += selfArmorChange;
+
+            Target.Defense += defenseStatChange;
+            Castor.Defense += selfDefenseStatChange;
+
+            Target.MagicResist += magicAttackStatChange;
+            Castor.MagicResist += selfMagicAttackStatChange;
+
+            Target.AttackStat += attackStatChange;
+            Castor.AttackStat += selfAttackStatChange;
+
+            Target.MagicStat += magicAttackStatChange;
+            Castor.MagicStat += selfMagicAttackStatChange;
+
+            Target.Speed += speedStatChange;
+            Castor.Speed += selfSpeedStatChange;
+
+            if (damage > 0)
+            {
+                InflectDamage(Target, damage);
+            }
+            else
+            {
+                Heal(Target, damage * -1);
+            }
+
+            //if damages itself
+            if (selfHeal < 0)
+            {
+                InflectDamage(Castor, selfHeal * -1);
+            }
+            else
+            {
+                Heal(Castor, selfHeal);
+            }
+        }
         public double Damage { get => damage; set => damage = value; }
         public double SelfHeal { get => selfHeal; set => selfHeal = value; }
         public double Poison { get => poison; set => poison = value; }
@@ -64,45 +117,12 @@ namespace Catacomb.CombatStuff
         public double SpeedStatChange { get => speedStatChange; set => speedStatChange = value; }
         public double SelfSpeedStatChange { get => selfSpeedStatChange; set => selfSpeedStatChange = value; }
         public string Name { get => name; set => name = value; }
-        public string Description { get => description; set => description = value; }
+        public CombatEntity Castor { get => castor; set { if (castor == null) { castor = value; } } }
+        public CombatEntity Target { get => target; set { if (target == null) { target = value; } } }
+
         public override void Execute(CombatEntity castor, CombatEntity target)
         {
-
-            target.Armor += armorChange;
-            castor.Armor += selfArmorChange;
-            
-            target.Defense += defenseStatChange;
-            castor.Defense += selfDefenseStatChange;
-
-            target.MagicResist += magicAttackStatChange;
-            castor.MagicResist += selfMagicAttackStatChange;
-
-            target.AttackStat += attackStatChange;
-            castor.AttackStat += selfAttackStatChange;
-
-            target.MagicStat += magicAttackStatChange;
-            castor.MagicStat += selfMagicAttackStatChange;
-
-            target.Speed += speedStatChange;
-            castor.Speed += selfSpeedStatChange;
-
-            if (damage > 0) {
-                InflectDamage(target, damage);
-            }
-            else
-            {
-                Heal(target, damage * -1);
-            }
-
-            //if damages itself
-            if (selfHeal < 0)
-            {
-                InflectDamage(castor, selfHeal*-1);
-            }
-            else
-            {
-                Heal(castor, selfHeal);
-            }
+            ExecuteAttack(castor, target);
         }
 
         /**
@@ -129,6 +149,7 @@ namespace Catacomb.CombatStuff
                 double tempDamage = damage;
                 damage -= target.Armor;
                 target.Armor -= tempDamage;
+                target.Armor = Math.Max(0, target.Armor);
             }
             //no damage gets through the armor
             if(damage <= 0)

@@ -17,6 +17,21 @@ namespace Catacomb.Entities
 
         private static double playerWidth = 25;
         private static double playerHeight= 25;
+
+        public override CombatEntity Fighter
+        {
+            get { if(fighter == null)
+                    {
+                    fighter = MonsterFactory.GeneratePlayer();
+                    }
+                    return fighter;
+                }
+            set { if(fighter == null)
+                    {
+                        fighter = value;
+                    } 
+            }
+        }
         public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, playerWidth, playerHeight)) {
             canvas.Width = Width;
             canvas.Height = Height;

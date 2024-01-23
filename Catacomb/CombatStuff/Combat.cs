@@ -11,7 +11,6 @@ namespace Catacomb.CombatStuff
 {
     class Combat
     {
-        Canvas canvas;
         Grid combatGrid;
 
         TextBlock abilityText;
@@ -20,16 +19,17 @@ namespace Catacomb.CombatStuff
 
         CombatEntity player;
         CombatEntity monster;
-        public Canvas Canvas
-        {
-            get { return canvas; }
-        }
+
         public Grid CombatGrid
         {
             get { return combatGrid; }
         }
+
+        CommandIterator it;
         public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn)
         {
+            it = new CommandIterator(null);
+
             player = playerIn;
             monster = monsterIn;
 
@@ -62,6 +62,8 @@ namespace Catacomb.CombatStuff
             SetUpEntity(player, true);
             SetUpEntity(monster, false);
             SetUpAbility();
+
+            SetUpAttacks();
         }
         void SetUpEntity(CombatEntity entity, Boolean player)
         {
@@ -114,6 +116,37 @@ namespace Catacomb.CombatStuff
             sideRows = new ColumnDefinition();
             sideRows.Width = new System.Windows.GridLength(width * 0.25);
             combatGrid.ColumnDefinitions.Add(sideRows);
+        }
+
+
+        public void UpdateStats()
+        {
+            monsterText.Text = monster.GenerateStats();
+            playerText.Text = player.GenerateStats();
+        }
+        public void SetUpTurn()
+        {
+            //Eventually this will do more than just attacks
+            SetUpAttacks();
+        }
+
+        public void ExecuteNext()
+        {
+            if(it.CurrentCommand == null)
+            {
+                SetUpTurn();
+            }
+            it.CurrentCommand.Execute(player, monster);
+            Console.WriteLine(it.CurrentCommand.Description);
+            abilityText.Text = it.CurrentCommand.Description;
+            UpdateStats();
+            it.Next();
+        }
+        public void SetUpAttacks()
+        {
+            //in the fruture this will not change the current command, but currentCommand.Next
+            GetAttacksCommand getAttacks = new GetAttacksCommand(it);
+            it.CurrentCommand = getAttacks;
         }
     }
 }

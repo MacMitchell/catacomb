@@ -14,6 +14,13 @@ namespace Catacomb.Entities
     {
         private double  velocity;
         private double maxVelocity;
+        protected CombatEntity fighter;
+
+        public virtual CombatEntity Fighter
+        {
+            get { return fighter; }
+            set { fighter = value; }
+        }
         public double MaxVelocity
         {
             get { return maxVelocity; }

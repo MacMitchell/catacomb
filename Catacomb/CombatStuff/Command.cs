@@ -12,6 +12,9 @@ namespace Catacomb.CombatStuff
         private Command next;
         private Command prev;
         private Command parent;
+        private string description;
+        public string Description { get => description; set => description = value; }
+
         public int id;
         private static int idCounter = 0;
         public Command Next { get => next; set => next = value; }

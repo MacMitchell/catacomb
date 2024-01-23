@@ -30,6 +30,7 @@ namespace Catacomb
         Canvas mainCanvas;
         int mode = 0;
         Combat currentCombat;
+        Boolean nextCombatCommand = false;
         public CatacombMain() : base()
         {
 
@@ -116,13 +117,18 @@ namespace Catacomb
                 Monster combat = currentMaze.CheckForCombat();
                 if (combat != null)
                 {
-                    //SetUpCombat(player, combat);
-                    //mode = 1;
+                    SetUpCombat(player, combat);
+                    mode = 1;
+                    nextCombatCommand = false;
                 }
             }
             if(mode == 1)
             {
-
+                if (nextCombatCommand)
+                {
+                    nextCombatCommand = false;
+                    currentCombat.ExecuteNext();
+                }
             }
 
             updateFinish = true;
@@ -131,7 +137,7 @@ namespace Catacomb
 
         void SetUpCombat(Player playIn, Monster monsterIn)
         {
-            currentCombat = new Combat(base.ActualWidth,base.ActualHeight,playIn.GetCombatEntity(), monsterIn.GetCombatEntity());
+            currentCombat = new Combat(base.ActualWidth,base.ActualHeight,playIn.Fighter, monsterIn.Fighter);
             base.Content = currentCombat.CombatGrid;
 
         }
@@ -190,6 +196,9 @@ namespace Catacomb
                     break;
                 case Key.W:
                     up = 0;
+                    break;
+                case Key.Space:
+                    nextCombatCommand = true;
                     break;
             }
         }

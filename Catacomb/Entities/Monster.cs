@@ -15,6 +15,16 @@ namespace Catacomb.Entities
     public class Monster : Entity
     {
         private Movement movementAI;
+
+        public override CombatEntity Fighter
+        {
+            get { if(fighter== null)
+                {
+                    fighter = MonsterFactory.GenerateSlime();
+                }
+                return fighter;
+            }
+        }
         public Movement MovementAI
         {
             get { return movementAI; }
