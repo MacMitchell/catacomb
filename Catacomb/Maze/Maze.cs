@@ -167,6 +167,7 @@ namespace Catacomb.Maze
         {
             List<Room> dontSpawnHere = GetInspawnableRooms();
             int index;
+            
             while (true)
             {
                 index = rand.Next(0, allRooms.Count);

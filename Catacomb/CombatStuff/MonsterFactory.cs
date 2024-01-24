@@ -11,7 +11,7 @@ namespace Catacomb.CombatStuff
 
         public static CombatEntity GeneratePlayer(string name = "Player")
         {
-            CombatEntity player = new CombatEntity(name,2100);
+            CombatEntity player = new CombatEntity(name,510);
             player.AddAttack(AttackFactory.Tackle);
             player.IsPlayer = true;
             return player;

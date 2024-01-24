@@ -20,6 +20,9 @@ namespace Catacomb.CombatStuff
 
         private CombatEntity player;
         private CombatEntity monster;
+        private int reportStatus;
+
+
 
         public Grid CombatGrid
         {
@@ -28,6 +31,7 @@ namespace Catacomb.CombatStuff
 
         public CombatEntity Player { get => player; }
         public CombatEntity Monster { get => monster;  }
+        public int ReportStatus { get => reportStatus; set => reportStatus = value; }
 
         CommandIterator it;
         public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn) :base()
@@ -167,7 +171,10 @@ namespace Catacomb.CombatStuff
 
         public void  MenuKeyRelease(Key keyIn)
         {
-            Console.WriteLine("Button pushed");
+            if(keyIn == Key.Space)
+            {
+                ReportStatus = ExecuteNext();
+            }
         }
     }
 

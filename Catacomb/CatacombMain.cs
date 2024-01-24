@@ -32,7 +32,6 @@ namespace Catacomb
 
 
         Combat currentCombat;
-        Boolean nextCombatCommand = false;
         Monster currentCombatMonster = null;
         System.Windows.Controls.Panel currentInControl;
         private System.Windows.Controls.Panel CurrentInControl
@@ -132,23 +131,16 @@ namespace Catacomb
                 {
                     SetUpCombat(player, combat);
                     mode = 1;
-                    nextCombatCommand = false;
                 }
             }
             if(mode == 1)
             {
-                if (nextCombatCommand)
-                {
-
-                    nextCombatCommand = false;
-                    int currentResult = currentCombat.ExecuteNext();
-                    if(currentResult == Command.MONSTER_DIED || currentResult == Command.PLAYER_DIED)
+                    if(currentCombat.ReportStatus == Command.MONSTER_DIED || currentCombat.ReportStatus == Command.PLAYER_DIED)
                     {
                         mode = 0;
                         RemoveMonster(currentCombatMonster);
                         PlaceBackMaze();
                     }
-                }
             }
 
             updateFinish = true;
@@ -234,9 +226,7 @@ namespace Catacomb
                 case Key.W:
                     up = 0;
                     break;
-                case Key.Space:
-                    nextCombatCommand = true;
-                    break;
+               
             }
         }
 
