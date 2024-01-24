@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Catacomb.CombatStuff
 {
-    class Combat
+    class Combat : Grid
     {
-        Grid combatGrid;
+        //Grid combatGrid;
 
         TextBlock abilityText;
         TextBlock monsterText;
@@ -22,36 +23,39 @@ namespace Catacomb.CombatStuff
 
         public Grid CombatGrid
         {
-            get { return combatGrid; }
+            get { return this; }
         }
 
         public CombatEntity Player { get => player; }
         public CombatEntity Monster { get => monster;  }
 
         CommandIterator it;
-        public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn)
+        public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn) :base()
         {
             it = new CommandIterator(null);
 
             player = playerIn;
             monster = monsterIn;
 
-            combatGrid = new Grid();
+            //combatGrid = new Grid();
+            base.Focus();
+            base.KeyDown += (object sender, System.Windows.Input.KeyEventArgs e) => { MenuKeyRelease(e.Key); };
+           
 
             /*combatGrid.MaxHeight = Screen.PrimaryScreen.WorkingArea.Size.Height;
             combatGrid.MaxWidth = Screen.PrimaryScreen.WorkingArea.Size.Width;*/
-            combatGrid.Height = height;
-            combatGrid.Width = width;
-            combatGrid.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
+            base.Height = height;
+            base.Width = width;
+            base.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
             
-            combatGrid.ShowGridLines = true;
+            base.ShowGridLines = true;
 
             CreateGrid(width, height);
             playerText = new TextBlock();
             Grid.SetColumn(playerText, 2);
             Grid.SetRow(playerText, 0);
             Grid.SetRowSpan(playerText, 2);
-            combatGrid.Children.Add(playerText);
+            base.Children.Add(playerText);
             playerText.Foreground = Brushes.White;
 
 
@@ -59,7 +63,7 @@ namespace Catacomb.CombatStuff
             Grid.SetColumn(monsterText, 0);
             Grid.SetRow(monsterText, 0);
             Grid.SetRowSpan(monsterText, 2);
-            combatGrid.Children.Add(monsterText);
+            base.Children.Add(monsterText);
             monsterText.Foreground = Brushes.White;
 
             SetUpEntity(Player, true);
@@ -88,7 +92,7 @@ namespace Catacomb.CombatStuff
 
             Grid.SetColumn(abilityText, 1);
             Grid.SetRow(abilityText, 0);
-            combatGrid.Children.Add(abilityText);
+            base.Children.Add(abilityText);
 
 
 
@@ -104,22 +108,22 @@ namespace Catacomb.CombatStuff
             
             RowDefinition topRow = new RowDefinition();
             topRow.Height = new System.Windows.GridLength(height*0.6666);
-            combatGrid.RowDefinitions.Add(topRow);
+            base.RowDefinitions.Add(topRow);
 
             RowDefinition bottomRow = new RowDefinition();
-            combatGrid.RowDefinitions.Add(bottomRow);
+            base.RowDefinitions.Add(bottomRow);
 
             ColumnDefinition sideRows = new ColumnDefinition();
             sideRows.Width = new System.Windows.GridLength(width * 0.25);
-            combatGrid.ColumnDefinitions.Add(sideRows);
+            base.ColumnDefinitions.Add(sideRows);
 
             ColumnDefinition main = new ColumnDefinition();
             main.Width = new System.Windows.GridLength(width * 0.5);
-            combatGrid.ColumnDefinitions.Add(main);
+            base.ColumnDefinitions.Add(main);
 
             sideRows = new ColumnDefinition();
             sideRows.Width = new System.Windows.GridLength(width * 0.25);
-            combatGrid.ColumnDefinitions.Add(sideRows);
+            base.ColumnDefinitions.Add(sideRows);
         }
 
 
@@ -141,7 +145,6 @@ namespace Catacomb.CombatStuff
                 SetUpTurn();
             }
             it.CurrentCommand.Execute(Player, Monster);
-            Console.WriteLine(it.CurrentCommand.Description);
             abilityText.Text = it.CurrentCommand.Description;
             UpdateStats();
             it.Next();
@@ -161,5 +164,20 @@ namespace Catacomb.CombatStuff
             GetAttacksCommand getAttacks = new GetAttacksCommand(it);
             it.CurrentCommand = getAttacks;
         }
+
+        public void  MenuKeyRelease(Key keyIn)
+        {
+            Console.WriteLine("Button pushed");
+        }
+    }
+
+
+    public class AttackSelect : Grid
+    {
+        public AttackSelect() :base()
+        {
+            
+        }
+
     }
 }

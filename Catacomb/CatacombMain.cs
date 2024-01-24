@@ -34,7 +34,13 @@ namespace Catacomb
         Combat currentCombat;
         Boolean nextCombatCommand = false;
         Monster currentCombatMonster = null;
-
+        System.Windows.Controls.Panel currentInControl;
+        private System.Windows.Controls.Panel CurrentInControl
+        {
+            set { currentInControl = value;
+                base.Content = value;  }
+            get { return currentInControl; }
+        }
 
         public CatacombMain() : base()
         {
@@ -98,7 +104,9 @@ namespace Catacomb
             {
                 currentMaze.CreateMonster();
             }
-            base.Content = mainCanvas;
+            CurrentInControl = mainCanvas;
+            //base.Content = currentInControl;
+            
             mainCanvas.Children.Add(currentMaze.GetCanvas());
             //base.Content = currentMaze.GetCanvas();
         }
@@ -154,15 +162,16 @@ namespace Catacomb
 
         void PlaceBackMaze()
         {
-            base.Content = mainCanvas;
+            CurrentInControl = mainCanvas;
+            //base.Content = currentInControl;
         }
         void SetUpCombat(Player playIn, Monster monsterIn)
         {
             currentCombat = new Combat(base.ActualWidth,base.ActualHeight,playIn.Fighter, monsterIn.Fighter);
             currentCombatMonster = monsterIn;
-            
-            
-            base.Content  = (currentCombat.CombatGrid);
+
+            CurrentInControl = currentCombat;
+            //base.Content = currentInControl;
            
 
         }
@@ -208,6 +217,9 @@ namespace Catacomb
 
         void MoveKeyRelease(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            var localEvent = Keyboard.KeyDownEvent;
+
+            currentInControl.RaiseEvent(new System.Windows.Input.KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(this), 0, e.Key) { RoutedEvent = localEvent }); ;
             switch (e.Key)
             {
                 case Key.D:
