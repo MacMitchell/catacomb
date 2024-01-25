@@ -138,37 +138,22 @@ namespace Catacomb.Maze
         {
             //Sometimes it fails, i dont feel like fixing it for awhile, i just want to add more content
             //If i do a room size of 1000 and a room size of 25, the odds of crashing are about the same. I guess less available foster parents
-            Boolean done = false;
             List<Room> createdRooms = new List<Room>();
             
-            while (!done)
+           
+                
+
+            if (origin == null)
             {
-                try
-                {
-
-                    if (origin == null)
-                    {
-                        origin = new Point(0, 0);
-                    }
-                    start.Create(origin);
-                    BuildRoom(createdRooms, start, parentCanvas);
-
-                    BuildMissingRooms(createdRooms, parentCanvas);
-                    done = true;
-                    Console.WriteLine("Successfull");
-                }
-                catch
-                {
-                    Console.WriteLine("Failed to build maze");
-                    createdRooms = new List<Room>();
-                    availableParents = new List<List<Room>>();
-                    for (int i = 0; i < limit; i++)
-                    {
-                        availableParents.Add(new List<Room>());
-                    }
-                    freeRooms = new List<Tuple<Room, int>>();
-                }
+                origin = new Point(0, 0);
             }
+            start.Create(origin);
+            BuildRoom(createdRooms, start, parentCanvas);
+
+            BuildMissingRooms(createdRooms, parentCanvas);
+                
+                
+            
             
             return createdRooms;
         }
@@ -232,7 +217,7 @@ namespace Catacomb.Maze
                     return false;
                 }
 
-                if (potentialConflict.IsWithin(newRoom))
+                if (potentialConflict.IsWithin(newRoom) || newRoom.IsWithin(potentialConflict))
                 {
                     potentialConflict.ShrinkInvasiveCatRectangle(newRoom,parent.RoomDrawn.GetConnectionPoints(i));
                 }

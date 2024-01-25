@@ -294,5 +294,24 @@ namespace UnitTests
             Assert.IsFalse(r.DoesIntersect(r6));
             Assert.IsFalse(r.DoesIntersect(r7));
         }
+        [TestMethod]
+        public void rectangle_within_another_rectangle_partially()
+        {
+            CatRectangle r2 = new CatRectangle(0, 0, 10, 10);
+            CatRectangle r3 = new CatRectangle(-5, -5, 5, 15);
+            CatRectangle r4 = new CatRectangle(-5, -5, 25, 10);
+
+            if(new CatLine(r4.GetTopLeft(), r4.GetBottomLeft()).DoesIntersect(r2) || new CatLine(r4.GetTopRight(), r4.GetBottomRight()).DoesIntersect(r2))
+            {
+                Console.WriteLine("HELLO");
+            }
+            Assert.IsTrue(r2.IsWithin(r3));
+            Assert.IsTrue(r3.IsWithin(r2));
+            Console.WriteLine(r2.ToString());
+            Console.WriteLine(r4.ToString());
+            Assert.IsTrue(r2.IsWithin(r4));
+            Assert.IsTrue(r4.IsWithin(r2));
+            
+        }
     }
 }

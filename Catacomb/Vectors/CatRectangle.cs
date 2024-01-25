@@ -275,8 +275,7 @@ namespace Catacomb.Vectors
         {
            
             //First get direction this rectangle is to other
-            double deltaX = Math.Abs(this.Center.X - other.Center.X);
-            double deltaY = Math.Abs(this.Center.Y - other.Center.Y);
+           
             //if(deltaY > deltaX || PassThroughVert(other))
             //TODO ASAP: Update this intersect so it will actual see if they intersect, not see if they are within
             if(new CatLine(other.GetTopLeft(),other.GetBottomLeft()).DoesIntersect(this) || new CatLine(other.GetTopRight(), other.GetBottomRight()).DoesIntersect(this))
