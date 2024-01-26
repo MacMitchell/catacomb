@@ -196,6 +196,23 @@ namespace Catacomb.Entities
             double distanceToX = Width / 2;
             double distanceToY = Height / 2;
             representive = new CatRectangle(Position.GetX() - distanceToX, Position.GetY() - distanceToY, Position.GetX() + distanceToX, Position.GetY() + distanceToY);
+
+            if(container == null)
+            {
+                return;
+            }
+            for(int i =0; i < Global.Globals.CONNECTION_LIMIT; i++)
+            {
+                if (!container.parent.HasConnection(i))
+                {
+                    continue;
+                }
+                CatRectangle rep = (CatRectangle)container.parent.GetConnectedRoom(i).RoomDrawn.representive;
+                if (rep.IsPointInRectangle(Position))
+                {
+                    container = container.parent.GetConnectedRoom(i).RoomDrawn;
+                }
+            }
         }
 
         public abstract CombatEntity GetCombatEntity();

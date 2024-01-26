@@ -365,8 +365,7 @@ namespace Catacomb.Visuals
                     {
                         return false;
                         
-                    }
-                    entityIn.Container = parent.GetConnectedRoom(i).RoomDrawn;
+                    }                    
 
                 }
             }

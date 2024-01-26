@@ -23,7 +23,7 @@ namespace Catacomb.Entities
         protected Point movementPoint;
         protected double senseRange;
         private int movementCounter;
-        public BasicMovement(Monster parentIn, Player playIn, double senseRangeIn = 800)
+        public BasicMovement(Monster parentIn, Player playIn, double senseRangeIn = 500)
         {
             movementCounter = 0;
             monster = parentIn;
