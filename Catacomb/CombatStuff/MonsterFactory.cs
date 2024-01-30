@@ -14,10 +14,6 @@ namespace Catacomb.CombatStuff
             CombatEntity player = new CombatEntity(name,510);
             player.Armor = 0;
             player.AddAttack(AttackFactory.Tackle);
-            player.AddAttack(AttackFactory.Tackle);
-            player.AddAttack(AttackFactory.Tackle);
-            player.AddAttack(AttackFactory.Tackle);
-            player.AddAttack(AttackFactory.Tackle);
             player.AddAttack(AttackFactory.FireBall);
             player.AddAttack(AttackFactory.Leech);
             player.AddAttack(AttackFactory.Bulster);
@@ -27,7 +23,7 @@ namespace Catacomb.CombatStuff
         public static CombatEntity GenerateSlime()
         {
             CombatEntity slime = new CombatEntity("Slime",100);
-            //slime.AddAttack(AttackFactory.Tackle);
+            slime.AddAttack(AttackFactory.Tackle);
             slime.AddAttack(AttackFactory.Leech);
             return slime;
         }

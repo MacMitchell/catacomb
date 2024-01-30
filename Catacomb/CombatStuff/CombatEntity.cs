@@ -104,6 +104,14 @@ namespace Catacomb.CombatStuff
             Speed = MaxSpeed;
         }
 
+        public Attack GetAttack(int index, Command parent)
+        {
+            if(index >= generateAttacks.Count)
+            {
+                return null;
+            }
+            return generateAttacks[index](this, parent);
+        }
         public virtual string GenerateStats()
         {
             string output = Name + "\nHealth: " +

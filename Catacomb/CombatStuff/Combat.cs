@@ -314,10 +314,11 @@ namespace Catacomb.CombatStuff
                 double gridHeight = base.Height / rowsSize;
 
                 ColumnDefinition column = new ColumnDefinition();
-                column.Width = new System.Windows.GridLength(base.Width * 0.2);
+                double selectColumnWidth = base.Width * 0.2;
+                column.Width = new System.Windows.GridLength(selectColumnWidth);
                 base.ColumnDefinitions.Add(column);
-                
-                select.Width = base.Width * 0.2;
+
+                select.Width = selectColumnWidth;
                 select.Height = gridHeight;
 
                 ColumnDefinition column2 = new ColumnDefinition();
@@ -421,6 +422,14 @@ namespace Catacomb.CombatStuff
                 Select(currentRow);
                 PopulateGrid(currentColumn);
             }
+
+            public void SelectAttack()
+            {
+                int index = currentColumn * rowsSize + currentRow;
+                Attack selectedAttack = player.GetAttack(index, it.CurrentCommand);
+                selectedAttack.Castor = player;
+                selectedAttack.Target = monster;
+            }
             public override MainCombatView KeyPress(Key keyIn)
             {
                 if(keyIn == Key.W)
@@ -438,6 +447,14 @@ namespace Catacomb.CombatStuff
                 if(keyIn == Key.D)
                 {
                     Select(0, 1);
+                }
+                if(keyIn == Key.Space)
+                {
+                    SelectAttack();
+                    DisplayCommand nextDisplay = new DisplayCommand(base.Width, base.Height, player, monster, it, monsterText, playerText);
+                    ReportStatus = nextDisplay.ExecuteNext();
+                    nextDisplay.ReportStatus = ReportStatus;
+                    return nextDisplay;
                 }
                 return this ;
             }

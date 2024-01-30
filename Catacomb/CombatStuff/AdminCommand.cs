@@ -116,10 +116,10 @@ namespace Catacomb.CombatStuff
         }
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
-            Attack nextAttack = castor.GetAttack(this);
-            nextAttack.Castor = castor;
-            nextAttack.Target = target;
-            Description = "Select Player Attack (press space to tackle)";
+            //Attack nextAttack = castor.GetAttack(this);
+            //nextAttack.Castor = castor;
+            //nextAttack.Target = target;
+            //Description = "Select Player Attack (press space to tackle)";
             return Command.FETCH_PLAYER_ATTACK;
         }
     }
