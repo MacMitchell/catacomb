@@ -17,11 +17,12 @@ namespace Catacomb.CombatStuff
         TextBlock abilityText;
         TextBlock monsterText;
         TextBlock playerText;
-
-        private CombatEntity player;
+        MainCombatView currentView;
+        private protected CombatEntity player;
         private CombatEntity monster;
-        private int reportStatus;
 
+        private double mainCellHeight;
+        private double mainCellWidth;
 
 
         public Grid CombatGrid
@@ -31,7 +32,39 @@ namespace Catacomb.CombatStuff
 
         public CombatEntity Player { get => player; }
         public CombatEntity Monster { get => monster;  }
-        public int ReportStatus { get => reportStatus; set => reportStatus = value; }
+        public int ReportStatus { get
+            {
+                if (currentView == null)
+                {
+                    return Command.IGNORE_COMMAND;
+                }
+
+                return currentView.ReportStatus;
+            } set
+            {
+                if (currentView != null)
+                {
+                    currentView.ReportStatus = value;
+                }
+            }
+        }
+
+
+        private MainCombatView CurrentView
+        {
+            set { if(currentView != value)
+                {
+                    if (currentView != null)
+                    {
+                        base.Children.Remove(currentView);
+                    }
+                    currentView = value;
+                    Grid.SetColumn(currentView, 0);
+                    Grid.SetColumn(currentView, 1);
+                    base.Children.Add(currentView);
+                } }
+            get { return currentView; }
+        }
 
         CommandIterator it;
         public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn) :base()
@@ -60,7 +93,7 @@ namespace Catacomb.CombatStuff
             Grid.SetRow(playerText, 0);
             Grid.SetRowSpan(playerText, 2);
             base.Children.Add(playerText);
-            playerText.Foreground = Brushes.White;
+            playerText.Foreground = Global.Globals.COMBAT_FONT_COLOR;
 
 
             monsterText = new TextBlock();
@@ -68,17 +101,17 @@ namespace Catacomb.CombatStuff
             Grid.SetRow(monsterText, 0);
             Grid.SetRowSpan(monsterText, 2);
             base.Children.Add(monsterText);
-            monsterText.Foreground = Brushes.White;
-
+            monsterText.Foreground = Global.Globals.COMBAT_FONT_COLOR;
+            
             SetUpEntity(Player, true);
             SetUpEntity(Monster, false);
             SetUpAbility();
 
-            SetUpAttacks();
             UpdateStats();
         }
         void SetUpEntity(CombatEntity entity, Boolean player)
         {
+            entity.Reset();
             TextBlock toModify;
             if(player)
             {
@@ -92,12 +125,13 @@ namespace Catacomb.CombatStuff
         }
         void SetUpAbility()
         {
+            CurrentView = new DisplayCommand(mainCellWidth, mainCellHeight, player, monster, it,monsterText,playerText);
+
             abilityText = new TextBlock();
 
-            Grid.SetColumn(abilityText, 1);
-            Grid.SetRow(abilityText, 0);
-            base.Children.Add(abilityText);
-
+            //Grid.SetColumn(currentView,0);
+            //Grid.SetColumn(currentView, 1);
+            //base.Children.Add(currentView);
 
 
             abilityText.Text = Player.Name + " VS. " + Monster.Name;
@@ -111,7 +145,9 @@ namespace Catacomb.CombatStuff
             //double height = Screen.PrimaryScreen.WorkingArea.Size.Height;
             
             RowDefinition topRow = new RowDefinition();
-            topRow.Height = new System.Windows.GridLength(height*0.6666);
+            mainCellHeight = height * 0.75;
+            topRow.Height = new System.Windows.GridLength(mainCellHeight);
+            
             base.RowDefinitions.Add(topRow);
 
             RowDefinition bottomRow = new RowDefinition();
@@ -122,7 +158,8 @@ namespace Catacomb.CombatStuff
             base.ColumnDefinitions.Add(sideRows);
 
             ColumnDefinition main = new ColumnDefinition();
-            main.Width = new System.Windows.GridLength(width * 0.5);
+            mainCellWidth = width * 0.5;
+            main.Width = new System.Windows.GridLength(mainCellWidth);
             base.ColumnDefinitions.Add(main);
 
             sideRows = new ColumnDefinition();
@@ -136,55 +173,276 @@ namespace Catacomb.CombatStuff
             monsterText.Text = Monster.GenerateStats();
             playerText.Text = Player.GenerateStats();
         }
-        public void SetUpTurn()
-        {
-            //Eventually this will do more than just attacks
-            SetUpAttacks();
-        }
-
-        public int ExecuteNext()
-        {
-            if(it.CurrentCommand == null)
-            {
-                SetUpTurn();
-            }
-            it.CurrentCommand.Execute(Player, Monster);
-            abilityText.Text = it.CurrentCommand.Description;
-            UpdateStats();
-            it.Next();
-            if(Monster.Health <= 0)
-            {
-                return Command.MONSTER_DIED;
-            }
-            if(Player.Health <= 0)
-            {
-                return Command.PLAYER_DIED;
-            }
-            return Command.INGORE_COMMAND;
-        }
-        public void SetUpAttacks()
-        {
-            //in the fruture this will not change the current command, but currentCommand.Next
-            GetAttacksCommand getAttacks = new GetAttacksCommand(it);
-            it.CurrentCommand = getAttacks;
-        }
+        
 
         public void  MenuKeyRelease(Key keyIn)
         {
-            if(keyIn == Key.Space)
+            CurrentView = currentView.KeyPress(keyIn);
+        }
+       
+
+
+        private abstract class MainCombatView : Grid
+        {
+            protected CombatEntity player;
+            protected CombatEntity monster;
+            protected CommandIterator it;
+
+            protected TextBlock monsterText;
+            protected TextBlock playerText;
+            private int reportStatus;
+            public int ReportStatus { get => reportStatus; set => reportStatus = value; }
+
+            public MainCombatView(double width, double height, CombatEntity player, CombatEntity monster, CommandIterator it, TextBlock leftSide, TextBlock rightSide) : base()
             {
-                ReportStatus = ExecuteNext();
+                base.Width = width;
+                base.Height = height;
+                this.player = player;
+                this.monster = monster;
+                this.it = it;
+                this.monsterText = leftSide;
+                this.playerText = rightSide;
+                ReportStatus = Command.IGNORE_COMMAND;
+            }
+
+
+            public abstract MainCombatView KeyPress(Key keyIn);
+
+        }
+        private class DisplayCommand: MainCombatView
+        {
+            private TextBlock actionText;
+            
+
+            public DisplayCommand(double width, double height, CombatEntity player, CombatEntity monster, CommandIterator it,TextBlock leftSide, TextBlock rightSide): base(width, height, player, monster, it,leftSide,rightSide)
+            {
+                actionText = new TextBlock();
+                actionText.Foreground = Global.Globals.COMBAT_FONT_COLOR;
+                base.Children.Add(actionText);
+                
+                actionText.Text = player.Name + " VS " + monster.Name;
+            }
+            public override MainCombatView KeyPress(Key keyIn)
+            {
+                int result = Command.IGNORE_COMMAND;
+                if(keyIn == Key.Space)
+                {
+                    result = ExecuteNext();
+                }
+                ReportStatus = result;
+                if(result == Command.FETCH_PLAYER_ATTACK)
+                {
+                    return new AttackSelect(base.Width, base.Height, player,monster,it, monsterText, playerText);
+                }
+                return this;
+            }
+
+            public void UpdateStats()
+            {
+                monsterText.Text = monster.GenerateStats();
+                playerText.Text = player.GenerateStats();
+            }
+
+            public void SetUpTurn()
+            {
+                //Eventually this will do more than just attacks
+                SetUpAttacks();
+            }
+
+            public int ExecuteNext()
+            {
+                if (it.CurrentCommand == null)
+                {
+                    SetUpTurn();
+                }
+                int result = it.CurrentCommand.Execute(player, monster);
+                actionText.Text = it.CurrentCommand.Description;
+                UpdateStats();
+                it.Next();
+                if (monster.Health <= 0)
+                {
+                    return Command.MONSTER_DIED;
+                }
+                if (player.Health <= 0)
+                {
+                    return Command.PLAYER_DIED;
+                }
+                return result;
+            }
+            public void SetUpAttacks()
+            {
+                //in the fruture this will not change the current command, but currentCommand.Next
+                GetAttacksCommand getAttacks = new GetAttacksCommand(it);
+                it.CurrentCommand = getAttacks;
+            }
+
+        }
+
+        private class AttackSelect : MainCombatView
+        {
+            private int rowsSize = 6;
+            private List<TextBlock> rows;
+           
+            
+            
+            private int currentRow;
+            private int currentColumn;
+            private int maxRow;
+            private int maxColumn;
+
+            private Canvas select;
+            public AttackSelect(double width, double height, CombatEntity player, CombatEntity monster, CommandIterator it,TextBlock leftSide, TextBlock rightSide) : base(width,height,player,monster,it,leftSide,rightSide)
+            {
+                rows = new List<TextBlock>();
+
+                select = new Canvas();
+                select.Background = Brushes.Orange;
+
+                CreateGrid();
+                currentRow = 0;
+                currentColumn = 0;
+                
+            }
+
+            
+
+            public void CreateGrid()
+            {
+                //int gridHeight = 80;
+                //rowsSize = (int) base.Height / gridHeight;
+
+                double gridHeight = base.Height / rowsSize;
+
+                ColumnDefinition column = new ColumnDefinition();
+                column.Width = new System.Windows.GridLength(base.Width * 0.2);
+                base.ColumnDefinitions.Add(column);
+                
+                select.Width = base.Width * 0.2;
+                select.Height = gridHeight;
+
+                ColumnDefinition column2 = new ColumnDefinition();
+                column2.Width = new System.Windows.GridLength(base.Width * 0.8);
+                base.ColumnDefinitions.Add(column2);
+
+                for (int i =0; i < rowsSize; i++)
+                {
+                    RowDefinition bottomRow = new RowDefinition();
+                    bottomRow.Height = new System.Windows.GridLength(gridHeight);
+                    
+                    base.RowDefinitions.Add(bottomRow);
+                }
+                base.ShowGridLines = true;
+                FillGrid();
+                PopulateGrid(0);
+
+                List<Attack> attacks = player.GetListOfAttacks();
+                maxColumn = 1+((attacks.Count-1) / rowsSize);
+
+                
+                currentRow = 0;
+                currentColumn = 0;
+                Grid.SetColumn(select, 0);
+                Grid.SetRow(select, 0);
+                base.Children.Add(select);
+            }
+            public void PopulateGrid(int column)
+            {
+                List<Attack> attacks = player.GetListOfAttacks();
+                int start = rowsSize * column;
+                int count = 0;
+                
+                for (; count < rowsSize; count++)
+                {
+                    if(count +start >= attacks.Count)
+                    {
+                        rows[count].Text = "";
+                    }
+                    else
+                    {
+                        rows[count].Text = attacks[count + start].Name;
+                    }
+                }
+                if (attacks.Count - start >= rowsSize)
+                {
+                    maxRow = rowsSize;
+                }
+                else
+                {
+                    maxRow = (attacks.Count - start) % rowsSize;
+                }
+                if (currentRow >= maxRow)
+                {
+                    currentRow = maxRow - 1;
+                    Select(currentRow);
+                }
+                
+            }
+            public void FillGrid()
+            {
+                List<Attack> attacks = player.GetListOfAttacks();
+                int count = 0;
+                for(;count < rowsSize; count++)
+                {
+                    TextBlock toFill = CreateSlot();
+                    rows.Add(toFill);
+                    Grid.SetColumn(toFill, 1);
+                    Grid.SetRow(toFill, count);
+                    base.Children.Add(toFill);
+                }
+
+            }
+
+            public void Select(int row)
+            {
+                base.Children.Remove(select);
+
+                Grid.SetColumn(select, 0);
+                Grid.SetRow(select, row);
+                base.Children.Add(select);
+
+            }
+
+            public TextBlock CreateSlot()
+            {
+                TextBlock temp = new TextBlock();
+                temp.Foreground = Global.Globals.COMBAT_FONT_COLOR;
+                return temp;
+            }
+
+            public void Select(int rowOffset, int columnOffset)
+            {
+                if(currentRow + rowOffset >= maxRow || rowOffset+currentRow < 0 || currentColumn + columnOffset >= maxColumn || currentColumn + columnOffset < 0)
+                {
+                    return;
+                }
+
+                currentRow += rowOffset;
+                currentColumn += columnOffset;
+                Select(currentRow);
+                PopulateGrid(currentColumn);
+            }
+            public override MainCombatView KeyPress(Key keyIn)
+            {
+                if(keyIn == Key.W)
+                {
+                    Select(-1, 0);
+                }
+                if(keyIn == Key.S)
+                {
+                    Select(1, 0);
+                }
+                if(keyIn == Key.A)
+                {
+                    Select(0, -1);
+                }
+                if(keyIn == Key.D)
+                {
+                    Select(0, 1);
+                }
+                return this ;
             }
         }
     }
 
-
-    public class AttackSelect : Grid
-    {
-        public AttackSelect() :base()
-        {
-            
-        }
-
-    }
+  
 }

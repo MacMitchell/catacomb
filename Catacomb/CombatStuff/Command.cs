@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Catacomb.CombatStuff
 {
-    public abstract class Command
+    public class Command
     {
 
-        public static int INGORE_COMMAND = 0;
+        public static int IGNORE_COMMAND = 0;
         public static int MONSTER_DIED = 1;
         public static int PLAYER_DIED = 2;
-        
+        public static int FETCH_PLAYER_ATTACK = 3;
 
 
 
@@ -43,8 +43,8 @@ namespace Catacomb.CombatStuff
             id = idCounter++;
         }
 
-        
-        public abstract void Execute(CombatEntity castor, CombatEntity target);
+
+        public virtual int Execute(CombatEntity castor, CombatEntity target) { return 0; }
         public void AfterExecute(CombatEntity castor, CombatEntity target) { }
 
         public Command GetChild(int index)
@@ -56,6 +56,7 @@ namespace Catacomb.CombatStuff
             return children[index];
         }
     }
+
 
     public class CommandIterator
     {

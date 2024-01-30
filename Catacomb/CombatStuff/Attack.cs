@@ -91,7 +91,7 @@ namespace Catacomb.CombatStuff
             }
 
             //if damages itself
-            if (selfHeal < 0)
+             if (selfHeal < 0)
             {
                 InflectDamage(Castor, selfHeal * -1);
             }
@@ -120,23 +120,24 @@ namespace Catacomb.CombatStuff
         public CombatEntity Castor { get => castor; set { if (castor == null) { castor = value; } } }
         public CombatEntity Target { get => target; set { if (target == null) { target = value; } } }
 
-        public override void Execute(CombatEntity castor, CombatEntity target)
+        public override int Execute(CombatEntity castor, CombatEntity target)
         {
             ExecuteAttack(castor, target);
+            return Command.IGNORE_COMMAND;
         }
 
         /**
          * Heals the entity passed. If it is a negative value it will damage the player 
          */
-        protected virtual void Heal(CombatEntity target, double healAmount)
+        public virtual void Heal(CombatEntity targetIn, double healAmount)
         {
-            target.Health = target.Health + healAmount;
-            if(target.Health > target.MaxHealth)
+            targetIn.Health = targetIn.Health + healAmount;
+            if(targetIn.Health > targetIn.MaxHealth)
             {
-                target.Health = target.MaxHealth;
+                targetIn.Health = targetIn.MaxHealth;
             }
         }
-        protected virtual void InflectDamage( CombatEntity target,double damage)
+        public virtual void InflectDamage( CombatEntity target,double damage)
         {
             if(damage == 0)
             {
@@ -159,5 +160,6 @@ namespace Catacomb.CombatStuff
 
             target.Health -= damage;
         }
+        
     }
 }

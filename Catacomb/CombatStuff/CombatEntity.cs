@@ -15,7 +15,7 @@ namespace Catacomb.CombatStuff
             get { return name; }
             set { name = value; }
         }
-
+        public static Random rand= new Random();
         
         public double MaxHealth { get => maxHealth; set => maxHealth = value; }
         public double Health { get => health; set => health = value; }
@@ -30,7 +30,6 @@ namespace Catacomb.CombatStuff
         public double Speed { get => speed; set => speed = value; }
         public double MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
         public double Armor { get => armor; set => armor = value; }
-        public double MaxArmor { get => maxArmor; set => maxArmor = value; }
         public bool IsPlayer { get => isPlayer; set => isPlayer = value; }
 
         private double maxHealth;
@@ -46,7 +45,6 @@ namespace Catacomb.CombatStuff
         private double speed;
         private double maxSpeed;
         private double armor;
-        private double maxArmor;
 
         private Boolean isPlayer;
 
@@ -61,7 +59,6 @@ namespace Catacomb.CombatStuff
         }
         public virtual void InializeValues(double defaultValue = 0)
         {
-            MaxArmor = defaultValue;
             MaxAttackStat = defaultValue;
             MaxMagicStat = defaultValue;
             MaxHealth = defaultValue;
@@ -84,14 +81,34 @@ namespace Catacomb.CombatStuff
         }
         public Attack GetAttack(Command parentIn)
         {
-            return generateAttacks[0](this,parentIn);
+            int index = rand.Next(0, generateAttacks.Count);   
+            return generateAttacks[index](this,parentIn);
+        }
+
+        public List<Attack> GetListOfAttacks()
+        {
+            List<Attack> attacks = new List<Attack>();
+            for(int i =0; i < generateAttacks.Count; i++)
+            {
+                attacks.Add(generateAttacks[i](this, null));
+            }
+            return attacks;
+        }
+
+        public void Reset()
+        {
+            AttackStat = MaxAttackStat;
+            MagicStat = MaxMagicStat;
+            Defense = MaxDefense;
+            MagicResist = MaxMagicResist;
+            Speed = MaxSpeed;
         }
 
         public virtual string GenerateStats()
         {
             string output = Name + "\nHealth: " +
                             Health + "/" + MaxHealth +
-                            "\nArmor: " + Armor + "/" + MaxArmor +
+                            "\nArmor: " + Armor  +
                             "\nAttack: " + AttackStat + "/" + maxAttackStat +
                             "\nMagic: " + MagicStat + "/" + MaxMagicResist +
                             "\nDefense: " + Defense + "/" + MaxDefense +

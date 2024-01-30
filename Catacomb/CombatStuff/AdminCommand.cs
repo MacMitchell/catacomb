@@ -16,15 +16,16 @@ namespace Catacomb.CombatStuff
             Description = "YOU SHOULD NOT BE SEEING THIS";
         }
         
-        protected void ExecuteNext(CombatEntity castor,CombatEntity target)
+        protected int ExecuteNext(CombatEntity castor,CombatEntity target)
         {
             it.Next();
-            it.CurrentCommand.Execute(castor, target);
+            return it.CurrentCommand.Execute(castor, target);
         }
-        public override void Execute(CombatEntity castor, CombatEntity target)
+        public override int Execute(CombatEntity castor, CombatEntity target)
         {
             //this method actually does not want to public know something was execute so it will call the next function first
             ExecuteNext(castor,target);
+            return Command.IGNORE_COMMAND;
            
         }
     }
@@ -32,7 +33,7 @@ namespace Catacomb.CombatStuff
     public class GetAttacksCommand : AdminCommands
     {
         public GetAttacksCommand(CommandIterator iteratorIn, Command parent= null) : base(iteratorIn, parent){}
-        public override void Execute(CombatEntity castor, CombatEntity target)
+        public override int Execute(CombatEntity castor, CombatEntity target)
         {
             //this assumes that neither of them are actually the castor or the target
             double castorSpeed = castor.Speed;
@@ -72,7 +73,7 @@ namespace Catacomb.CombatStuff
             next.Castor = slower;
             next.Target = faster;*/
             CreateGetAttackCommand(slower, faster);
-            ExecuteNext(faster, slower);
+            return ExecuteNext(faster, slower);
         }
 
         private void CreateGetAttackCommand(CombatEntity castor, CombatEntity target)
@@ -96,12 +97,13 @@ namespace Catacomb.CombatStuff
             this.castor = castor;
             this.target = target;
         }
-        public override void Execute(CombatEntity NOTUSED, CombatEntity NOTUSED2)
+        public override int Execute(CombatEntity NOTUSED, CombatEntity NOTUSED2)
         {
             Attack nextAttack = castor.GetAttack(this);
             nextAttack.Castor = castor;
             nextAttack.Target = target;
             ExecuteNext(castor, target);
+            return Command.IGNORE_COMMAND;
         }
     }
 
@@ -112,12 +114,13 @@ namespace Catacomb.CombatStuff
             this.castor = castor;
             this.target = target;
         }
-        public override void Execute(CombatEntity castor, CombatEntity target)
+        public override int Execute(CombatEntity castor, CombatEntity target)
         {
             Attack nextAttack = castor.GetAttack(this);
             nextAttack.Castor = castor;
             nextAttack.Target = target;
             Description = "Select Player Attack (press space to tackle)";
+            return Command.FETCH_PLAYER_ATTACK;
         }
     }
 }
