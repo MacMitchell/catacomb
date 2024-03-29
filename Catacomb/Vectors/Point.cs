@@ -74,7 +74,7 @@ namespace Catacomb.Vectors
 
         public bool AreEqual(Point other)
         {
-            return (GetX() - other.GetX()) < Globals.TOLERANCE && (GetY() - other.GetY()) < Globals.TOLERANCE;
+            return Math.Abs((double)GetX() - (double)other.GetX()) < Globals.TOLERANCE && Math.Abs((double)GetY() - (double)other.GetY()) < Globals.TOLERANCE;
         }
 
         override public String ToString()
