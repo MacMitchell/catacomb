@@ -98,7 +98,7 @@ namespace Catacomb.Vectors
         }
 
 
-        public bool IsPointInRectangle(Point p)
+        public bool IsPointInVector(Point p)
         {
 
             return p.GetX() >= start.GetX() && p.GetX() <= end.GetX() &&
@@ -117,7 +117,7 @@ namespace Catacomb.Vectors
             {
                 return false;
             }
-            if (IsPointInRectangle(otherStart) || IsPointInRectangle(otherEnd))
+            if (IsPointInVector(otherStart) || IsPointInVector(otherEnd))
             {
                 return true;
             }
@@ -133,31 +133,6 @@ namespace Catacomb.Vectors
 
             }
             return false;
-
-            /*
-            double[] yIntercepts = { start.GetY(), end.GetY() };
-            double[] xIntercepts = { start.GetX(), end.GetX() };
-
-            foreach (double db in yIntercepts)
-            {
-                Point interscept = other.GetPointWithYVal(db);
-                if (interscept != null && interscept.GetX() >= start.GetX() && interscept.GetX() <= end.GetX())
-                {
-                    return true;
-                }
-            }
-
-            foreach (double db in xIntercepts)
-            {
-                Point interscept = other.GetPointWithXVal(db);
-                if (interscept != null && interscept.GetY() >= start.GetY() && interscept.GetY() <= end.GetY())
-                {
-                    return true;
-                }
-            }
-             return false;
-            */
-
         }
 
 
@@ -172,7 +147,7 @@ namespace Catacomb.Vectors
             Point[] points = { otherStart, otherEnd, bottomLeft, topRight };
             foreach (Point p in points)
             {
-                if (IsPointInRectangle(p))
+                if (IsPointInVector(p))
                 {
                     return true;
                 }
@@ -214,10 +189,10 @@ namespace Catacomb.Vectors
 
         public bool IsWithin(CatLine other)
         {
-            if (IsPointInRectangle(other.Start)){
+            if (IsPointInVector(other.Start)){
                 return true;
             }
-            if (IsPointInRectangle(other.End))
+            if (IsPointInVector(other.End))
             {
                 return true;
             }

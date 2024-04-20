@@ -95,7 +95,7 @@ namespace Catacomb.Maze
 
         public Room GetKeyRoom()
         {
-            return new Room();
+            return new StairRoom();
         }
         public void BuildRoom(List<Room> createdRooms, Room current,Canvas mazeCanvas)
         {

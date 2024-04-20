@@ -1,0 +1,7 @@
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Release\Catacomb.exe.config
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Release\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\bin\Release\Catacomb.pdb
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Release\Catacomb.csproj.AssemblyReference.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Release\Catacomb.csproj.CoreCompileInputs.cache
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Release\Catacomb.exe
+C:\Users\chum_\Desktop\randomCode\git\catacomb\Catacomb\obj\Release\Catacomb.pdb

@@ -138,6 +138,35 @@ namespace UnitTests
 
             Assert.IsFalse(y.DoesIntersect(x));
         }
+
+
+        [TestMethod]
+        public void Point_Is_In_Line()
+        {
+            Point p1 = new Point(0, 0);
+            Point p2 = new Point(5, 5);
+            Point p3 = new Point(2.5, 2.5);
+
+            CatLine test = new CatLine(0, 0, 5, 5);
+
+            Assert.IsTrue(test.IsPointInVector(p1));
+            Assert.IsTrue(test.IsPointInVector(p2));
+            Assert.IsTrue(test.IsPointInVector(p3));
+        }
+
+        [TestMethod]
+        public void Point_Is_Not_In_Line()
+        {
+            Point p1 = new Point(0, 0);
+            Point p2 = new Point(5, 5);
+            Point p3 = new Point(2.5, 2.5);
+
+            CatLine test = new CatLine(0, 1, 5, 6);
+
+            Assert.IsFalse(test.IsPointInVector(p1));
+            Assert.IsFalse(test.IsPointInVector(p2));
+            Assert.IsFalse(test.IsPointInVector(p3));
+        }
     }
     [TestClass]
     public class RectangleTests
@@ -151,7 +180,7 @@ namespace UnitTests
 
 
 
-            Assert.IsTrue(r.IsPointInRectangle(inside));
+            Assert.IsTrue(r.IsPointInVector(inside));
         }    
         [TestMethod]
         public void point_test_on_corner()
@@ -161,8 +190,8 @@ namespace UnitTests
                 
 
                 
-                Assert.IsTrue(r.IsPointInRectangle(corner1));
-                Assert.IsTrue(r.IsPointInRectangle(corner2));
+                Assert.IsTrue(r.IsPointInVector(corner1));
+                Assert.IsTrue(r.IsPointInVector(corner2));
             }
         [TestMethod]
         public void point_test_on_line()
@@ -171,8 +200,8 @@ namespace UnitTests
                 Point onLine2 = new Point(5, 1);
 
 
-                Assert.IsTrue(r.IsPointInRectangle(onLine1));
-                Assert.IsTrue(r.IsPointInRectangle(onLine2));
+                Assert.IsTrue(r.IsPointInVector(onLine1));
+                Assert.IsTrue(r.IsPointInVector(onLine2));
             }
         [TestMethod]
         public void point_test_outside()
@@ -180,8 +209,8 @@ namespace UnitTests
                 Point outside1 = new Point(0, 0);
                 Point outside2 = new Point(25, 25);
 
-                Assert.IsFalse(r.IsPointInRectangle(outside1));
-                Assert.IsFalse(r.IsPointInRectangle(outside2));
+                Assert.IsFalse(r.IsPointInVector(outside1));
+                Assert.IsFalse(r.IsPointInVector(outside2));
             }
 
         [TestMethod]
@@ -312,6 +341,39 @@ namespace UnitTests
             Assert.IsTrue(r2.IsWithin(r4));
             Assert.IsTrue(r4.IsWithin(r2));
             
+        }
+    }
+
+    [TestClass]
+    public class CatThickLineTest
+    {
+
+        [TestMethod]
+        public void Point_Is_In_Vector()
+        {
+            Point p1 = new Point(1, 1);
+            Point p2 = new Point(1, 1.3);
+            Point p3 = new Point(4.5, 4.5);
+
+            CatThickLine test = new CatThickLine(new Point(0, 0), new Point(5, 5), 1);
+
+            Assert.IsTrue(test.IsPointInVector(p1));
+            Assert.IsTrue(test.IsPointInVector(p2));
+            Assert.IsTrue(test.IsPointInVector(p3));
+        }
+
+        [TestMethod]
+        public void Point_Is_Not_In_Vector()
+        {
+            Point p1 = new Point(1, 1);
+            Point p2 = new Point(1, 3);
+            Point p3 = new Point(4.5, 4.5);
+
+            CatThickLine test = new CatThickLine(new Point(0, 1), new Point(5, 6), 1);
+
+            Assert.IsFalse(test.IsPointInVector(p1));
+            Assert.IsFalse(test.IsPointInVector(p2));
+            Assert.IsFalse(test.IsPointInVector(p3));
         }
     }
 }

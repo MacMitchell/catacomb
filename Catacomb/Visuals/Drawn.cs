@@ -13,6 +13,7 @@ namespace Catacomb.Visuals
     public abstract class Drawn : Vector
     {
         protected List<Drawn> components;
+        protected List<Interactable> interactables;
         protected Canvas canvas;
         public Vector representive;
         protected double scalar = 1;
@@ -42,6 +43,7 @@ namespace Catacomb.Visuals
             canvas = new Canvas();
             representive = rep;
             components = new List<Drawn>();
+            interactables = new List<Interactable>();
             Position = rep.GetStartPoint();
             trespassable = false;
                  
@@ -119,6 +121,10 @@ namespace Catacomb.Visuals
         {
             return representive.DoesIntersect(other);
         }
+        public virtual bool IsPointInVector(Point p)
+        {
+            return representive.IsPointInVector(p);
+        }
         public virtual bool IsWithin(Drawn other)
         {
             
@@ -168,6 +174,25 @@ namespace Catacomb.Visuals
             }
             return null;
         }
-        
+        public void AddInteractable(Interactable i)
+        {
+            interactables.Add(i);
+            AddChild(i);
+        }
+
+        public void Interact(Point p)
+        {
+            p = p.MinusPoint(Position);
+            foreach (Interactable i in interactables)
+            {
+                Console.WriteLine(i.ToString());
+                Console.WriteLine(p.ToString());
+                if (i.CanInteract(p))
+                {
+                    i.Execute();
+                    break;
+                }
+            }
+        }
     }
 }

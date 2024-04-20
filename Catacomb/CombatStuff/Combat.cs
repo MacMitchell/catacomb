@@ -8,9 +8,11 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using Catacomb.Maze;
+
 namespace Catacomb.CombatStuff
 {
-    class Combat : Grid
+    class Combat : Grid, DisplayMode
     {
         //Grid combatGrid;
 
@@ -23,11 +25,17 @@ namespace Catacomb.CombatStuff
 
         private double mainCellHeight;
         private double mainCellWidth;
-
+        private DisplayMode previousDisplay;
 
         public Grid CombatGrid
         {
             get { return this; }
+        }
+
+        public DisplayMode PreviousDisplay
+        {
+            get { return previousDisplay; }
+            set { previousDisplay = value; }
         }
 
         public CombatEntity Player { get => player; }
@@ -66,17 +74,23 @@ namespace Catacomb.CombatStuff
             get { return currentView; }
         }
 
+        public SwitchDisplayMode Finished { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         CommandIterator it;
-        public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn) :base()
+        public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn,DisplayMode previous) :base()
         {
+            previousDisplay = previous;
+            
             it = new CommandIterator(null);
+
+
 
             player = playerIn;
             monster = monsterIn;
 
             //combatGrid = new Grid();
             base.Focus();
-            base.KeyDown += (object sender, System.Windows.Input.KeyEventArgs e) => { MenuKeyRelease(e.Key); };
+            base.KeyDown += (object sender, System.Windows.Input.KeyEventArgs e) => { KeyRelease(e.Key); };
            
 
             /*combatGrid.MaxHeight = Screen.PrimaryScreen.WorkingArea.Size.Height;
@@ -175,12 +189,44 @@ namespace Catacomb.CombatStuff
         }
         
 
-        public void  MenuKeyRelease(Key keyIn)
+        public void KeyRelease(Key keyIn)
+        {
+            CurrentView = currentView.KeyRelease(keyIn);
+        }
+
+        public void KeyPress(Key keyIn)
         {
             CurrentView = currentView.KeyPress(keyIn);
         }
+
+        public System.Windows.Controls.Panel GetDisplay()
+        {
+            return this;
+        }
+
+        public DisplayMode Update(double time)
+        {
+            if(IsCombatOver())
+            {
+                
+                return previousDisplay;
+            }
+            return this;
+        }
+
        
 
+  
+
+        public Boolean IsCombatOver()
+        {
+            return player.Health <= 0 || monster.Health <= 0;
+        }
+
+        public void Destroy()
+        {
+            throw new NotImplementedException();
+        }
 
         private abstract class MainCombatView : Grid
         {
@@ -206,7 +252,8 @@ namespace Catacomb.CombatStuff
             }
 
 
-            public abstract MainCombatView KeyPress(Key keyIn);
+            public abstract MainCombatView KeyRelease(Key keyIn);
+            public virtual MainCombatView KeyPress(Key keyIn) { return this; }
 
         }
         private class DisplayCommand: MainCombatView
@@ -222,7 +269,7 @@ namespace Catacomb.CombatStuff
                 
                 actionText.Text = player.Name + " VS " + monster.Name;
             }
-            public override MainCombatView KeyPress(Key keyIn)
+            public override MainCombatView KeyRelease(Key keyIn)
             {
                 int result = Command.IGNORE_COMMAND;
                 if(keyIn == Key.Space)
@@ -430,7 +477,7 @@ namespace Catacomb.CombatStuff
                 selectedAttack.Castor = player;
                 selectedAttack.Target = monster;
             }
-            public override MainCombatView KeyPress(Key keyIn)
+            public override MainCombatView KeyRelease(Key keyIn)
             {
                 if(keyIn == Key.W)
                 {

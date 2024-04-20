@@ -38,8 +38,11 @@ namespace Catacomb.Entities
             set { angle = value; }
         }
 
+       
 
-        private double width = 25;
+    
+
+    private double width = 25;
         private double height = 25;
         public double Width
         {
@@ -59,6 +62,12 @@ namespace Catacomb.Entities
             get { return container; }
             set { container = value; }
         }
+
+        private Point Center
+        {
+            get { return new Point(Position.GetX() + width / 2, Position.GetY() + width / 2); }
+        }
+
         public Entity(Point positionIn, Vector rep): base(rep)
         {
             canvas = new Canvas();
@@ -208,11 +217,16 @@ namespace Catacomb.Entities
                     continue;
                 }
                 CatRectangle rep = (CatRectangle)container.parent.GetConnectedRoom(i).RoomDrawn.representive;
-                if (rep.IsPointInRectangle(Position))
+                if (rep.IsPointInVector(Position))
                 {
                     container = container.parent.GetConnectedRoom(i).RoomDrawn;
                 }
             }
+        }
+
+        public virtual void Interact()
+        {
+            container.Interact(Center);
         }
 
         public abstract CombatEntity GetCombatEntity();

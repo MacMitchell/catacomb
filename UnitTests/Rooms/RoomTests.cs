@@ -64,7 +64,7 @@ namespace RoomTest
                 {
                     //The spawn point is the top left of the monster
                     Point spawnPoint = r1.RoomDrawn.GenerateSpawnPoint(width, height);
-                    Assert.IsTrue(rep.IsPointInRectangle(spawnPoint));
+                    Assert.IsTrue(rep.IsPointInVector(spawnPoint));
 
                     Point sizeReference = new Point(width, height);
                     Point end = spawnPoint.AddPoint(sizeReference);

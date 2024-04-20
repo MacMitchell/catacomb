@@ -18,7 +18,7 @@ namespace Catacomb.Visuals
         public  Room parent;
         public Tuple<Point, Point>[] connectionPoints;
         private Tuple<Point,Point> originalRep;
-
+        
         protected List<CatRectangle> potentialSpawnAreas;
 
 
@@ -31,6 +31,11 @@ namespace Catacomb.Visuals
         public double Height
         {
             get { return ((CatRectangle)base.representive).GetHeight(); }
+        }
+
+        protected Point Center
+        {
+            get { return new Point(originalRep.Item1.X / 2 + originalRep.Item2.X / 2, originalRep.Item1.Y / 2 + originalRep.Item2.Y / 2); }
         }
         public DrawnRoom(Room parentIn, Point start, Point end) : base(new CatRectangle(start, end), true)
         {
@@ -425,5 +430,6 @@ namespace Catacomb.Visuals
 
             return convertPointToGlobal(localSpawnPoint);
         }
+        
     }
 }

@@ -43,7 +43,7 @@ namespace Catacomb
 
         {
             Application test = new Application();
-            CatacombMain cat = new CatacombMain();
+            CatacombManager cat = new CatacombManager();
             //MainWindow window = new MainWindow();
             //test.MainWindow = window;
             //Window mazeWindow = GetMazeTest();
@@ -51,7 +51,7 @@ namespace Catacomb
             //test.MainWindow = mazeWindow;
             //mazeWindow.Show();
 
-
+            
             //mazeWindow.KeyDown += MoveKeyPress;
             //Thread mainThread = new Thread(Update);
 

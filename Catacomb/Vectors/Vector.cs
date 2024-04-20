@@ -10,10 +10,11 @@ namespace Catacomb.Vectors
     {
         Point GetStartPoint();
         Point GetEndPoint();
-
+        
         bool IsWithin(Vector other);
         bool DoesIntersect(Vector other);
 
+        bool IsPointInVector(Point p);
         string GetVectorType();
 
     }

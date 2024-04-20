@@ -33,7 +33,6 @@ namespace Catacomb.Visuals
             canvas.Height = Math.Abs(start.GetMaxY(end) - start.GetMinY(end));
 
 
-            
             Draw();
         }
         public override void Draw()

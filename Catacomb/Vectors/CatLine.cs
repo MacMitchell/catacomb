@@ -98,10 +98,22 @@ namespace Catacomb.Vectors
             return IsPointWithinRange(intersection) && other.IsPointWithinRange(intersection);
         }
 
-        private bool DoesLineContainXPoint(double xIn)
+       
+        public bool IsPointInVector(Point p)
         {
-            return (xIn + Globals.TOLERANCE >= start.GetMinX(end) && xIn- Globals.TOLERANCE <= start.GetMaxX(end));
+            Point r1 = GetPointWithXVal(p.X);
+            if(r1 == null)
+            {
+                return false;
+            }
+            Point r2 = GetPointWithYVal(p.Y);
+            if(r2 == null)
+            {
+                return false;
+            }
+            return r2.AreEqual(r1);
         }
+
         public Point GetIntersectPoint(CatLine other)
         {
             try

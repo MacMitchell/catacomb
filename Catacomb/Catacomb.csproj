@@ -57,7 +57,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CatacombMain.cs" />
+    <Compile Include="CatacombManager.cs" />
     <Compile Include="CombatStuff\AdminCommand.cs" />
     <Compile Include="CombatStuff\Attack.cs" />
     <Compile Include="CombatStuff\AttackFactory.cs" />
@@ -71,20 +71,24 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Global\Globals.cs" />
     <Compile Include="Maze\Connection.cs" />
+    <Compile Include="Maze\ExploreCanvas.cs" />
     <Compile Include="Maze\Hallway.cs" />
     <Compile Include="Maze\Room.cs" />
     <Compile Include="Maze\Maze.cs" />
     <Compile Include="Maze\MazeBuilder.cs" />
     <Compile Include="MainWindow.cs" />
+    <Compile Include="Maze\StairRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vectors\CatLine.cs" />
     <Compile Include="Vectors\CatRectangle.cs" />
     <Compile Include="Vectors\CatThickLine.cs" />
     <Compile Include="Vectors\Vector.cs" />
     <Compile Include="Vectors\Point.cs" />
+    <Compile Include="Visuals\Interactable.cs" />
     <Compile Include="Visuals\Drawn.cs" />
     <Compile Include="Visuals\DrawnRoom.cs" />
     <Compile Include="Visuals\Floor.cs" />
+    <Compile Include="Visuals\Stair.cs" />
     <Compile Include="Visuals\Wall.cs" />
   </ItemGroup>
   <ItemGroup>

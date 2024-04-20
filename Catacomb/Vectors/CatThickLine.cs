@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+using Catacomb.Global;
 namespace Catacomb.Vectors
 {
     public class CatThickLine : Vector
@@ -16,6 +18,8 @@ namespace Catacomb.Vectors
         
         Point end;
 
+
+        
         public CatThickLine(Point p1, Point p2, double width)
         {
             width = width/ 2;
@@ -69,6 +73,24 @@ namespace Catacomb.Vectors
             Point start = line.GetStartPoint().GetRotateCopy(angle, distance);
             Point end = line.GetEndPoint().GetRotateCopy(angle, distance);
             return new CatLine(start, end);
+        }
+
+
+
+        //I dont fully trust this method...
+        public bool IsPointInVector(Point p)
+        {
+            Point lowerBound = lowerLine.GetPointWithXVal(p.X);
+            Point upperBound = upperLine.GetPointWithXVal(p.X);
+            if(lowerBound == null | upperBound == null)
+            {
+                return false;
+            }
+            if(p.Y - Globals.TOLERANCE <= upperBound.Y && p.Y + Globals.TOLERANCE >= lowerBound.Y)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
