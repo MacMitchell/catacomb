@@ -22,7 +22,7 @@ namespace Catacomb.Entities
         {
             get { if(fighter == null)
                     {
-                    fighter = MonsterFactory.GeneratePlayer();
+                        fighter = MonsterFactory.GeneratePlayer();
                     }
                     return fighter;
                 }

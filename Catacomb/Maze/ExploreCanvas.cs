@@ -40,7 +40,7 @@ namespace Catacomb.Maze
         }
         public void SetUpMaze(int numberOfRooms = 100, int numberOfMonsters = 100 )
         {
-            int stepSize = 5;
+            int stepSize = numberOfRooms/10;
             double width = base.Width;
             double height = base.Height;
             //currentMaze = new CatMaze(25, 1,player);

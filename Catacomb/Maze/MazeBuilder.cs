@@ -16,10 +16,11 @@ namespace Catacomb.Maze
         private static Random rand;
         private int limit = Global.Globals.CONNECTION_LIMIT;
         public double margin = 100;
-        public double gap = 150;
+        public double gap = 300;
         private static int connectionLimit = Global.Globals.CONNECTION_LIMIT;
 
-        
+        private int numberOfRooms;
+
         //list of rooms that could not be built. The int value for the direction the PARENT needs to be. i.e. grab from availableParent[int]
         private List<Tuple<Room, int>> freeRooms; 
         
@@ -38,21 +39,24 @@ namespace Catacomb.Maze
         /**
          *  Places down the rooms next to one another, it does not draw the maze
          */ 
-        public Room BuildMaze(int size, int step)
+        public virtual Room BuildMaze(int size, int step)
         {
             ArrayList found = new ArrayList();
             found.Add(new Room());
+            Room current = (Room)found[0];
 
-        
+
             while (found.Count < size)
             {
 
                 int index = rand.Next(found.Count);
-                Room current = (Room) found[index];
+                current = (Room) found[index];
                 //get two random numbers with the max size of the step. One number for the horizontal direction, the other for vertical direction
                 int[] placement = GetVertAndHoriDistance(1, step);
                 //decide which direction to go first
                 int direction = rand.Next(4);
+
+                //building filler rooms in the first diection
                 for(int i = 0; i < placement[0]; i++)
                 {
                     if (!current.HasConnection(direction))
@@ -64,6 +68,7 @@ namespace Catacomb.Maze
                     current = current.GetConnectedRoom(direction);
                 }
 
+                //building filler rooms in next direction and then ending with a key room
                 direction = direction % 2 == 0 ? 2 * rand.Next(2) + 1 : 2 * rand.Next(2);
                 for (int i = 0; i < placement[1]; i++)
                 {
@@ -76,12 +81,31 @@ namespace Catacomb.Maze
                     }
                     current = current.GetConnectedRoom(direction);
                 }
-
-
             }
+            for(int i = 0; i < connectionLimit; i++)
+            {
+                if (!current.HasConnection(i))
+                {
+                    Room stairRoom = new StairRoom();
+                    current.connect(stairRoom,i);
+                    break;
+                }
+            }
+            
             return ((Room)found[0]);
         }
 
+
+        protected virtual Room CreateStairRoom(int size, int currentSize)
+        {
+            double chance = (double)currentSize / (double)size * 100/0;
+            int number = rand.Next(1, 101);
+            if(number <= chance)
+            {
+                return new StairRoom();
+            }
+            return null;
+        }
 
 
         /**
@@ -95,7 +119,7 @@ namespace Catacomb.Maze
 
         public Room GetKeyRoom()
         {
-            return new StairRoom();
+            return new Room();
         }
         public void BuildRoom(List<Room> createdRooms, Room current,Canvas mazeCanvas)
         {

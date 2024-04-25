@@ -59,15 +59,12 @@ namespace Catacomb.CombatStuff
             next.Castor = faster;
             next.Target = slower;
             */
-            fasterSpeed *= (2 / 3);
+            fasterSpeed *= (double)(2.0 / 3.0);
             while(fasterSpeed > slowerSpeed)
             {
-                /*next = faster.GetAttack(this);
-
-                next.Castor = faster;
-                next.Target = slower;*/
+                
                 CreateGetAttackCommand(faster, slower);
-                fasterSpeed *= (2 / 3);
+                fasterSpeed *= (double)(1.5 / 3.0);
             }
             /*next = slower.GetAttack(this);
             next.Castor = slower;
@@ -116,10 +113,7 @@ namespace Catacomb.CombatStuff
         }
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
-            //Attack nextAttack = castor.GetAttack(this);
-            //nextAttack.Castor = castor;
-            //nextAttack.Target = target;
-            //Description = "Select Player Attack (press space to tackle)";
+            Description = "Select Player Attack (press space to tackle)";
             return Command.FETCH_PLAYER_ATTACK;
         }
     }

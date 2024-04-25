@@ -274,12 +274,17 @@ namespace Catacomb.CombatStuff
                 int result = Command.IGNORE_COMMAND;
                 if(keyIn == Key.Space)
                 {
-                    result = ExecuteNext();
+                    result = Execute();
                 }
                 ReportStatus = result;
                 if(result == Command.FETCH_PLAYER_ATTACK)
                 {
+                    
                     return new AttackSelect(base.Width, base.Height, player,monster,it, monsterText, playerText);
+                }
+                else if(keyIn == Key.Space)
+                {
+                    Next();
                 }
                 return this;
             }
@@ -295,8 +300,7 @@ namespace Catacomb.CombatStuff
                 //Eventually this will do more than just attacks
                 SetUpAttacks();
             }
-
-            public int ExecuteNext()
+            public int Execute()
             {
                 if (it.CurrentCommand == null)
                 {
@@ -305,7 +309,7 @@ namespace Catacomb.CombatStuff
                 int result = it.CurrentCommand.Execute(player, monster);
                 actionText.Text = it.CurrentCommand.Description;
                 UpdateStats();
-                it.Next();
+
                 if (monster.Health <= 0)
                 {
                     return Command.MONSTER_DIED;
@@ -315,6 +319,37 @@ namespace Catacomb.CombatStuff
                     return Command.PLAYER_DIED;
                 }
                 return result;
+            }
+            public void Next()
+            {
+                it.Next();
+            }
+            public int ExecuteNext()
+            {
+                int result = Execute();
+                Next();
+                return result;
+                
+                /* Commented it out, but did not do enough testing to see if the above works the same. Test a bit then remove commented below
+                if (it.CurrentCommand == null)
+                {
+                    SetUpTurn();
+                }
+                int result = it.CurrentCommand.Execute(player, monster);
+                actionText.Text = it.CurrentCommand.Description;
+                UpdateStats();
+                it.Next();
+                
+                if (monster.Health <= 0)
+                {
+                    return Command.MONSTER_DIED;
+                }
+                if (player.Health <= 0)
+                {
+                    return Command.PLAYER_DIED;
+                }
+                return result;
+                */
             }
             public void SetUpAttacks()
             {
@@ -499,8 +534,14 @@ namespace Catacomb.CombatStuff
                 {
                     SelectAttack();
                     DisplayCommand nextDisplay = new DisplayCommand(base.Width, base.Height, player, monster, it, monsterText, playerText);
+                    
+                    //indicate that you have finished executing your turn
+                    nextDisplay.Next();
+                    
+                    //execute the attack
                     ReportStatus = nextDisplay.ExecuteNext();
                     nextDisplay.ReportStatus = ReportStatus;
+                    
                     return nextDisplay;
                 }
                 return this ;
