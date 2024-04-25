@@ -14,5 +14,5 @@ You explore a randomized maze with infinite floors. Each floor will contain trea
 ## Controls
 - when exploring the maze, use WASD to move
 - When in combat, press 'Space' to advance the combat
-  - to select your move in combat (when implemented) use WASD to select a move then use 'Space' to confirm
+  - to select your move in combat use WASD to select a move then use 'Space' to confirm
   
