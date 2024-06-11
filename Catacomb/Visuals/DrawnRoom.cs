@@ -148,10 +148,19 @@ namespace Catacomb.Visuals
 
         protected virtual void DrawRoom()
         {
+            DrawFloor();
             DrawRep();
-            
+            AddFloorToSpawnArea();
         }
 
+
+        protected void AddFloorToSpawnArea()
+        {
+            CatRectangle rep = (CatRectangle)representive;
+            CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
+
+            potentialSpawnAreas.Add(localRep);
+        }
         protected virtual void DrawRep()
         {
             CatRectangle rep = (CatRectangle)representive;
@@ -160,9 +169,7 @@ namespace Catacomb.Visuals
             CatRectangle vertWallRect = new CatRectangle(0, 0 - Globals.LINE_THICKNESS / 2, rep.GetWidth(), rep.GetHeight() + Globals.LINE_THICKNESS / 2);
 
 
-            CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
-            potentialSpawnAreas.Add(localRep);
-            DrawFloor(localRep);
+           
 
             DrawConnection(horiWallRect.TopLeft, horiWallRect.TopRight, 0);
             DrawConnection(horiWallRect.BottomLeft, horiWallRect.BottomRight, 2);
@@ -401,6 +408,14 @@ namespace Catacomb.Visuals
 
             parent.IsDrawn = false;
             return base.Erase();
+        }
+
+        protected virtual void DrawFloor()
+        {
+            CatRectangle rep = (CatRectangle)representive;
+            CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
+            
+            DrawFloor(localRep);
         }
         protected virtual void DrawFloor(CatRectangle floor)
         {

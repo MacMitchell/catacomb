@@ -12,12 +12,23 @@ using Catacomb.CombatStuff;
 
 namespace Catacomb.Entities
 {
-    public class Player :Entity
+    public sealed class Player :Entity
     {
 
         private static double playerWidth = 25;
         private static double playerHeight= 25;
-
+        private static Player instance = null;
+        public static Player Instance
+        {
+            get { return instance; }
+            set
+            {
+                if (instance == null)
+                {
+                    instance = value;
+                }
+            }
+        }
         public override CombatEntity Fighter
         {
             get { if(fighter == null)
@@ -39,6 +50,7 @@ namespace Catacomb.Entities
             SetColor(Brushes.Orange);
             Velocity = 0;
             MaxVelocity = 800;
+            Instance = this;
             Draw();
         }
 

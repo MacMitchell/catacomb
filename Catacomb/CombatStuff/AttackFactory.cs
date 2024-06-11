@@ -131,7 +131,64 @@ namespace Catacomb.CombatStuff
             return delcareAttack;
         }
 
-        
-        
+
+        public static Attack FrostLance(CombatEntity castor, Command parent)
+        {
+            double baseDamage = 25;
+            double offset = AttackFactory.offset(castor.MagicStat);
+            baseDamage += offset / 10.0;
+
+            Attack currentAttack = new Attack(parent);
+            currentAttack.Damage = baseDamage;
+            currentAttack.Name = "FrostLance";
+
+            currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
+            {
+                double targetHealthBefore = currentAttack.Target.Health;
+                double armorBefore = currentAttack.Target.Armor;
+                double speedBefore = currentAttack.Target.Speed;
+                currentAttack.SpeedStatChange = currentAttack.Target.Speed * -0.05;
+
+                currentAttack.DefaultExecuteAttack(currentAttack.Castor, currentAttack.Target);
+
+                double speedAfter = currentAttack.Target.Speed;
+                double healthAfter = currentAttack.Target.Health;
+                double armorAfter = currentAttack.Target.Armor;
+
+                double damageDifference = targetHealthBefore - healthAfter;
+                double speedDifference = Math.Abs(speedBefore - speedAfter);
+                double armorDifference = Math.Abs(armorBefore - armorAfter);
+                //dialog for getting the damage done
+                Attack followUp = new Attack(currentAttack);
+                followUp.Castor = currentAttack.Castor;
+                followUp.Target = currentAttack.Target;
+
+                followUp.Damage = 0;
+                
+                followUp.ExecuteAttack += (CombatEntity UNUSED, CombatEntity UNSUED2) =>
+                {
+                    followUp.Description = currentAttack.Castor.Name + " dealt " + (damageDifference+armorDifference )+ " to " + currentAttack.Target.Name + "!";
+                };
+
+                //dialog for getting how much the target was slowed by
+                Attack speedFollowUp = new Attack(currentAttack);
+                speedFollowUp.Castor = currentAttack.Castor;
+                speedFollowUp.Target = currentAttack.Target;
+
+                speedFollowUp.Damage = 0;
+
+                speedFollowUp.ExecuteAttack += (CombatEntity UNUSED, CombatEntity UNSUED2) =>
+                {
+                    speedFollowUp.Description = currentAttack.Target.Name + " speed fell by " + speedDifference  + "!";
+                };
+
+            };
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                currentAttack.Description = currentAttack.Castor.Name + " used Fronst Lance!";
+            };
+            return currentAttack;
+        }
+
     }
 }

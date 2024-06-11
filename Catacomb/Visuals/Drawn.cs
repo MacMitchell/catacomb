@@ -8,10 +8,13 @@ using System.Windows.Controls;
 using Catacomb.Entities;
 using System.Collections;
 
+
+
 namespace Catacomb.Visuals
 {
     public abstract class Drawn : Vector
     {
+       
         protected List<Drawn> components;
         protected List<Interactable> interactables;
         protected Canvas canvas;
@@ -20,6 +23,8 @@ namespace Catacomb.Visuals
         //The position is the top left of the entity
         private Point position;
         protected bool trespassable;
+
+        protected Drawn parent = null;
         public virtual int DrawnId
         {
             get { return 0; }
@@ -85,7 +90,15 @@ namespace Catacomb.Visuals
         public void AddChild(Drawn other)
         {
             canvas.Children.Add(other.GetCanvas());
+            other.parent = this;
             components.Add(other);
+        }
+
+        public void RemoveChild(Drawn other)
+        {
+            canvas.Children.Remove(other.GetCanvas());
+            other.parent = null;
+            components.Remove(other);
         }
         public Canvas GetCanvas()
         {
@@ -159,6 +172,7 @@ namespace Catacomb.Visuals
         {
             canvas.Children.Clear();
             components.Clear();
+            interactables.Clear();
             return true;
         }
 
@@ -179,6 +193,22 @@ namespace Catacomb.Visuals
             interactables.Add(i);
             AddChild(i);
         }
+
+        public void RemoveInteractable(Interactable i)
+        {
+            interactables.Remove(i);
+            RemoveChild(i);
+        }
+
+        public void RemoveSelf()
+        {
+            parent.RemoveChild(this);
+        }
+        public void RemoveSelfInteractable()
+        {
+            parent.RemoveInteractable((Interactable)this);
+        }
+
 
         public void Interact(Point p)
         {

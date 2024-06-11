@@ -78,6 +78,7 @@
     <Compile Include="Maze\MazeBuilder.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="Maze\StairRoom.cs" />
+    <Compile Include="Maze\TreasureRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vectors\CatLine.cs" />
     <Compile Include="Vectors\CatRectangle.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Visuals\DrawnRoom.cs" />
     <Compile Include="Visuals\Floor.cs" />
     <Compile Include="Visuals\Stair.cs" />
+    <Compile Include="Visuals\Treasure.cs" />
     <Compile Include="Visuals\Wall.cs" />
   </ItemGroup>
   <ItemGroup>

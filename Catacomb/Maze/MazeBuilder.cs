@@ -119,7 +119,7 @@ namespace Catacomb.Maze
 
         public Room GetKeyRoom()
         {
-            return new Room();
+            return new TreasureRoom();//new Room();
         }
         public void BuildRoom(List<Room> createdRooms, Room current,Canvas mazeCanvas)
         {
