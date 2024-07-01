@@ -206,17 +206,17 @@ namespace Catacomb.CombatStuff
 
         public DisplayMode Update(double time)
         {
-            if(IsCombatOver())
+            /*if(IsCombatOver())
             {
                 
+                return previousDisplay;
+            }*/
+            if(ReportStatus == Command.COMBAT_FINISHED)
+            {
                 return previousDisplay;
             }
             return this;
         }
-
-       
-
-  
 
         public Boolean IsCombatOver()
         {
@@ -309,15 +309,15 @@ namespace Catacomb.CombatStuff
                 int result = it.CurrentCommand.Execute(player, monster);
                 actionText.Text = it.CurrentCommand.Description;
                 UpdateStats();
-
-                if (monster.Health <= 0)
+                
+                /*if (monster.Health <= 0)
                 {
                     return Command.MONSTER_DIED;
                 }
                 if (player.Health <= 0)
                 {
                     return Command.PLAYER_DIED;
-                }
+                }*/
                 return result;
             }
             public void Next()
@@ -354,7 +354,7 @@ namespace Catacomb.CombatStuff
             public void SetUpAttacks()
             {
                 //in the fruture this will not change the current command, but currentCommand.Next
-                GetAttacksCommand getAttacks = new GetAttacksCommand(it);
+                StartOfTurnCommand getAttacks = new StartOfTurnCommand(it,null,player,monster);
                 it.CurrentCommand = getAttacks;
             }
 

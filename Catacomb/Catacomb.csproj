@@ -65,6 +65,7 @@
     <Compile Include="CombatStuff\CombatEntity.cs" />
     <Compile Include="CombatStuff\Command.cs" />
     <Compile Include="CombatStuff\MonsterFactory.cs" />
+    <Compile Include="CombatStuff\UtilAttackFactory.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\Player.cs" />
@@ -97,6 +98,8 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="CombatStuff\Class\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

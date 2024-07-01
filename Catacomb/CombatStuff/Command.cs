@@ -13,14 +13,14 @@ namespace Catacomb.CombatStuff
         public static int MONSTER_DIED = 1;
         public static int PLAYER_DIED = 2;
         public static int FETCH_PLAYER_ATTACK = 3;
-
+        public static int COMBAT_FINISHED = 4;
 
 
 
         public List<Command> children;
         private Command next;
         private Command prev;
-        private Command parent;
+        protected Command parent;
         private string description;
 
 
@@ -44,7 +44,7 @@ namespace Catacomb.CombatStuff
         }
 
 
-        public virtual int Execute(CombatEntity castor, CombatEntity target) { return 0; }
+        public virtual int Execute(CombatEntity castor, CombatEntity target) { return IGNORE_COMMAND; }
         public void AfterExecute(CombatEntity castor, CombatEntity target) { }
 
         public Command GetChild(int index)

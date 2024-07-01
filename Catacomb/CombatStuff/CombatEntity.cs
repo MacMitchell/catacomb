@@ -15,8 +15,8 @@ namespace Catacomb.CombatStuff
             get { return name; }
             set { name = value; }
         }
-        public static Random rand= new Random();
-        
+        public static Random rand = new Random();
+
         public double MaxHealth { get => maxHealth; set => maxHealth = value; }
         public double Health { get => health; set => health = value; }
         public double AttackStat { get => attackStat; set => attackStat = value; }
@@ -30,6 +30,7 @@ namespace Catacomb.CombatStuff
         public double Speed { get => speed; set => speed = value; }
         public double MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
         public double Armor { get => armor; set => armor = value; }
+        public double XP { get => xp; set => xp = value; }
         public bool IsPlayer { get => isPlayer; set => isPlayer = value; }
 
         private double maxHealth;
@@ -45,17 +46,26 @@ namespace Catacomb.CombatStuff
         private double speed;
         private double maxSpeed;
         private double armor;
-
+        private double xp;
         private Boolean isPlayer;
 
         public delegate Attack AttackGenerator(CombatEntity castor, Command parent);
         protected List<AttackGenerator> generateAttacks;
-        public CombatEntity(string nameIn, double defaultValue = 0)
+
+        protected AttackGenerator endOfCombatAttack;
+        public AttackGenerator EndOfCombatAttack
         {
-            isPlayer = false;
+            get { return endOfCombatAttack; }
+            set { endOfCombatAttack = value; }
+        }
+        public CombatEntity(string nameIn, double defaultValue = 0,bool isPlayer =false)
+        {
+            this.isPlayer = isPlayer;
             Name = nameIn;
             generateAttacks = new List<AttackGenerator>();
+            
             InializeValues(defaultValue);
+            InitilzeGenericValues();
         }
         public virtual void InializeValues(double defaultValue = 0)
         {
@@ -73,6 +83,19 @@ namespace Catacomb.CombatStuff
             magicResist = defaultValue;
             defense = defaultValue;
             speed = defaultValue;
+            xp = 0;
+        }
+
+        public void InitilzeGenericValues()
+        {
+            if (!isPlayer)
+            {
+                EndOfCombatAttack = UtilAttackFactory.DefaultEndOfCombatAttack;
+            }
+            else
+            {
+                EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
+            }
         }
 
         public void AddAttack(AttackGenerator newAttack) 
@@ -81,8 +104,13 @@ namespace Catacomb.CombatStuff
         }
         public Attack GetAttack(Command parentIn)
         {
-            int index = rand.Next(0, generateAttacks.Count);   
-            return generateAttacks[index](this,parentIn);
+            int index = rand.Next(0, generateAttacks.Count);
+            return GetAttack(index, parentIn);
+        }
+
+        public Attack GetEndOfCombatAttack(Command parentIn)
+        {
+            return EndOfCombatAttack(this, parentIn);
         }
 
         public List<Attack> GetListOfAttacks()
@@ -112,6 +140,9 @@ namespace Catacomb.CombatStuff
             }
             return generateAttacks[index](this, parent);
         }
+        
+
+       
         public virtual string GenerateStats()
         {
             string output = Name + "\nHealth: " +

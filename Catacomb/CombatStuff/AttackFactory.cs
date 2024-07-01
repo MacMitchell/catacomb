@@ -190,5 +190,8 @@ namespace Catacomb.CombatStuff
             return currentAttack;
         }
 
+
+        //TODO: CREATE A CLASS FOR GENERATING ATTACK FOR BASIC NEEDS
+            // - An Attack that will chain on a string
     }
 }

@@ -33,6 +33,12 @@ namespace Catacomb.CombatStuff
         private CombatEntity target;
 
 
+        private int commandReturnResult ;
+        public int CommandReturnResult{
+            set { commandReturnResult = value; }
+            get { return commandReturnResult; }
+        }
+
         public Attack(Command inputCommand = null) : base(inputCommand)
         {
             this.damage = 0;
@@ -51,6 +57,8 @@ namespace Catacomb.CombatStuff
             this.selfMagicAttackStatChange = 0;
             this.speedStatChange = 0;
             this.selfSpeedStatChange = 0;
+
+            CommandReturnResult = Command.IGNORE_COMMAND;
             castor = null;
             target = null;
             ExecuteAttack = DefaultExecuteAttack;
@@ -123,7 +131,7 @@ namespace Catacomb.CombatStuff
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
             ExecuteAttack(castor, target);
-            return Command.IGNORE_COMMAND;
+            return CommandReturnResult;
         }
 
         /**

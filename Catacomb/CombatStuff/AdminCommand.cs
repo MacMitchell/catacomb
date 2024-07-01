@@ -30,6 +30,23 @@ namespace Catacomb.CombatStuff
         }
     }
 
+    public class StartOfTurnCommand : AdminCommands
+    {
+        protected CombatEntity castor;
+        protected CombatEntity target;
+        public StartOfTurnCommand(CommandIterator it, Command parent, CombatEntity castor, CombatEntity target) : base(it, parent)
+        {
+            this.castor = castor;
+            this.target = target;
+        }
+        public override int Execute(CombatEntity castor, CombatEntity target)
+        {
+            this.Next = new StartOfTurnCommand(it, null, castor, target);
+            new GetAttacksCommand(it, this);
+            return ExecuteNext(castor, target);
+        }
+    }
+
     public class GetAttacksCommand : AdminCommands
     {
         public GetAttacksCommand(CommandIterator iteratorIn, Command parent= null) : base(iteratorIn, parent){}
@@ -83,8 +100,65 @@ namespace Catacomb.CombatStuff
             {
                 new FetchMonsterAttackCommand(it, this, castor, target);
             }
+            new CheckForCombatEnd(it, this, castor, target);
         }
     }
+
+    public class CheckForCombatEnd : AdminCommands {
+        protected CombatEntity castor;
+        protected CombatEntity target;
+        public CheckForCombatEnd(CommandIterator it,Command parent,CombatEntity castor, CombatEntity target): base(it, parent)
+        {
+            this.castor = castor;
+            this.target = target;
+        }
+        public override int Execute(CombatEntity NO, CombatEntity IShouldRemoveThis)
+        {
+             if(castor.Health <= 0 || target.Health <= 0)
+            {
+                CombatEntity player = castor.IsPlayer ? castor : target;
+                CombatEntity monster = !castor.IsPlayer ? castor : target;
+                new FetchEndOfCombatCommand(it, this, player, monster);
+            }
+            return ExecuteNext(castor, target);
+        }
+    }
+
+    public class FetchEndOfCombatCommand: AdminCommands
+    {
+
+        protected CombatEntity player;
+        protected CombatEntity monster;
+        public FetchEndOfCombatCommand(CommandIterator it, Command parent, CombatEntity player, CombatEntity monster): base(it, parent)
+        {
+            this.player = player;
+            this.monster = monster;
+        }
+        public override int Execute(CombatEntity NOTUSED, CombatEntity NOTUSED2)
+        {
+            Attack nextAttack = monster.GetEndOfCombatAttack(parent);
+            nextAttack.Castor = monster;
+            nextAttack.Target = player;
+
+            Attack playerAttack = player.GetEndOfCombatAttack(parent);
+            playerAttack.Castor = player;
+            playerAttack.Target = monster;
+
+            new FinishCombatCombat(it, parent);
+            return ExecuteNext(monster, player);
+        }
+    }
+
+    public class FinishCombatCombat: AdminCommands
+    {
+        public FinishCombatCombat(CommandIterator iteratorIn, Command parent = null) : base(iteratorIn, parent){}
+        public override int Execute(CombatEntity castor, CombatEntity target)
+        {
+            return Command.COMBAT_FINISHED;
+        }
+    }
+
+
     public class FetchMonsterAttackCommand : AdminCommands
     {
         protected CombatEntity castor;
