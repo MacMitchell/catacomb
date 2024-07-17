@@ -20,7 +20,7 @@ namespace Catacomb.CombatStuff
         TextBlock monsterText;
         TextBlock playerText;
         MainCombatView currentView;
-        private protected CombatEntity player;
+        private protected CombatPlayer player;
         private CombatEntity monster;
 
         private double mainCellHeight;
@@ -77,7 +77,7 @@ namespace Catacomb.CombatStuff
         public SwitchDisplayMode Finished { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         CommandIterator it;
-        public Combat(double width, double height,CombatEntity playerIn, CombatEntity monsterIn,DisplayMode previous) :base()
+        public Combat(double width, double height,CombatPlayer playerIn, CombatEntity monsterIn,DisplayMode previous) :base()
         {
             previousDisplay = previous;
             
@@ -508,7 +508,7 @@ namespace Catacomb.CombatStuff
             public void SelectAttack()
             {
                 int index = currentColumn * rowsSize + currentRow;
-                Attack selectedAttack = player.GetAttack(index, it.CurrentCommand);
+                Attack selectedAttack = player.GetAttack(index, it.CurrentCommand,it,monster);
                 selectedAttack.Castor = player;
                 selectedAttack.Target = monster;
             }

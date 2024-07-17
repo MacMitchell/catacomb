@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Catacomb.CombatStuff.Class;
 namespace Catacomb.CombatStuff
 {
     class UtilAttackFactory
@@ -30,7 +31,7 @@ namespace Catacomb.CombatStuff
             return GenerateTextAttack(parent, xp);
         }
 
-        public static Attack DefaultEndOfCombatAttack(CombatEntity defeated, Command parent)
+        public static Attack DefaultEndOfCombatAttack(CombatEntity defeated, Command parent, CommandIterator it, CombatEntity other)
         {
             if(defeated.Health <= 0)
             {
@@ -38,12 +39,13 @@ namespace Catacomb.CombatStuff
             }
             return null;
         }
-        public static Attack DefaultPlayerEndOfCombat(CombatEntity player, Command parent)
+        public static Attack DefaultPlayerEndOfCombat(CombatEntity player, Command parent, CommandIterator it,CombatEntity monster)
         {
             if(player.Health <= 0)
             {
                 return GenerateTextAttack(parent, "You were defeated....");
             }
+            new CheckForLevelUpCommand(it, parent, (CombatPlayer)player, monster);
             return GenerateTextAttack(parent, "You continue to venture into the dark");
         }
     }

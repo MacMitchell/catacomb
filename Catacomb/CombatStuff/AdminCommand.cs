@@ -136,11 +136,11 @@ namespace Catacomb.CombatStuff
         }
         public override int Execute(CombatEntity NOTUSED, CombatEntity NOTUSED2)
         {
-            Attack nextAttack = monster.GetEndOfCombatAttack(parent);
+            Attack nextAttack = monster.GetEndOfCombatAttack(it,parent,player);
             nextAttack.Castor = monster;
             nextAttack.Target = player;
 
-            Attack playerAttack = player.GetEndOfCombatAttack(parent);
+            Attack playerAttack = player.GetEndOfCombatAttack(it,parent,monster);
             playerAttack.Castor = player;
             playerAttack.Target = monster;
 
@@ -170,7 +170,7 @@ namespace Catacomb.CombatStuff
         }
         public override int Execute(CombatEntity NOTUSED, CombatEntity NOTUSED2)
         {
-            Attack nextAttack = castor.GetAttack(this);
+            Attack nextAttack = castor.GetAttack(this,it,target);
             nextAttack.Castor = castor;
             nextAttack.Target = target;
             ExecuteNext(castor, target);

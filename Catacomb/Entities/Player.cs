@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 using Catacomb.Visuals;
 using Catacomb.CombatStuff;
-
+using Catacomb.CombatStuff.Class;
 namespace Catacomb.Entities
 {
     public sealed class Player :Entity
@@ -42,6 +42,12 @@ namespace Catacomb.Entities
                         fighter = value;
                     } 
             }
+        }
+
+        public CombatPlayer GetPlayerFighter
+        {
+            get  { return (CombatPlayer)Fighter; }
+            set => Fighter = value; 
         }
         public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, playerWidth, playerHeight)) {
             canvas.Width = Width;

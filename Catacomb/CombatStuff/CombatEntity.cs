@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catacomb.CombatStuff.Class;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,9 @@ namespace Catacomb.CombatStuff
         public double MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
         public double Armor { get => armor; set => armor = value; }
         public double XP { get => xp; set => xp = value; }
-        public bool IsPlayer { get => isPlayer; set => isPlayer = value; }
+        public virtual bool IsPlayer { get => false; set => isPlayer = value; }
+
+        public CatClass GetClass { get => currentClass; }
 
         private double maxHealth;
         private double health;
@@ -49,7 +52,9 @@ namespace Catacomb.CombatStuff
         private double xp;
         private Boolean isPlayer;
 
-        public delegate Attack AttackGenerator(CombatEntity castor, Command parent);
+        private CatClass currentClass;
+
+        public delegate Attack AttackGenerator(CombatEntity castor, Command parent, CommandIterator it,CombatEntity other);
         protected List<AttackGenerator> generateAttacks;
 
         protected AttackGenerator endOfCombatAttack;
@@ -86,31 +91,31 @@ namespace Catacomb.CombatStuff
             xp = 0;
         }
 
-        public void InitilzeGenericValues()
+        public virtual void InitilzeGenericValues()
         {
-            if (!isPlayer)
+            if (!IsPlayer)
             {
                 EndOfCombatAttack = UtilAttackFactory.DefaultEndOfCombatAttack;
             }
-            else
-            {
-                EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
-            }
+            //else
+            //{
+              //  EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
+            //}
         }
 
         public void AddAttack(AttackGenerator newAttack) 
         {
             generateAttacks.Add(newAttack);
         }
-        public Attack GetAttack(Command parentIn)
+        public Attack GetAttack(Command parentIn,CommandIterator it, CombatEntity other)
         {
             int index = rand.Next(0, generateAttacks.Count);
-            return GetAttack(index, parentIn);
+            return GetAttack(index, parentIn, it,other);
         }
 
-        public Attack GetEndOfCombatAttack(Command parentIn)
+        public Attack GetEndOfCombatAttack(CommandIterator it, Command parentIn,CombatEntity other)
         {
-            return EndOfCombatAttack(this, parentIn);
+            return EndOfCombatAttack(this, parentIn,it,other);
         }
 
         public List<Attack> GetListOfAttacks()
@@ -118,7 +123,7 @@ namespace Catacomb.CombatStuff
             List<Attack> attacks = new List<Attack>();
             for(int i =0; i < generateAttacks.Count; i++)
             {
-                attacks.Add(generateAttacks[i](this, null));
+                attacks.Add(generateAttacks[i](this, null,null,null));
             }
             return attacks;
         }
@@ -132,13 +137,13 @@ namespace Catacomb.CombatStuff
             Speed = MaxSpeed;
         }
 
-        public Attack GetAttack(int index, Command parent)
+        public Attack GetAttack(int index, Command parent,CommandIterator it,CombatEntity other)
         {
             if(index >= generateAttacks.Count)
             {
                 return null;
             }
-            return generateAttacks[index](this, parent);
+            return generateAttacks[index](this, parent,it, other);
         }
         
 
@@ -148,11 +153,12 @@ namespace Catacomb.CombatStuff
             string output = Name + "\nHealth: " +
                             Health + "/" + MaxHealth +
                             "\nArmor: " + Armor  +
-                            "\nAttack: " + AttackStat + "/" + maxAttackStat +
-                            "\nMagic: " + MagicStat + "/" + MaxMagicResist +
+                            "\nAttack: " + AttackStat + "/" + MaxAttackStat +
+                            "\nMagic: " + MagicStat + "/" + MaxMagicStat + 
                             "\nDefense: " + Defense + "/" + MaxDefense +
                             "\nMagic Resist: " + MagicResist + "/" + MaxMagicResist +
-                            "\nSpeed: " + Speed + "/" + MaxSpeed;
+                            "\nSpeed: " + Speed + "/" + MaxSpeed + 
+                             "\nXP: " + XP;
             return output;
         }
     }

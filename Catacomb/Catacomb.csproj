@@ -61,8 +61,11 @@
     <Compile Include="CombatStuff\AdminCommand.cs" />
     <Compile Include="CombatStuff\Attack.cs" />
     <Compile Include="CombatStuff\AttackFactory.cs" />
+    <Compile Include="CombatStuff\Class\CatClass.cs" />
+    <Compile Include="CombatStuff\Class\CatClassFactory.cs" />
     <Compile Include="CombatStuff\Combat.cs" />
     <Compile Include="CombatStuff\CombatEntity.cs" />
+    <Compile Include="CombatStuff\CombatPlayer.cs" />
     <Compile Include="CombatStuff\Command.cs" />
     <Compile Include="CombatStuff\MonsterFactory.cs" />
     <Compile Include="CombatStuff\UtilAttackFactory.cs" />
@@ -98,8 +101,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CombatStuff\Class\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

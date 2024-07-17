@@ -33,7 +33,7 @@ namespace Catacomb.CombatStuff
             return blank;
             
         }
-        public static Attack Tackle(CombatEntity castor,Command parent)
+        public static Attack Tackle(CombatEntity castor,Command parent, CommandIterator it, CombatEntity other)
         {
             
             double baseDamage = 10;
@@ -55,7 +55,7 @@ namespace Catacomb.CombatStuff
             return currentAttack;
         }
 
-        public static Attack FireBall(CombatEntity castor, Command parent)
+        public static Attack FireBall(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
         {
             double baseDamage = 10;
             double offset = AttackFactory.offset(castor.MagicStat);
@@ -74,7 +74,7 @@ namespace Catacomb.CombatStuff
         /**
          * NOTE: This attack will not heal you if it kills the monster 
          */
-        public static Attack Leech(CombatEntity castor, Command parent)
+        public static Attack Leech(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
         {
             double baseDamage = 10;
             double healToDamgeRatio = 1.0;
@@ -115,7 +115,7 @@ namespace Catacomb.CombatStuff
             return currentAttack;
         }
 
-        public static Attack Bulster(CombatEntity castor, Command parent)
+        public static Attack Bulster(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
         {
             double baseIncrease = 10;
             string name = "Bulster";
@@ -132,7 +132,7 @@ namespace Catacomb.CombatStuff
         }
 
 
-        public static Attack FrostLance(CombatEntity castor, Command parent)
+        public static Attack FrostLance(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
         {
             double baseDamage = 25;
             double offset = AttackFactory.offset(castor.MagicStat);
@@ -189,9 +189,5 @@ namespace Catacomb.CombatStuff
             };
             return currentAttack;
         }
-
-
-        //TODO: CREATE A CLASS FOR GENERATING ATTACK FOR BASIC NEEDS
-            // - An Attack that will chain on a string
     }
 }

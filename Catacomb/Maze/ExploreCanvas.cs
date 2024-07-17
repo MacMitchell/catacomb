@@ -107,7 +107,7 @@ namespace Catacomb.Maze
         }
         Combat SetUpCombat(Player playIn, Monster monsterIn)
         {
-            Combat currentCombat = new Combat(base.ActualWidth, base.ActualHeight, playIn.Fighter, monsterIn.Fighter,this);
+            Combat currentCombat = new Combat(base.ActualWidth, base.ActualHeight, playIn.GetPlayerFighter, monsterIn.Fighter,this);
             Monster currentCombatMonster = monsterIn;
             RemoveMonster(monsterIn);
             return currentCombat;

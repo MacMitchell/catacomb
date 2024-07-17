@@ -44,7 +44,7 @@ namespace Catacomb
 
         //Main settings
         int numberOfRooms = 10; //the value set here is the base value
-        int numberOfMonsters = 1; //the value set here is the base value
+        int numberOfMonsters = 5; //the value set here is the base value
 
         DisplayMode display; 
         private DisplayMode Display
