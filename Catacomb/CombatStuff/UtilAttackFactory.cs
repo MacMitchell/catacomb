@@ -31,7 +31,7 @@ namespace Catacomb.CombatStuff
             return GenerateTextAttack(parent, xp);
         }
 
-        public static Attack DefaultEndOfCombatAttack(CombatEntity defeated, Command parent, CommandIterator it, CombatEntity other)
+        public static Attack DefaultEndOfCombatAttack(CombatEntity defeated, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             if(defeated.Health <= 0)
             {
@@ -39,7 +39,7 @@ namespace Catacomb.CombatStuff
             }
             return null;
         }
-        public static Attack DefaultPlayerEndOfCombat(CombatEntity player, Command parent, CommandIterator it,CombatEntity monster)
+        public static Attack DefaultPlayerEndOfCombat(CombatEntity player, Command parent, CommandIterator it,CombatEntity monster, AttackDecorator dec = null)
         {
             if(player.Health <= 0)
             {

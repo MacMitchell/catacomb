@@ -60,6 +60,7 @@
     <Compile Include="CatacombManager.cs" />
     <Compile Include="CombatStuff\AdminCommand.cs" />
     <Compile Include="CombatStuff\Attack.cs" />
+    <Compile Include="CombatStuff\AttackDecorator.cs" />
     <Compile Include="CombatStuff\AttackFactory.cs" />
     <Compile Include="CombatStuff\Class\CatClass.cs" />
     <Compile Include="CombatStuff\Class\CatClassFactory.cs" />

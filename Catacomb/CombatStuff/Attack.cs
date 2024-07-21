@@ -8,32 +8,33 @@ namespace Catacomb.CombatStuff
 {
     public class Attack : Command
     {
-        private double damage; //the damage the attack does (+:reduces health)
-        private double selfHeal; //how much the one is attacking will heal (negative value will cause self damage)
-        private double poison; //how much the attack will poison its target (+: increases poison)
-        private double mentalBreak; //how much mentalbreak the attack will apply to the target (+: increases mental break)
-        private double armorChange; //how much will the attack change the target armor after the damage is done (+: reduces armor)
-        private double selfArmorChange; //how much the attack will change the armor of the user (+: reduces armor)
-        private double defenseStatChange; //how much the attack will change the defense value of its target (+:reduces)
-        private double magicResistStatChange;//how much the attack will change the magic resist of its target(+: reduces)
-        private double selfMagicResistStatChange; //(+: reduces)
-        private double selfDefenseStatChange; //how much the attack will change the defense of the user (+: reduces)
-        private double attackStatChange; //how much the attack will change the attack value of its target (+: reduces)
-        private double selfAttackStatChange; //how much the attack will change the attack value of the user (+: reduces)
-        private double magicAttackStatChange; // (+: reduces )
-        private double selfMagicAttackStatChange; //(+: reduces)
-        private double speedStatChange;//changes the speed stat of the target (+: reduces)
-        private double selfSpeedStatChange; //(+: reduces)
-        private List<Attack> children;
-        private string name;
+        protected double damage; //the damage the attack does (+:reduces health)
+        protected double selfHeal; //how much the one is attacking will heal (negative value will cause self damage)
+        protected double poison; //how much the attack will poison its target (+: increases poison)
+        protected double mentalBreak; //how much mentalbreak the attack will apply to the target (+: increases mental break)
+        protected double armorChange; //how much will the attack change the target armor after the damage is done (+: reduces armor)
+        protected double selfArmorChange; //how much the attack will change the armor of the user (+: reduces armor)
+        protected double defenseStatChange; //how much the attack will change the defense value of its target (+:reduces)
+        protected double magicResistStatChange;//how much the attack will change the magic resist of its target(+: reduces)
+        protected double selfMagicResistStatChange; //(+: reduces)
+        protected double selfDefenseStatChange; //how much the attack will change the defense of the user (+: reduces)
+        protected double attackStatChange; //how much the attack will change the attack value of its target (+: reduces)
+        protected double selfAttackStatChange; //how much the attack will change the attack value of the user (+: reduces)
+        protected double magicAttackStatChange; // (+: reduces )
+        protected double selfMagicAttackStatChange; //(+: reduces)
+        protected double speedStatChange;//changes the speed stat of the target (+: reduces)
+        protected double selfSpeedStatChange; //(+: reduces)
+        protected double manaDrain;
+        protected double selfManaDrain;
+        protected string name;
 
         public delegate void ExecuteAttackDelegate(CombatEntity castor, CombatEntity target);
         public ExecuteAttackDelegate ExecuteAttack;
-        private CombatEntity castor;
-        private CombatEntity target;
+        protected CombatEntity castor;
+        protected CombatEntity target;
 
 
-        private int commandReturnResult ;
+        protected int commandReturnResult ;
         public int CommandReturnResult{
             set { commandReturnResult = value; }
             get { return commandReturnResult; }
@@ -57,6 +58,8 @@ namespace Catacomb.CombatStuff
             this.selfMagicAttackStatChange = 0;
             this.speedStatChange = 0;
             this.selfSpeedStatChange = 0;
+            this.selfManaDrain = 0;
+            this.manaDrain = 0;
 
             CommandReturnResult = Command.IGNORE_COMMAND;
             castor = null;
@@ -71,62 +74,65 @@ namespace Catacomb.CombatStuff
             Target = targetIn;
             Castor = castorIn;
 
-            Target.Armor += armorChange;
-            Castor.Armor += selfArmorChange;
+            Target.Armor += ArmorChange;
+            Castor.Armor += SelfArmorChange;
 
-            Target.Defense += defenseStatChange;
-            Castor.Defense += selfDefenseStatChange;
+            Target.Defense += DefenseStatChange;
+            Castor.Defense += SelfDefenseStatChange;
 
-            Target.MagicResist += magicAttackStatChange;
-            Castor.MagicResist += selfMagicAttackStatChange;
+            Target.MagicResist += MagicAttackStatChange;
+            Castor.MagicResist += SelfMagicAttackStatChange;
 
-            Target.AttackStat += attackStatChange;
-            Castor.AttackStat += selfAttackStatChange;
+            Target.AttackStat += AttackStatChange;
+            Castor.AttackStat += SelfAttackStatChange;
 
-            Target.MagicStat += magicAttackStatChange;
-            Castor.MagicStat += selfMagicAttackStatChange;
+            Target.MagicStat += MagicAttackStatChange;
+            Castor.MagicStat += SelfMagicAttackStatChange;
 
-            Target.Speed += speedStatChange;
-            Castor.Speed += selfSpeedStatChange;
+            Target.Speed += SpeedStatChange;
+            Castor.Speed += SelfSpeedStatChange;
 
-            if (damage > 0)
+            if (Damage > 0)
             {
-                InflectDamage(Target, damage);
+                InflectDamage(Target, Damage);
             }
             else
             {
-                Heal(Target, damage * -1);
+                Heal(Target, Damage * -1);
             }
 
             //if damages itself
              if (selfHeal < 0)
             {
-                InflectDamage(Castor, selfHeal * -1);
+                InflectDamage(Castor, SelfHeal * -1);
             }
             else
             {
-                Heal(Castor, selfHeal);
+                Heal(Castor, SelfHeal);
             }
         }
-        public double Damage { get => damage; set => damage = value; }
-        public double SelfHeal { get => selfHeal; set => selfHeal = value; }
-        public double Poison { get => poison; set => poison = value; }
-        public double MentalBreak { get => mentalBreak; set => mentalBreak = value; }
-        public double ArmorChange { get => armorChange; set => armorChange = value; }
-        public double SelfArmorChange { get => selfArmorChange; set => selfArmorChange = value; }
-        public double DefenseStatChange { get => defenseStatChange; set => defenseStatChange = value; }
-        public double MagicResistStatChange { get => magicResistStatChange; set => magicResistStatChange = value; }
-        public double SelfMagicResistStatChange { get => selfMagicResistStatChange; set => selfMagicResistStatChange = value; }
-        public double SelfDefenseStatChange { get => selfDefenseStatChange; set => selfDefenseStatChange = value; }
-        public double AttackStatChange { get => attackStatChange; set => attackStatChange = value; }
-        public double SelfAttackStatChange { get => selfAttackStatChange; set => selfAttackStatChange = value; }
-        public double MagicAttackStatChange { get => magicAttackStatChange; set => magicAttackStatChange = value; }
-        public double SelfMagicAttackStatChange { get => selfMagicAttackStatChange; set => selfMagicAttackStatChange = value; }
-        public double SpeedStatChange { get => speedStatChange; set => speedStatChange = value; }
-        public double SelfSpeedStatChange { get => selfSpeedStatChange; set => selfSpeedStatChange = value; }
-        public string Name { get => name; set => name = value; }
+        public virtual double Damage { get => damage; set => damage = value; }
+        public virtual double SelfHeal { get => selfHeal; set => selfHeal = value; }
+        public virtual double Poison { get => poison; set => poison = value; }
+        public virtual double MentalBreak { get => mentalBreak; set => mentalBreak = value; }
+        public virtual double ArmorChange { get => armorChange; set => armorChange = value; }
+        public virtual double SelfArmorChange { get => selfArmorChange; set => selfArmorChange = value; }
+        public virtual double DefenseStatChange { get => defenseStatChange; set => defenseStatChange = value; }
+        public virtual double MagicResistStatChange { get => magicResistStatChange; set => magicResistStatChange = value; }
+        public virtual double SelfMagicResistStatChange { get => selfMagicResistStatChange; set => selfMagicResistStatChange = value; }
+        public virtual double SelfDefenseStatChange { get => selfDefenseStatChange; set => selfDefenseStatChange = value; }
+        public virtual double AttackStatChange { get => attackStatChange; set => attackStatChange = value; }
+        public virtual double SelfAttackStatChange { get => selfAttackStatChange; set => selfAttackStatChange = value; }
+        public virtual double MagicAttackStatChange { get => magicAttackStatChange; set => magicAttackStatChange = value; }
+        public virtual double SelfMagicAttackStatChange { get => selfMagicAttackStatChange; set => selfMagicAttackStatChange = value; }
+        public virtual double SpeedStatChange { get => speedStatChange; set => speedStatChange = value; }
+        public virtual double SelfSpeedStatChange { get => selfSpeedStatChange; set => selfSpeedStatChange = value; }
+        public virtual string Name { get => name; set => name = value; }
         public CombatEntity Castor { get => castor; set { if (castor == null) { castor = value; } } }
         public CombatEntity Target { get => target; set { if (target == null) { target = value; } } }
+
+        public virtual double ManaDrain { get => manaDrain; set => manaDrain = value; }
+        public virtual double SelfManaDrain { get => selfManaDrain; set => selfManaDrain = value; }
 
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
@@ -145,8 +151,13 @@ namespace Catacomb.CombatStuff
                 targetIn.Health = targetIn.MaxHealth;
             }
         }
+        public virtual double CalculateDamage(double damage)
+        {
+            return damage;
+        }
         public virtual void InflectDamage( CombatEntity target,double damage)
         {
+            damage = CalculateDamage(damage);
             if(damage == 0)
             {
                 return;
@@ -168,6 +179,36 @@ namespace Catacomb.CombatStuff
 
             target.Health -= damage;
         }
-        
+        /**
+         *The AttackDecorator passed in here is the most outer attack decorater
+         */
+        public static Attack CreateAttack(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            dec = new AttackDecorator(null, parent);
+            //dec.Parent = parent;
+            if (dec == null)
+            {
+                return new Attack(parent);
+            }
+            Attack baseAttack = new Attack(null);
+
+
+            dec.SetDamage = (double damage, Attack mainAttack) => { return 5.0+damage; };
+            AttackDecorator innerDec = new AttackDecorator(null, null);
+            innerDec.SetDamage = (double damage, Attack mainAttack) => { return damage + mainAttack.Damage; };
+            dec.LayerUpAttack = innerDec;
+
+            AttackDecorator attackDecoratorIt = dec;
+            while (true)
+            {
+                attackDecoratorIt.MainAttack = baseAttack;
+                if(attackDecoratorIt.LayerUpAttack ==null)
+                {
+                    attackDecoratorIt.LayerUpAttack = baseAttack;
+                    return dec;
+                }
+                attackDecoratorIt = (AttackDecorator)attackDecoratorIt.LayerUpAttack;
+            }
+        }
     }
 }

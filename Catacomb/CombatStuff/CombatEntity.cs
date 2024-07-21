@@ -54,7 +54,7 @@ namespace Catacomb.CombatStuff
 
         private CatClass currentClass;
 
-        public delegate Attack AttackGenerator(CombatEntity castor, Command parent, CommandIterator it,CombatEntity other);
+        public delegate Attack AttackGenerator(CombatEntity castor, Command parent, CommandIterator it,CombatEntity other, AttackDecorator dec =null);
         protected List<AttackGenerator> generateAttacks;
 
         protected AttackGenerator endOfCombatAttack;

@@ -33,7 +33,7 @@ namespace Catacomb.CombatStuff
             return blank;
             
         }
-        public static Attack Tackle(CombatEntity castor,Command parent, CommandIterator it, CombatEntity other)
+        public static Attack Tackle(CombatEntity castor,Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec= null)
         {
             
             double baseDamage = 10;
@@ -43,25 +43,26 @@ namespace Catacomb.CombatStuff
              
             
 
-            Attack currentAttack = new Attack(parent);
-            
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);//new Attack(parent);
+
             currentAttack.Damage = damage;
             currentAttack.Name = "Tackle";
             currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
             {
+                Console.WriteLine(currentAttack.Name);
                 currentAttack.Description = currentAttack.Castor.Name + " tackled " + currentAttack.Target.Name +"!";
             };
 
             return currentAttack;
         }
 
-        public static Attack FireBall(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
+        public static Attack FireBall(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             double baseDamage = 10;
             double offset = AttackFactory.offset(castor.MagicStat);
             baseDamage += offset/10.0;
 
-            Attack currentAttack = new Attack(parent);
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);//new Attack(parent);
             currentAttack.Damage = baseDamage;
             currentAttack.Name = "Fireball";
             currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
@@ -74,7 +75,7 @@ namespace Catacomb.CombatStuff
         /**
          * NOTE: This attack will not heal you if it kills the monster 
          */
-        public static Attack Leech(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
+        public static Attack Leech(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             double baseDamage = 10;
             double healToDamgeRatio = 1.0;
@@ -82,7 +83,7 @@ namespace Catacomb.CombatStuff
             double offset = AttackFactory.offset(castor.MagicStat);
             baseDamage += offset / 10.0;
 
-            Attack currentAttack = new Attack(parent);
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);//new Attack(parent);
             currentAttack.Damage = baseDamage;
             currentAttack.Name = "Leech";
 
@@ -115,14 +116,14 @@ namespace Catacomb.CombatStuff
             return currentAttack;
         }
 
-        public static Attack Bulster(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
+        public static Attack Bulster(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             double baseIncrease = 10;
             string name = "Bulster";
 
             Attack delcareAttack = CreateDeclareCommand(castor, name, parent);
 
-            Attack currentAttack = new Attack(delcareAttack);
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);//new Attack(delcareAttack);
             currentAttack.SelfDefenseStatChange = baseIncrease;
             currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
             {
@@ -132,13 +133,13 @@ namespace Catacomb.CombatStuff
         }
 
 
-        public static Attack FrostLance(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other)
+        public static Attack FrostLance(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             double baseDamage = 25;
             double offset = AttackFactory.offset(castor.MagicStat);
             baseDamage += offset / 10.0;
 
-            Attack currentAttack = new Attack(parent);
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);//new Attack(parent);
             currentAttack.Damage = baseDamage;
             currentAttack.Name = "FrostLance";
 
