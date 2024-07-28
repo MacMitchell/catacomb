@@ -31,6 +31,7 @@ namespace Catacomb.CombatStuff
         public override void InitilzeGenericValues()
         {
             base.EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
+            base.StartOfCombatAttacks.Add(UtilAttackFactory.DefaultPlayerStartOfCombatAttack);
         }
         public override string GenerateStats()
         {

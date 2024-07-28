@@ -184,19 +184,12 @@ namespace Catacomb.CombatStuff
          */
         public static Attack CreateAttack(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
-            dec = new AttackDecorator(null, parent);
             //dec.Parent = parent;
             if (dec == null)
             {
                 return new Attack(parent);
             }
             Attack baseAttack = new Attack(null);
-
-
-            dec.SetDamage = (double damage, Attack mainAttack) => { return 5.0+damage; };
-            AttackDecorator innerDec = new AttackDecorator(null, null);
-            innerDec.SetDamage = (double damage, Attack mainAttack) => { return damage + mainAttack.Damage; };
-            dec.LayerUpAttack = innerDec;
 
             AttackDecorator attackDecoratorIt = dec;
             while (true)

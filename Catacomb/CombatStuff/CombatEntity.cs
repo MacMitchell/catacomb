@@ -31,6 +31,7 @@ namespace Catacomb.CombatStuff
         public double Speed { get => speed; set => speed = value; }
         public double MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
         public double Armor { get => armor; set => armor = value; }
+
         public double XP { get => xp; set => xp = value; }
         public virtual bool IsPlayer { get => false; set => isPlayer = value; }
 
@@ -49,6 +50,7 @@ namespace Catacomb.CombatStuff
         private double speed;
         private double maxSpeed;
         private double armor;
+        private double poison;
         private double xp;
         private Boolean isPlayer;
 
@@ -56,6 +58,15 @@ namespace Catacomb.CombatStuff
 
         public delegate Attack AttackGenerator(CombatEntity castor, Command parent, CommandIterator it,CombatEntity other, AttackDecorator dec =null);
         protected List<AttackGenerator> generateAttacks;
+        private List<AttackGenerator> tempGenerateAttacks; //this is used to keep track of attacks that can be used in one combat. It allows for attack to be in one combat and removed for the next
+
+        private List<AttackGenerator> startOfCombatAttacks;
+
+        private List<AttackGenerator> startOfTurnAttacks;
+        private List<AttackGenerator> tempStartOfTurnAttacks;
+
+        private List<AttackGenerator> endOfTurnAttacks;
+        private List<AttackGenerator> tempEndOfTurnAttacks;
 
         protected AttackGenerator endOfCombatAttack;
         public AttackGenerator EndOfCombatAttack
@@ -63,12 +74,30 @@ namespace Catacomb.CombatStuff
             get { return endOfCombatAttack; }
             set { endOfCombatAttack = value; }
         }
+
+        public List<AttackGenerator> TempGenerateAttacks { get => tempGenerateAttacks; set => tempGenerateAttacks = value; }
+        protected List<AttackGenerator> StartOfCombatAttacks { get => startOfCombatAttacks; set => startOfCombatAttacks = value; }
+        public List<AttackGenerator> StartOfTurnAttacks { get => startOfTurnAttacks; set => startOfTurnAttacks = value; }
+        public List<AttackGenerator> TempStartOfTurnAttacks { get => tempStartOfTurnAttacks; set => tempStartOfTurnAttacks = value; }
+        public List<AttackGenerator> EndOfTurnAttacks { get => endOfTurnAttacks; set => endOfTurnAttacks = value; }
+        public List<AttackGenerator> TempEndOfTurnAttacks { get => tempEndOfTurnAttacks; set => tempEndOfTurnAttacks = value; }
+        public double Poison { get => poison; set => poison = value; }
+
         public CombatEntity(string nameIn, double defaultValue = 0,bool isPlayer =false)
         {
             this.isPlayer = isPlayer;
             Name = nameIn;
             generateAttacks = new List<AttackGenerator>();
-            
+            tempGenerateAttacks = new List<AttackGenerator>();
+
+            startOfCombatAttacks = new List<AttackGenerator>();
+
+            startOfTurnAttacks = new List<AttackGenerator>();
+            tempStartOfTurnAttacks = new List<AttackGenerator>();
+
+            endOfTurnAttacks = new List<AttackGenerator>();
+            tempEndOfTurnAttacks = new List<AttackGenerator>();
+
             InializeValues(defaultValue);
             InitilzeGenericValues();
         }
@@ -89,27 +118,30 @@ namespace Catacomb.CombatStuff
             defense = defaultValue;
             speed = defaultValue;
             xp = 0;
+            Poison = 0.0;
         }
 
         public virtual void InitilzeGenericValues()
         {
             if (!IsPlayer)
             {
-                EndOfCombatAttack = UtilAttackFactory.DefaultEndOfCombatAttack;
+                EndOfCombatAttack = UtilAttackFactory.DefaultEndOfCombatAttack;                
             }
-            //else
-            //{
-              //  EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
-            //}
+            startOfCombatAttacks.Add(UtilAttackFactory.DefaultStartOfCombatAttack);
         }
 
         public void AddAttack(AttackGenerator newAttack) 
         {
             generateAttacks.Add(newAttack);
         }
+
+        public void AddTempAttack(AttackGenerator newTempAttack)
+        {
+            tempGenerateAttacks.Add(newTempAttack);
+        }
         public Attack GetAttack(Command parentIn,CommandIterator it, CombatEntity other)
         {
-            int index = rand.Next(0, generateAttacks.Count);
+            int index = rand.Next(0, TempGenerateAttacks.Count);
             return GetAttack(index, parentIn, it,other);
         }
 
@@ -118,12 +150,51 @@ namespace Catacomb.CombatStuff
             return EndOfCombatAttack(this, parentIn,it,other);
         }
 
+        public List<Attack> GetStartOfCombatAttack(CommandIterator it, Command parentIn, CombatEntity other)
+        {
+            List<Attack> attacks = new List<Attack>();
+            foreach(AttackGenerator att in startOfCombatAttacks)
+            {
+                Attack temp = att(this, parentIn, it, other);
+                temp.Castor = this;
+                temp.Target = other;
+                attacks.Add(temp);
+            }
+            return attacks;
+        }
+
+        public List<Attack> GetStartOfTurnAttack(CommandIterator it, Command parentIn, CombatEntity other)
+        {
+            List<Attack> attacks = new List<Attack>();
+            foreach (AttackGenerator att in TempStartOfTurnAttacks)
+            {
+                Attack temp = att(this, parentIn, it, other);
+                temp.Castor = this;
+                temp.Target = other;
+                attacks.Add(temp);
+            }
+            return attacks;
+        }
+
+        public List<Attack> GetEndOfTurnAttack(CommandIterator it, Command parentIn, CombatEntity other)
+        {
+            List<Attack> attacks = new List<Attack>();
+            foreach (AttackGenerator att in TempEndOfTurnAttacks)
+            {
+                Attack temp = att(this, parentIn, it, other);
+                temp.Castor = this;
+                temp.Target = other;
+                attacks.Add(temp);
+            }
+            return attacks;
+        }
+
         public List<Attack> GetListOfAttacks()
         {
             List<Attack> attacks = new List<Attack>();
-            for(int i =0; i < generateAttacks.Count; i++)
+            for(int i =0; i < TempGenerateAttacks.Count; i++)
             {
-                attacks.Add(generateAttacks[i](this, null,null,null));
+                attacks.Add(TempGenerateAttacks[i](this, null,null,null));
             }
             return attacks;
         }
@@ -139,14 +210,19 @@ namespace Catacomb.CombatStuff
 
         public Attack GetAttack(int index, Command parent,CommandIterator it,CombatEntity other)
         {
-            if(index >= generateAttacks.Count)
+            if(index >= TempGenerateAttacks.Count)
             {
                 return null;
             }
-            return generateAttacks[index](this, parent,it, other);
+            return TempGenerateAttacks[index](this, parent,it, other);
         }
         
-
+        public void PrepAttack()
+        {
+            tempGenerateAttacks = new List<AttackGenerator>(generateAttacks);
+            tempStartOfTurnAttacks = new List<AttackGenerator>(startOfTurnAttacks);
+            tempEndOfTurnAttacks = new List<AttackGenerator>(endOfTurnAttacks);
+        }
        
         public virtual string GenerateStats()
         {

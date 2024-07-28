@@ -49,7 +49,6 @@ namespace Catacomb.CombatStuff
             currentAttack.Name = "Tackle";
             currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
             {
-                Console.WriteLine(currentAttack.Name);
                 currentAttack.Description = currentAttack.Castor.Name + " tackled " + currentAttack.Target.Name +"!";
             };
 

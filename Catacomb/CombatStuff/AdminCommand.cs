@@ -30,6 +30,21 @@ namespace Catacomb.CombatStuff
         }
     }
 
+    public abstract class FetchAttackCommand : AdminCommands
+    {
+        protected CombatEntity player;
+        protected CombatEntity monster;
+        public FetchAttackCommand(CommandIterator it, Command parent, CombatEntity entity1, CombatEntity entity2) : base(it, parent)
+        {
+            this.player = entity1.IsPlayer ? entity1 : entity2;
+            this.monster = entity1.IsPlayer? entity2 : entity1;
+        }
+    }
+
+
+    /**
+     * This class is for setting up the turn. It does not directly fetch any attacks
+     */ 
     public class StartOfTurnCommand : AdminCommands
     {
         protected CombatEntity castor;
@@ -42,11 +57,39 @@ namespace Catacomb.CombatStuff
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
             this.Next = new StartOfTurnCommand(it, null, castor, target);
+            new FetchStartOfTurnAttack(it, this, castor, target);
             new GetAttacksCommand(it, this);
             return ExecuteNext(castor, target);
         }
     }
 
+    public class FetchStartOfTurnAttack : FetchAttackCommand
+    {
+        public FetchStartOfTurnAttack(CommandIterator it, Command parent, CombatEntity player, CombatEntity monster) : base(it, parent, player, monster) { }
+
+        public override int Execute(CombatEntity castor, CombatEntity target)
+        {
+            monster.GetStartOfTurnAttack(it, this, player);
+            player.GetStartOfTurnAttack(it, this, monster);
+
+            new CheckForCombatEnd(it, this, player, monster);
+            return ExecuteNext(castor, target);
+        }
+    }
+
+    public class FetchEndOfTurnAttack : FetchAttackCommand
+    {
+        public FetchEndOfTurnAttack(CommandIterator it, Command parent, CombatEntity player, CombatEntity monster) : base(it, parent, player, monster) { }
+
+        public override int Execute(CombatEntity castor, CombatEntity target)
+        {
+            monster.GetEndOfCombatAttack(it, this, player);
+            player.GetEndOfCombatAttack(it, this, monster);
+
+            new CheckForCombatEnd(it, this, player, monster);
+            return base.ExecuteNext(castor, target);
+        }
+    }
     public class GetAttacksCommand : AdminCommands
     {
         public GetAttacksCommand(CommandIterator iteratorIn, Command parent= null) : base(iteratorIn, parent){}
@@ -124,6 +167,26 @@ namespace Catacomb.CombatStuff
         }
     }
 
+    public class FetchStartOfCombatAttack : AdminCommands
+    {
+        protected CombatEntity player;
+        protected CombatEntity monster;
+        public FetchStartOfCombatAttack(CommandIterator it, Command parent, CombatEntity player, CombatEntity monster): base(it, parent)
+        {
+            this.player = player;
+            this.monster = monster;
+        }
+        public override int Execute(CombatEntity castor, CombatEntity target)
+        {
+            monster.GetStartOfCombatAttack(it, this, player);
+            player.GetStartOfCombatAttack(it, this, monster);
+            this.Next = new StartOfTurnCommand(it, parent, player, monster);
+            
+            return base.ExecuteNext(monster,player);
+        }
+    }
+
+ 
     public class FetchEndOfCombatCommand: AdminCommands
     {
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Catacomb.CombatStuff.Class;
+using Catacomb.CombatStuff.AttackFactories;
 namespace Catacomb.CombatStuff
 {
     class MonsterFactory
@@ -20,7 +21,9 @@ namespace Catacomb.CombatStuff
             player.AddAttack(AttackFactory.Leech);
             player.AddAttack(AttackFactory.Bulster);
             player.IsPlayer = true;
-            
+
+            player.StartOfTurnAttacks.Add(TurnBasedAttackFactory.Regeneration);
+
             return player;
         }
         public static CombatEntity GenerateSlime()
@@ -29,6 +32,9 @@ namespace Catacomb.CombatStuff
             slime.XP = 100;
             slime.AddAttack(AttackFactory.Tackle);
             slime.AddAttack(AttackFactory.Leech);
+            slime.StartOfTurnAttacks.Add(TurnBasedAttackFactory.Regeneration);
+            slime.StartOfTurnAttacks.Add(TurnBasedAttackFactory.ToxicAura);
+
             return slime;
         }
     }

@@ -57,7 +57,6 @@ namespace Catacomb.CombatStuff
             }
         }
 
-
         private MainCombatView CurrentView
         {
             set { if(currentView != value)
@@ -187,7 +186,6 @@ namespace Catacomb.CombatStuff
             monsterText.Text = Monster.GenerateStats();
             playerText.Text = Player.GenerateStats();
         }
-        
 
         public void KeyRelease(Key keyIn)
         {
@@ -206,11 +204,6 @@ namespace Catacomb.CombatStuff
 
         public DisplayMode Update(double time)
         {
-            /*if(IsCombatOver())
-            {
-                
-                return previousDisplay;
-            }*/
             if(ReportStatus == Command.COMBAT_FINISHED)
             {
                 return previousDisplay;
@@ -309,15 +302,6 @@ namespace Catacomb.CombatStuff
                 int result = it.CurrentCommand.Execute(player, monster);
                 actionText.Text = it.CurrentCommand.Description;
                 UpdateStats();
-                
-                /*if (monster.Health <= 0)
-                {
-                    return Command.MONSTER_DIED;
-                }
-                if (player.Health <= 0)
-                {
-                    return Command.PLAYER_DIED;
-                }*/
                 return result;
             }
             public void Next()
@@ -329,32 +313,12 @@ namespace Catacomb.CombatStuff
                 int result = Execute();
                 Next();
                 return result;
-                
-                /* Commented it out, but did not do enough testing to see if the above works the same. Test a bit then remove commented below
-                if (it.CurrentCommand == null)
-                {
-                    SetUpTurn();
-                }
-                int result = it.CurrentCommand.Execute(player, monster);
-                actionText.Text = it.CurrentCommand.Description;
-                UpdateStats();
-                it.Next();
-                
-                if (monster.Health <= 0)
-                {
-                    return Command.MONSTER_DIED;
-                }
-                if (player.Health <= 0)
-                {
-                    return Command.PLAYER_DIED;
-                }
-                return result;
-                */
             }
             public void SetUpAttacks()
             {
                 //in the fruture this will not change the current command, but currentCommand.Next
-                StartOfTurnCommand getAttacks = new StartOfTurnCommand(it,null,player,monster);
+                //StartOfTurnCommand getAttacks = new StartOfTurnCommand(it,null,player,monster);
+                FetchStartOfCombatAttack getAttacks = new FetchStartOfCombatAttack(it, null, player, monster);
                 it.CurrentCommand = getAttacks;
             }
 

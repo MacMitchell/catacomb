@@ -61,7 +61,8 @@
     <Compile Include="CombatStuff\AdminCommand.cs" />
     <Compile Include="CombatStuff\Attack.cs" />
     <Compile Include="CombatStuff\AttackDecorator.cs" />
-    <Compile Include="CombatStuff\AttackFactory.cs" />
+    <Compile Include="CombatStuff\AttackFactories\AttackFactory.cs" />
+    <Compile Include="CombatStuff\AttackFactories\TurnBasedAttackFactory.cs" />
     <Compile Include="CombatStuff\Class\CatClass.cs" />
     <Compile Include="CombatStuff\Class\CatClassFactory.cs" />
     <Compile Include="CombatStuff\Combat.cs" />
@@ -69,7 +70,7 @@
     <Compile Include="CombatStuff\CombatPlayer.cs" />
     <Compile Include="CombatStuff\Command.cs" />
     <Compile Include="CombatStuff\MonsterFactory.cs" />
-    <Compile Include="CombatStuff\UtilAttackFactory.cs" />
+    <Compile Include="CombatStuff\AttackFactories\UtilAttackFactory.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\Player.cs" />

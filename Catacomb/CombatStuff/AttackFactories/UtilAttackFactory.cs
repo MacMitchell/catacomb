@@ -18,6 +18,17 @@ namespace Catacomb.CombatStuff
             };
             return newAttack;
         }
+
+        public static Attack GenerateFollowUpTextAttack(Command parent, String text)
+        {
+            Attack followUp = new Attack(parent);
+
+            followUp.ExecuteAttack = (CombatEntity UNUSED, CombatEntity UNSUED2) =>
+            {
+                followUp.Description = text;
+            };
+            return followUp;
+        }
         public static Attack GenerateDefeatAttack(CombatEntity castor, Command parent)
         {
             String defeatText = castor.Name + " was defeated!";
@@ -38,6 +49,18 @@ namespace Catacomb.CombatStuff
                 return GenerateDefeatAttack(defeated,parent);
             }
             return null;
+        }
+
+        public static Attack DefaultStartOfCombatAttack(CombatEntity monster, Command parent, CommandIterator it, CombatEntity other, AttackDecorator notUSED = null)
+        {
+            monster.PrepAttack();
+            return GenerateTextAttack(parent, "A " + monster.Name + "  appeared!");
+        }
+
+        public static Attack DefaultPlayerStartOfCombatAttack(CombatEntity monster, Command parent, CommandIterator it, CombatEntity other, AttackDecorator NOTUSED = null)
+        {
+            monster.PrepAttack();
+            return GenerateTextAttack(parent, "You prepare for combat.");
         }
         public static Attack DefaultPlayerEndOfCombat(CombatEntity player, Command parent, CommandIterator it,CombatEntity monster, AttackDecorator dec = null)
         {
