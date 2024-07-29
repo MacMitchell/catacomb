@@ -21,7 +21,7 @@ namespace Catacomb.CombatStuff.AttackFactories
             double healPercent = 5.0;
             Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
 
-            currentAttack.Name = " Regeneration";
+            currentAttack.Name = "Regeneration";
 
             currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
             {
@@ -35,6 +35,23 @@ namespace Catacomb.CombatStuff.AttackFactories
             };
             return currentAttack;
         }
+
+        public static Attack SharpStick(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double damage = 5.0;
+
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+
+            currentAttack.Name = "Sharp Stick";
+
+            currentAttack.Damage = damage;
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                currentAttack.Description = "A sharp stick pokes " + currentAttack.Target.Name + "!";
+            };
+            return currentAttack;
+        }
+
         public static Attack ToxicAura(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null) 
         {
             double baseToxicAmount = 10;

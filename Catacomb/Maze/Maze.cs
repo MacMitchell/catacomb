@@ -55,7 +55,6 @@ namespace Catacomb.Maze
             Draw();
         }
 
-        
         public Canvas GetCanvas()
         {
             return canvas;

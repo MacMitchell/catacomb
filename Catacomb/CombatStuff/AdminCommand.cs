@@ -59,6 +59,7 @@ namespace Catacomb.CombatStuff
             this.Next = new StartOfTurnCommand(it, null, castor, target);
             new FetchStartOfTurnAttack(it, this, castor, target);
             new GetAttacksCommand(it, this);
+            new FetchEndOfTurnAttack(it, this, castor, target);
             return ExecuteNext(castor, target);
         }
     }
@@ -83,8 +84,8 @@ namespace Catacomb.CombatStuff
 
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
-            monster.GetEndOfCombatAttack(it, this, player);
-            player.GetEndOfCombatAttack(it, this, monster);
+            monster.GetEndOfTurnAttack(it, this, player);
+            player.GetEndOfTurnAttack(it, this, monster);
 
             new CheckForCombatEnd(it, this, player, monster);
             return base.ExecuteNext(castor, target);

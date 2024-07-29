@@ -23,6 +23,7 @@ namespace Catacomb.CombatStuff
             player.IsPlayer = true;
 
             player.StartOfTurnAttacks.Add(TurnBasedAttackFactory.Regeneration);
+            player.EndOfTurnAttacks.Add(TurnBasedAttackFactory.SharpStick);
 
             return player;
         }

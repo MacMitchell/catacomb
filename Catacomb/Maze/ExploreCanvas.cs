@@ -46,7 +46,7 @@ namespace Catacomb.Maze
             //currentMaze = new CatMaze(25, 1,player);
             Boolean done = false;
             //TEMPORARY MEASURE. Building the maze sometimes fails. It seems like it just fails to place one room, sometimes. One room will take all the available parents room and still fail
-            //Got tired of looking through the maze builder and building rooms, so creating combat then going to fix it.
+            //Got tired of looking through the maze builder and building rooms
             while (!done)
             {
                 try
