@@ -47,15 +47,21 @@ namespace Catacomb.Maze
             Boolean done = false;
             //TEMPORARY MEASURE. Building the maze sometimes fails. It seems like it just fails to place one room, sometimes. One room will take all the available parents room and still fail
             //Got tired of looking through the maze builder and building rooms
-            while (!done)
+            maze = new CatMaze();
+            
+            maze.Size = numberOfRooms;
+            maze.Step = stepSize;
+            maze.NumberOfMonsters = 10;
+
+            maze.startPoint = new Vectors.Point((width / 2), (height / 2));
+
+
+            maze.ConstructMaze(player);
+            /*while (!done)
             {
                 try
                 {
-                    maze = new CatMaze();
-
-                    maze.startPoint = new Vectors.Point((width / 2), (height / 2));
-
-                    maze.Create(numberOfRooms, stepSize, player);
+                    maze.Create(player);
                     maze.Draw();
 
                     for (int i = 0; i < numberOfMonsters; i++)
@@ -68,7 +74,7 @@ namespace Catacomb.Maze
                 {
                     Console.WriteLine("FAILED TO BUILD MAZE\n");
                 }
-            }
+            }*/
             
             base.Children.Add(maze.GetCanvas());
             base.Children.Add(player.GetCanvas());

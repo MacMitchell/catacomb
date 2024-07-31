@@ -24,6 +24,10 @@ namespace Catacomb.Maze
         private List<Room> allRooms;        
         private MazeBuilder builder;
         protected List<Monster> monsters;
+
+        private int size;
+        private int step;
+        private int numberOfMonsters;
         public Room Start{
             get{return start;}
             set{start=  value;}
@@ -35,6 +39,10 @@ namespace Catacomb.Maze
             set { cameraPos = value; }
         }
 
+        public int Size { get => size; set => size = value; }
+        public int Step { get => step; set => step = value; }
+        public int NumberOfMonsters { get => numberOfMonsters; set => numberOfMonsters = value; }
+
         //TODO currently the maze uses the MazeBuilder to help create itself
         //Ideally, when the user creates a maze, it uses a MazeBuilder to create a maze
         public CatMaze() {
@@ -42,17 +50,45 @@ namespace Catacomb.Maze
             builder = new MazeBuilder();
             monsters = new List<Monster>();
             startPoint = new Point(150, 150);
+
+            Step = 1;
+            Size = 10;
+            NumberOfMonsters = 10;
         }
-        public void Create(int size, int step, Player playIn)
+        public void Create(Player playIn)
         {
             
-            start = builder.BuildMaze(size, step);
+            start = builder.BuildMaze(Size, Step);
             canvas = null;
             player = playIn;
             player.Position = startPoint;//new Point(150, 150);
 
 
             Draw();
+        }
+
+
+        public void ConstructMaze(Player playIn)
+        {
+            bool done = false;
+            while (!done)
+            {
+                try
+                {
+                    this.Create(playIn);
+                    this.Draw();
+
+                    for (int i = 0; i < NumberOfMonsters; i++)
+                    {
+                        this.CreateMonster();
+                    }
+                    done = true;
+                }
+                catch (Exception sadness)
+                {
+                    Console.WriteLine("FAILED TO BUILD MAZE\n");
+                }
+            }
         }
 
         public Canvas GetCanvas()

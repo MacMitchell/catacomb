@@ -159,8 +159,6 @@ namespace Catacomb.Visuals
             //THis grabs the same area as the floor. It MIGHT need to be shunk a little bit, we will see
             CatRectangle rep = (CatRectangle)representive;
             CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
-            Console.WriteLine("SPAWN AREA!!!");
-            Console.WriteLine(localRep);
             potentialSpawnAreas.Add(localRep);
         }
         protected virtual void DrawRep()
@@ -416,8 +414,6 @@ namespace Catacomb.Visuals
         {
             CatRectangle rep = (CatRectangle)representive;
             CatRectangle localRep = new CatRectangle(convertPointToLocal(rep.TopLeft), convertPointToLocal(rep.BottomRight));
-            Console.WriteLine("FLOOR!!!!!");
-            Console.WriteLine(localRep.ToString());
             DrawFloor(localRep);
         }
         protected virtual void DrawFloor(CatRectangle floor)

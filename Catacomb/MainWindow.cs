@@ -96,7 +96,9 @@ namespace Catacomb
 
             MazeBuilder builder = new MazeBuilder();
             testMaze = new CatMaze();
-            testMaze.Create(15, 3, new Player(new Vectors.Point(225,225)));
+            testMaze.Step = 3;
+            testMaze.Size = 15;
+            testMaze.Create(new Player(new Vectors.Point(225,225)));
 
             textBox1 = new Label();
             textBox1.Foreground = Brushes.White;

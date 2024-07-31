@@ -43,7 +43,7 @@ namespace Catacomb
         public CatPopUp currentPopUp;
 
         //Main settings
-        int numberOfRooms = 10; //the value set here is the base value
+        int numberOfRooms = 100; //the value set here is the base value
         int numberOfMonsters = 5; //the value set here is the base value
 
         DisplayMode display; 
