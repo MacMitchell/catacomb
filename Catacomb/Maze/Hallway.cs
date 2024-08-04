@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Catacomb.Vectors;
 using Catacomb.Visuals;
-using System.Windows.Media;
 using Catacomb.Global;
 
 namespace Catacomb.Maze

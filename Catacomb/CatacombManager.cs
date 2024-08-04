@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catacomb.Vectors;
-using System.Windows.Media;
-
+using Avalonia.Media;
 using Catacomb.Maze;
 using Catacomb.Entities;
 using Catacomb.CombatStuff;
@@ -31,7 +30,7 @@ namespace Catacomb
 
         Player player;
         //Window mainWindow;
-        System.Windows.Forms.Timer time;
+        System.Timers.Timer time;
         DateTime currentTime;
         private bool updateFinish = true;
 
@@ -67,11 +66,12 @@ namespace Catacomb
             base.WindowState = Avalonia.Controls.WindowState.FullScreen;
    
             base.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
-            time = new System.Windows.Forms.Timer();
+            time = new System.Timers.Timer();
 
             time.Interval = 10;
             time.Enabled = true;
-            time.Tick += Update;
+            
+            time.Elapsed += Update;
             currentTime = DateTime.Now;
 
             this.KeyDown += MoveKeyPress;
@@ -271,7 +271,7 @@ namespace Catacomb
         public CatPopUp():base()
         {
             
-             converter = new System.Windows.Media.BrushConverter();
+             converter = new Avalonia.Media.BrushConverter();
 
             var brush = Avalonia.Media.Brushes.DarkBlue;//(Avalonia.Media.Brush) converter.ConvertFromString("#02427D");
             this.Background = brush;
