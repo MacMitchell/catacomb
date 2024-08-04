@@ -224,6 +224,7 @@ namespace Catacomb.CombatStuff
             tempEndOfTurnAttacks = new List<AttackGenerator>(endOfTurnAttacks);
         }
        
+
         public virtual string GenerateStats()
         {
             string output = Name + "\nHealth: " +

@@ -57,6 +57,7 @@ namespace Catacomb.CombatStuff
             return GenerateTextAttack(parent, "A " + monster.Name + "  appeared!");
         }
 
+
         public static Attack DefaultPlayerStartOfCombatAttack(CombatEntity monster, Command parent, CommandIterator it, CombatEntity other, AttackDecorator NOTUSED = null)
         {
             monster.PrepAttack();

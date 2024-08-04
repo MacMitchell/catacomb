@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Media;
+using Avalonia.Input;
+using Avalonia.Media;
 
 using Catacomb.Visuals;
 using Catacomb.CombatStuff;
@@ -53,7 +53,7 @@ namespace Catacomb.Entities
             canvas.Width = Width;
             canvas.Height = Height;
             //canvas.Background = Brushes.Orange;
-            SetColor(Brushes.Orange);
+            SetColor( Brushes.Orange);
             Velocity = 0;
             MaxVelocity = 800;
             Instance = this;

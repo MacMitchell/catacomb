@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catacomb.Global;
-using System.Windows.Controls;
-using System.Windows.Shapes;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 
 namespace Catacomb.Visuals
 {
@@ -22,10 +22,8 @@ namespace Catacomb.Visuals
         public Wall(Point start, Point end,double width = Globals.LINE_THICKNESS):base(new CatThickLine(start,end,width),false)
         {
             l = new Line();
-            l.X1 = start.GetX();
-            l.Y1 = start.GetY();
-            l.X2 = end.GetX();
-            l.Y2 = end.GetY();
+            l.StartPoint = new Avalonia.Point(start.GetX(), start.GetY());
+            l.EndPoint = new Avalonia.Point(end.GetX(), end.GetY());
             l.Stroke = Globals.LINE_COLOR;
             l.StrokeThickness =  Globals.LINE_THICKNESS;
             canvas.Children.Add(l);

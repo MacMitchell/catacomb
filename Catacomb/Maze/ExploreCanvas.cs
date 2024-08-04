@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
+using Avalonia.Input;
+using Avalonia.Controls;
 
 using Catacomb.Entities;
 using Catacomb.CombatStuff;
 namespace Catacomb.Maze
 {
-    class ExploreCanvas : Canvas, DisplayMode
+    class ExploreCanvas : Avalonia.Controls.Canvas, DisplayMode
     {
 
         private Player player;
@@ -35,7 +35,7 @@ namespace Catacomb.Maze
 
         }
         
-        public Panel GetDisplay(){
+        public Avalonia.Controls.Panel GetDisplay(){
             return this;
         }
         public void SetUpMaze(int numberOfRooms = 100, int numberOfMonsters = 100 )
@@ -113,7 +113,7 @@ namespace Catacomb.Maze
         }
         Combat SetUpCombat(Player playIn, Monster monsterIn)
         {
-            Combat currentCombat = new Combat(base.ActualWidth, base.ActualHeight, playIn.GetPlayerFighter, monsterIn.Fighter,this);
+            Combat currentCombat = new Combat(base.Bounds.Size.Width, base.Bounds.Size.Height, playIn.GetPlayerFighter, monsterIn.Fighter,this);
             Monster currentCombatMonster = monsterIn;
             RemoveMonster(monsterIn);
             return currentCombat;
@@ -144,7 +144,7 @@ namespace Catacomb.Maze
             player.Angle = angle;
         }
 
-        public void KeyPress(Key e)
+        public void KeyPress(Avalonia.Input.Key e)
         {
 
             switch (e)

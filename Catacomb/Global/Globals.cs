@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
+using Avalonia.Media;
 
 namespace Catacomb.Global
 {
@@ -16,10 +16,10 @@ namespace Catacomb.Global
 
         //Visual globals
         public const double LINE_THICKNESS = 10.0;
-        public  static SolidColorBrush LINE_COLOR = Brushes.White;
-        public static SolidColorBrush MAZE_BACKGROUND_COLOR = Brushes.Black;
-        public static SolidColorBrush FLOOR_COLOR = Brushes.DarkBlue;
-        public static SolidColorBrush COMBAT_FONT_COLOR = Brushes.White; 
+        public  static Avalonia.Media.IImmutableBrush LINE_COLOR = Avalonia.Media.Brushes.White;
+        public static Avalonia.Media.IImmutableBrush MAZE_BACKGROUND_COLOR = Avalonia.Media.Brushes.Black;
+        public static Avalonia.Media.IImmutableBrush FLOOR_COLOR = Avalonia.Media.Brushes.DarkBlue;
+        public static Avalonia.Media.IImmutableBrush COMBAT_FONT_COLOR = Avalonia.Media.Brushes.White; 
         public const  double BASE_ATTACK_STAT = 100.0;
         public const  int CONNECTION_LIMIT = 4; 
         public static bool AreDoublesEqual(double d1, double d2)

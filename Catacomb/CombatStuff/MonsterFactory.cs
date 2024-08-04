@@ -22,8 +22,6 @@ namespace Catacomb.CombatStuff
             player.AddAttack(AttackFactory.Bulster);
             player.IsPlayer = true;
 
-            player.StartOfTurnAttacks.Add(TurnBasedAttackFactory.Regeneration);
-            player.EndOfTurnAttacks.Add(TurnBasedAttackFactory.SharpStick);
 
             return player;
         }
@@ -33,8 +31,6 @@ namespace Catacomb.CombatStuff
             slime.XP = 100;
             slime.AddAttack(AttackFactory.Tackle);
             slime.AddAttack(AttackFactory.Leech);
-            slime.StartOfTurnAttacks.Add(TurnBasedAttackFactory.Regeneration);
-            slime.StartOfTurnAttacks.Add(TurnBasedAttackFactory.ToxicAura);
 
             return slime;
         }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Media;
+using Avalonia.Controls;
+using Avalonia.Media;
 using Catacomb.Vectors;
 using Catacomb.Visuals;
 using Catacomb.CombatStuff;
@@ -196,7 +196,7 @@ namespace Catacomb.Entities
             base.Draw();
         }
 
-        protected void SetColor( SolidColorBrush color)
+        protected void SetColor( IImmutableBrush color)
         {
             canvas.Background = color;
         }

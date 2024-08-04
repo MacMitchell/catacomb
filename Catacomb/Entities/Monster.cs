@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Catacomb.Vectors;
 using Catacomb.Global;
-using System.Windows.Media;
+using Avalonia.Media;
 using Catacomb.Maze;
 using Catacomb.CombatStuff;
 

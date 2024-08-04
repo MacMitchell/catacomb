@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Shapes;
+using Avalonia.Media;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 
 using Catacomb.Vectors;
 using Catacomb.Entities;

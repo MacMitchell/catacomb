@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using Catacomb.Vectors;
 using Catacomb.Entities;
-using System.Windows.Input;
 using System.Collections;
-
+using Avalonia.Controls;
+using Avalonia.Input;
 namespace Catacomb.Maze
 {
     public class CatMaze

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catacomb.Vectors;
-using System.Windows.Controls;
+using Avalonia.Controls;
 
 namespace Catacomb.Maze
 {
@@ -22,9 +22,18 @@ namespace Catacomb.Maze
         private int numberOfRooms;
 
         //list of rooms that could not be built. The int value for the direction the PARENT needs to be. i.e. grab from availableParent[int]
-        private List<Tuple<Room, int>> freeRooms; 
-        
+        private List<Tuple<Room, int>> freeRooms;
+
+        public delegate Room CreateRoomFunction(List<Room> currentRomos);
+
+
+        private CreateRoomFunction fillerRoom;
+        private CreateRoomFunction keyRoom;
         private List<List<Room>> availableParents;
+
+        public CreateRoomFunction FillerRoom { get => fillerRoom; set => fillerRoom = value; }
+        public CreateRoomFunction KeyRoom { get => keyRoom; set => keyRoom = value; }
+
         public MazeBuilder()
         {
             rand = new Random();

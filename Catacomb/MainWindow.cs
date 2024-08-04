@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using System.Timers;
+using Avalonia.Input;
+using Avalonia.Controls;
+using Avalonia;
 
 using Catacomb.Maze;
-using Catacomb.Visuals;
-using Catacomb.Vectors;
 using Catacomb.Entities;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+
 namespace Catacomb
 {
     /// <summary>
@@ -42,25 +32,62 @@ namespace Catacomb
         static void Main(string[] args)
 
         {
-            Application test = new Application();
-            CatacombManager cat = new CatacombManager();
             //MainWindow window = new MainWindow();
             //test.MainWindow = window;
             //Window mazeWindow = GetMazeTest();
-            test.MainWindow = cat;
+            //test.Main = cat;
             //test.MainWindow = mazeWindow;
             //mazeWindow.Show();
 
-            
+
             //mazeWindow.KeyDown += MoveKeyPress;
             //Thread mainThread = new Thread(Update);
 
-            
+
+            var create = AppBuilder.Configure<CatApplication>()
+             .UsePlatformDetect()
+             .LogToTrace().StartWithClassicDesktopLifetime(args);
+           /* CatacombManager cat = new CatacombManager();
             cat.StartUp();
-            test.Run();
+            //((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow = cat;
+            cat.Show();
+            create.StartWithClassicDesktopLifetime(args);*/
+            //System.Windows.Forms.Application.Run();
+            
+
+
+            //test.Run();
+            //test.RunWithMainWindow<CatacombManager>();
+
+
+            // test.StartWithClassicDesktopLifetime(args);
         }
+        public class CatApplication: Application
+        {
+            public override void Initialize()
+            {
+                //AvaloniaXamlLoader.Load(this);
+            }
 
 
+
+            public override  void OnFrameworkInitializationCompleted()
+            {
+                if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    CatacombManager test = new CatacombManager();
+                    test.StartUp();
+                    desktop.MainWindow = test;
+
+
+                    // Listen to the ShutdownRequested-event
+                }
+
+                base.OnFrameworkInitializationCompleted();
+
+                // Init the MainViewModel 
+            }
+        }
 
 
 
@@ -84,7 +111,7 @@ namespace Catacomb
 
 
 
-        
+        /*
         private static Window GetMazeTest()
         {
 
@@ -113,7 +140,7 @@ namespace Catacomb
             test.Y2 = 500;
             test.Stroke = Brushes.Red;
             mainCanvas.Children.Add(test);
-            */
+            
 
             //this.MouseDown += testF;
 
@@ -230,8 +257,9 @@ namespace Catacomb
             updateLabels();
             updateRoomCanvas();*/
         }
+    
     }
-   
+   /*
     public partial class MainWindow : Window
     {
         Canvas mainCanvas;
@@ -251,7 +279,7 @@ namespace Catacomb
             test.Y2 = 500;
             test.Stroke = Brushes.Red;
             mainCanvas.Children.Add(test);
-            */
+            
             this.Content = mainCanvas;
             this.Title = "HELLO WORLD";
             this.Show();
@@ -304,10 +332,11 @@ namespace Catacomb
         {
             MessageBox.Show("Message here");
         }
-
+    
         
     }
 
 
 
 }
+*/

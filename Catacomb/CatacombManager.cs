@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Input;
 using Catacomb.Vectors;
 using System.Windows.Media;
 
 using Catacomb.Maze;
 using Catacomb.Entities;
 using Catacomb.CombatStuff;
-using System.Windows.Controls;
-using System.Windows.Shapes;
+using Avalonia.Platform;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 
 namespace Catacomb
 {
-    public sealed class CatacombManager : Window
+    public sealed class CatacombManager : Avalonia.Controls.Window
     {
         private static CatacombManager instance = null;
         public static CatacombManager Instance
@@ -62,11 +60,11 @@ namespace Catacomb
 
             base.Activate();
 
-            base.Height = Screen.PrimaryScreen.WorkingArea.Size.Height;
-            base.Width = Screen.PrimaryScreen.WorkingArea.Size.Width;
+            //base.Height =  Screen.PrimaryScreen.WorkingArea.Size.Height;
+            //base.Width = Screen.PrimaryScreen.WorkingArea.Size.Width;
 
             base.Title = "UwU";
-            base.WindowState = (WindowState)FormWindowState.Maximized;
+            base.WindowState = Avalonia.Controls.WindowState.FullScreen;
    
             base.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
             time = new System.Windows.Forms.Timer();
@@ -89,7 +87,7 @@ namespace Catacomb
 
             player = new Player(new Vectors.Point(0, 0));
 
-            ExploreCanvas maze = new ExploreCanvas(base.ActualWidth, base.ActualHeight, player);
+            ExploreCanvas maze = new ExploreCanvas(base.Bounds.Size.Width, base.Bounds.Size.Height, player);
             maze.SetUpMaze(numberOfRooms,numberOfMonsters);
 
             Display = maze;
@@ -114,12 +112,12 @@ namespace Catacomb
             updateFinish = true;
         }
 
-        void MoveKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
+        void MoveKeyPress(object sender, Avalonia.Input.KeyEventArgs e)
         {
             //temporary
 
-
-            if (e.Key == Key.Space && currentPopUp == null)
+            
+            if (e.Key == Avalonia.Input.Key.Space && currentPopUp == null)
             {
                 CatPopUp testPopUp = new CatPopUp();
                 testPopUp.Message = "Hello World";
@@ -139,7 +137,7 @@ namespace Catacomb
 
         }
 
-        void MoveKeyRelease(object sender, System.Windows.Input.KeyEventArgs e)
+        void MoveKeyRelease(object sender, Avalonia.Input.KeyEventArgs e)
         {
             if(currentPopUp != null && currentPopUp.KeyBlocking)
             {
@@ -154,8 +152,7 @@ namespace Catacomb
         public void NextFloor()
         {
             Display.Destroy();
-            
-            ExploreCanvas maze = new ExploreCanvas(base.ActualWidth, base.ActualHeight, player);
+            ExploreCanvas maze = new ExploreCanvas(base.Bounds.Size.Width, base.Bounds.Size.Height, player);
             maze.SetUpMaze(numberOfRooms, numberOfMonsters);
 
             Display = maze;
@@ -177,15 +174,15 @@ namespace Catacomb
     public interface DisplayMode
     {
         SwitchDisplayMode Finished { get; set; }
-        System.Windows.Controls.Panel GetDisplay();
+        Avalonia.Controls.Panel GetDisplay();
         DisplayMode Update(double time);
-        void KeyPress(Key Keyin);
-        void KeyRelease(Key keyIn);
+        void KeyPress(Avalonia.Input.Key  Keyin);
+        void KeyRelease(Avalonia.Input.Key keyIn);
         void Destroy();
     }
 
 
-    public class CatPopUp : Canvas
+    public class CatPopUp : Avalonia.Controls.Canvas
     {
         Action destory;
         TextBlock bodyText = null;
@@ -216,13 +213,13 @@ namespace Catacomb
             { if(bodyText == null)
                 {
                     bodyText = new TextBlock();
-                    bodyText.Background = Brushes.Transparent;
-                    bodyText.Foreground = Brushes.LightGray;
+                    bodyText.Background = Avalonia.Media.Brushes.Transparent;
+                    bodyText.Foreground = Avalonia.Media.Brushes.LightGray;
                     bodyText.Width = this.Width - (2.0 * textOffset);
 
-                    bodyText.TextAlignment = TextAlignment.Center;
+                    bodyText.TextAlignment = Avalonia.Media.TextAlignment.Center;
                     bodyText.FontSize = 18;
-                    bodyText.FontFamily = new FontFamily("Times New Roman");
+                    bodyText.FontFamily = new Avalonia.Media.FontFamily("Times New Roman");
 
                     Canvas.SetLeft(bodyText, textOffset);
                     Canvas.SetTop(bodyText, this.Height / 2.3);
@@ -246,13 +243,13 @@ namespace Catacomb
                 if (titleText == null)
                 {
                     titleText = new TextBlock();
-                    titleText.Background = Brushes.Transparent;
-                    titleText.Foreground = Brushes.LightGray;
+                    titleText.Background = Avalonia.Media.Brushes.Transparent;
+                    titleText.Foreground = Avalonia.Media.Brushes.LightGray;
                     titleText.Width = this.Width - (2.0 * textOffset);
 
-                    titleText.TextAlignment = TextAlignment.Center;
+                    titleText.TextAlignment = Avalonia.Media.TextAlignment.Center;
                     titleText.FontSize = 50;
-                    titleText.FontFamily = new FontFamily("Times New Roman Bold");
+                    titleText.FontFamily = new Avalonia.Media.FontFamily("Times New Roman Bold");
 
                     Canvas.SetLeft(titleText, textOffset);
                     Canvas.SetTop(titleText, this.Height / 10);
@@ -276,7 +273,7 @@ namespace Catacomb
             
              converter = new System.Windows.Media.BrushConverter();
 
-            var brush = (Brush)converter.ConvertFromString("#02427D");
+            var brush = Avalonia.Media.Brushes.DarkBlue;//(Avalonia.Media.Brush) converter.ConvertFromString("#02427D");
             this.Background = brush;
             //this.Background = "";
             this.Opacity = 0.9;
@@ -287,7 +284,7 @@ namespace Catacomb
             
         }
 
-        public void Create(System.Windows.Controls.Panel parent)
+        public void Create(Avalonia.Controls.Panel parent)
         {
             double leftOffset = (parent.Width / 2.0) - (this.Width / 2.0);
             double topOffset = (parent.Height / 2.0) - (this.Height / 2.0);
@@ -299,9 +296,9 @@ namespace Catacomb
             parent.Children.Add(this);
         }
 
-        public void KeyPress(Key e)
+        public void KeyPress(Avalonia.Input.Key  e)
         {
-           if(e == Key.Space)
+           if(e == Avalonia.Input.Key.Space)
             {
                 destory();
                 CatacombManager.Instance.currentPopUp = null;
@@ -314,20 +311,19 @@ namespace Catacomb
 
         void CreateOutline()
         {
-            var outlineColor = Brushes.Gold;
+            var outlineColor = Avalonia.Media.Brushes.Gold;
             Rectangle outline = new Rectangle();
             outline.Stroke = outlineColor;
             outline.StrokeThickness = 8;
-            outline.Fill = Brushes.Transparent;
+            outline.Fill = Avalonia.Media.Brushes.Transparent;
             outline.Width = this.Width;
             outline.Height = this.Height;
             this.Children.Add(outline);
 
             Line sep = new Line();
-            sep.X1 = 0;
-            sep.X2 = this.Width;
-            sep.Y1 = this.Height / 2.8;
-            sep.Y2 = this.Height / 2.8;
+            sep.StartPoint = new Avalonia.Point(0, this.Height / 2.8);
+            sep.EndPoint = new Avalonia.Point(this.Width, this.Height / 2.8);
+
             
             sep.Stroke = outlineColor;
             sep.StrokeThickness = 8;

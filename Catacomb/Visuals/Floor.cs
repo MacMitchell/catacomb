@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Media;
-using System.Windows.Shapes;
+using Avalonia.Controls.Shapes;
+using Avalonia.Media;
 using Catacomb.Vectors;
 namespace Catacomb.Visuals
 {
     class Floor :Drawn
     {
         Rectangle floor;
-        public SolidColorBrush color;
+        public IImmutableBrush color;
         public static int drawnId = 2;
         public override int DrawnId
         {
@@ -30,7 +30,7 @@ namespace Catacomb.Visuals
 
         private void Create(CatRectangle rep)
         {
-            floor = new Rectangle();
+            floor = new Avalonia.Controls.Shapes.Rectangle();
             floor.Width = rep.GetWidth();
             floor.Height = rep.GetHeight();
             floor.Fill = Global.Globals.FLOOR_COLOR;

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
+
+
+using Avalonia.Media;
+using Avalonia.Input;
+using Avalonia.Controls;
 
 using Catacomb.Maze;
 
@@ -89,7 +90,7 @@ namespace Catacomb.CombatStuff
 
             //combatGrid = new Grid();
             base.Focus();
-            base.KeyDown += (object sender, System.Windows.Input.KeyEventArgs e) => { KeyRelease(e.Key); };
+            base.KeyDown += (object sender, KeyEventArgs e) => { KeyRelease(e.Key); };
            
 
             /*combatGrid.MaxHeight = Screen.PrimaryScreen.WorkingArea.Size.Height;
@@ -159,7 +160,7 @@ namespace Catacomb.CombatStuff
             
             RowDefinition topRow = new RowDefinition();
             mainCellHeight = height * 0.75;
-            topRow.Height = new System.Windows.GridLength(mainCellHeight);
+            topRow.Height = new GridLength(mainCellHeight);
             
             base.RowDefinitions.Add(topRow);
 
@@ -167,16 +168,16 @@ namespace Catacomb.CombatStuff
             base.RowDefinitions.Add(bottomRow);
 
             ColumnDefinition sideRows = new ColumnDefinition();
-            sideRows.Width = new System.Windows.GridLength(width * 0.25);
+            sideRows.Width = new GridLength(width * 0.25);
             base.ColumnDefinitions.Add(sideRows);
 
             ColumnDefinition main = new ColumnDefinition();
             mainCellWidth = width * 0.5;
-            main.Width = new System.Windows.GridLength(mainCellWidth);
+            main.Width = new GridLength(mainCellWidth);
             base.ColumnDefinitions.Add(main);
 
             sideRows = new ColumnDefinition();
-            sideRows.Width = new System.Windows.GridLength(width * 0.25);
+            sideRows.Width = new GridLength(width * 0.25);
             base.ColumnDefinitions.Add(sideRows);
         }
 
@@ -197,7 +198,7 @@ namespace Catacomb.CombatStuff
             CurrentView = currentView.KeyPress(keyIn);
         }
 
-        public System.Windows.Controls.Panel GetDisplay()
+        public Panel GetDisplay()
         {
             return this;
         }
@@ -361,20 +362,20 @@ namespace Catacomb.CombatStuff
 
                 ColumnDefinition column = new ColumnDefinition();
                 double selectColumnWidth = base.Width * 0.2;
-                column.Width = new System.Windows.GridLength(selectColumnWidth);
+                column.Width = new GridLength(selectColumnWidth);
                 base.ColumnDefinitions.Add(column);
 
                 select.Width = selectColumnWidth;
                 select.Height = gridHeight;
 
                 ColumnDefinition column2 = new ColumnDefinition();
-                column2.Width = new System.Windows.GridLength(base.Width * 0.8);
+                column2.Width = new GridLength(base.Width * 0.8);
                 base.ColumnDefinitions.Add(column2);
 
                 for (int i =0; i < rowsSize; i++)
                 {
                     RowDefinition bottomRow = new RowDefinition();
-                    bottomRow.Height = new System.Windows.GridLength(gridHeight);
+                    bottomRow.Height = new GridLength(gridHeight);
                     
                     base.RowDefinitions.Add(bottomRow);
                 }
