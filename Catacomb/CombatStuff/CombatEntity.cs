@@ -68,6 +68,8 @@ namespace Catacomb.CombatStuff
         private List<AttackGenerator> endOfTurnAttacks;
         private List<AttackGenerator> tempEndOfTurnAttacks;
 
+        private List<AttackGenerator> symmetricAttacks;
+
         protected AttackGenerator endOfCombatAttack;
         public AttackGenerator EndOfCombatAttack
         {
@@ -82,6 +84,7 @@ namespace Catacomb.CombatStuff
         public List<AttackGenerator> EndOfTurnAttacks { get => endOfTurnAttacks; set => endOfTurnAttacks = value; }
         public List<AttackGenerator> TempEndOfTurnAttacks { get => tempEndOfTurnAttacks; set => tempEndOfTurnAttacks = value; }
         public double Poison { get => poison; set => poison = value; }
+        protected List<AttackGenerator> SymmetricAttacks { get => symmetricAttacks; set => symmetricAttacks = value; }
 
         public CombatEntity(string nameIn, double defaultValue = 0,bool isPlayer =false)
         {
@@ -98,8 +101,11 @@ namespace Catacomb.CombatStuff
             endOfTurnAttacks = new List<AttackGenerator>();
             tempEndOfTurnAttacks = new List<AttackGenerator>();
 
+            SymmetricAttacks = new List<AttackGenerator>();
+
             InializeValues(defaultValue);
             InitilzeGenericValues();
+            InitializeSymmetric();
         }
         public virtual void InializeValues(double defaultValue = 0)
         {
@@ -121,6 +127,7 @@ namespace Catacomb.CombatStuff
             Poison = 0.0;
         }
 
+
         public virtual void InitilzeGenericValues()
         {
             if (!IsPlayer)
@@ -128,6 +135,11 @@ namespace Catacomb.CombatStuff
                 EndOfCombatAttack = UtilAttackFactory.DefaultEndOfCombatAttack;                
             }
             startOfCombatAttacks.Add(UtilAttackFactory.DefaultStartOfCombatAttack);
+        }
+
+        protected virtual void InitializeSymmetric()
+        {
+            SymmetricAttacks.Add(UtilAttackFactory.SymmetricEndOfTurn);
         }
 
         public void AddAttack(AttackGenerator newAttack) 
@@ -182,6 +194,27 @@ namespace Catacomb.CombatStuff
             foreach (AttackGenerator att in TempEndOfTurnAttacks)
             {
                 Attack temp = att(this, parentIn, it, other);
+                if(temp == null)
+                {
+                    continue;
+                }
+                temp.Castor = this;
+                temp.Target = other;
+                attacks.Add(temp);
+            }
+            return attacks;
+        }
+
+        public List<Attack> GetSymmetricEndOfTurnAttack(CommandIterator it, Command parentIn, CombatEntity other)
+        {
+            List<Attack> attacks = new List<Attack>();
+            foreach (AttackGenerator att in SymmetricAttacks)
+            {
+                Attack temp = att(this, parentIn, it, other);
+                if (temp == null)
+                {
+                    continue;
+                }
                 temp.Castor = this;
                 temp.Target = other;
                 attacks.Add(temp);

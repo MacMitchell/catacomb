@@ -122,6 +122,12 @@ namespace Catacomb.CombatStuff
             }
         }
 
+        public void ExecuteNext(CombatEntity one, CombatEntity two)
+        {
+            this.Next();
+            this.CurrentCommand.Execute(one, two);
+        }
+
         public void Next()
         {
             //order is execute self then children -> if no children then parent -> if no parent then next

@@ -87,6 +87,8 @@ namespace Catacomb.CombatStuff
             monster.GetEndOfTurnAttack(it, this, player);
             player.GetEndOfTurnAttack(it, this, monster);
 
+            monster.GetSymmetricEndOfTurnAttack(it, this, player);
+            player.GetSymmetricEndOfTurnAttack(it, this, player);
             new CheckForCombatEnd(it, this, player, monster);
             return base.ExecuteNext(castor, target);
         }
@@ -218,6 +220,7 @@ namespace Catacomb.CombatStuff
         public FinishCombatCombat(CommandIterator iteratorIn, Command parent = null) : base(iteratorIn, parent){}
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
+            Description = "...";
             return Command.COMBAT_FINISHED;
         }
     }

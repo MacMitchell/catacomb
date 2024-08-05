@@ -179,6 +179,17 @@ namespace Catacomb.CombatStuff
 
             target.Health -= damage;
         }
+
+        public virtual double CalculatePoisonDamage(double poisonAmount)
+        {
+            return poisonAmount;
+        }
+        public virtual double TakePoisonDamge(double poisonAmount, CombatEntity target)
+        {
+            poisonAmount = CalculatePoisonDamage(poisonAmount);
+            target.Health -= poisonAmount;
+            return poisonAmount;
+        }
         /**
          *The AttackDecorator passed in here is the most outer attack decorater
          */

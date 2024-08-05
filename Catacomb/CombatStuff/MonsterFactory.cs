@@ -20,6 +20,8 @@ namespace Catacomb.CombatStuff
             player.AddAttack(AttackFactory.FireBall);
             player.AddAttack(AttackFactory.Leech);
             player.AddAttack(AttackFactory.Bulster);
+            player.EndOfTurnAttacks.Add(TurnBasedAttackFactory.ToxicAura);
+
             player.IsPlayer = true;
 
 
@@ -31,6 +33,7 @@ namespace Catacomb.CombatStuff
             slime.XP = 100;
             slime.AddAttack(AttackFactory.Tackle);
             slime.AddAttack(AttackFactory.Leech);
+            slime.EndOfTurnAttacks.Add(TurnBasedAttackFactory.ToxicAura);
 
             return slime;
         }

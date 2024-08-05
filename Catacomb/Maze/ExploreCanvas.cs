@@ -38,7 +38,7 @@ namespace Catacomb.Maze
         public Avalonia.Controls.Panel GetDisplay(){
             return this;
         }
-        public void SetUpMaze(int numberOfRooms = 100, int numberOfMonsters = 100 )
+        public void SetUpMaze(int numberOfRooms = 10, int numberOfMonsters = 10 )
         {
             int stepSize = numberOfRooms/10;
             double width = base.Width;

@@ -11,6 +11,7 @@ using Catacomb.CombatStuff;
 using Avalonia.Platform;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
+using Avalonia.Threading;
 
 namespace Catacomb
 {
@@ -30,7 +31,7 @@ namespace Catacomb
 
         Player player;
         //Window mainWindow;
-        System.Timers.Timer time;
+        DispatcherTimer time;
         DateTime currentTime;
         private bool updateFinish = true;
 
@@ -40,7 +41,7 @@ namespace Catacomb
         public CatPopUp currentPopUp;
 
         //Main settings
-        int numberOfRooms = 100; //the value set here is the base value
+        int numberOfRooms = 10; //the value set here is the base value
         int numberOfMonsters = 5; //the value set here is the base value
 
         DisplayMode display; 
@@ -66,12 +67,12 @@ namespace Catacomb
             base.WindowState = Avalonia.Controls.WindowState.FullScreen;
    
             base.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
-            time = new System.Timers.Timer();
+            time = new DispatcherTimer();
 
-            time.Interval = 10;
-            time.Enabled = true;
+            time.Interval = new TimeSpan(10);
+            time.IsEnabled = true;
             
-            time.Elapsed += Update;
+            time.Tick += Update;
             currentTime = DateTime.Now;
 
             this.KeyDown += MoveKeyPress;

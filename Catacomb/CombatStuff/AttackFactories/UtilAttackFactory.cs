@@ -70,7 +70,35 @@ namespace Catacomb.CombatStuff
                 return GenerateTextAttack(parent, "You were defeated....");
             }
             new CheckForLevelUpCommand(it, parent, (CombatPlayer)player, monster);
-            return GenerateTextAttack(parent, "You continue to venture into the dark");
+            var temp =  GenerateTextAttack(parent, "You continue to venture into the dark");
+            return temp;
+        }
+
+
+
+        public static Attack SymmetricEndOfTurn(CombatEntity castor, Command parent, CommandIterator it, CombatEntity target, AttackDecorator dec = null)
+        {
+            CreatePoisonAttack(castor, parent, it, target, dec);
+            return null;
+        }
+
+        private static void CreatePoisonAttack(CombatEntity castor, Command parent, CommandIterator it, CombatEntity target, AttackDecorator dec = null)
+        {
+            
+            Attack utilAttack = Attack.CreateAttack(castor, parent, it, target, dec);
+            utilAttack.ExecuteAttack = (CombatEntity no, CombatEntity nope) =>
+            {
+                if (castor.Poison > 0)
+                {
+                    Attack poisonAttack = Attack.CreateAttack(castor, parent, it, target, dec);
+                    poisonAttack.ExecuteAttack = (CombatEntity innerNo, CombatEntity innerNope) =>
+                    {
+                        double amount = poisonAttack.TakePoisonDamge(castor.Poison, castor);
+                        poisonAttack.Description = castor.Name + " took " + amount + " from poison!";
+                    };
+                }
+                it.ExecuteNext(no,nope);
+            };
         }
     }
 }
