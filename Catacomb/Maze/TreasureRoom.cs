@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 using Catacomb.Vectors;
 using Catacomb.Visuals;
+using Catacomb.CombatStuff;
 namespace Catacomb.Maze
 {
     public class TreasureRoom : Room
     {
+
+        private Treasure.CreateTreasureExecute getExecute;
         public override double MaxWidth
         {
             get { return 1500; }
@@ -27,22 +30,32 @@ namespace Catacomb.Maze
             get { return 1500; }
         }
 
-        public TreasureRoom() : base()
-        {
+        public Treasure.CreateTreasureExecute GetExecute { get => getExecute; set => getExecute = value; }
 
+        public TreasureRoom(Treasure.CreateTreasureExecute executeIn) : base()
+        {
+            GetExecute = executeIn;
+        }
+
+        public override Room Clone()
+        {
+            TreasureRoom toReturn = new TreasureRoom(GetExecute);
+            return toReturn;
         }
         public override void Create(Point p1, Point p2)
         {
             if (roomDrawn == null)
             {
-                roomDrawn = new DrawnTreasureRoom(this, p1, p2);
+                roomDrawn = new DrawnTreasureRoom(this, p1, p2,GetExecute);
             }
         }
     }
 
     public class DrawnTreasureRoom:DrawnRoom{
-        public DrawnTreasureRoom(Room parentIn, Point start, Point end) : base(parentIn, start, end)
+        private Treasure.CreateTreasureExecute getExecute;
+        public DrawnTreasureRoom(Room parentIn, Point start, Point end,Treasure.CreateTreasureExecute getExecute) : base(parentIn, start, end)
         {
+            this.getExecute = getExecute;
         }
 
         protected override void DrawRoom()
@@ -67,7 +80,10 @@ namespace Catacomb.Maze
             double roomWidth = 250;
             double roomHeight = 300;
 
+            double spawnAreaoffset = 25;
 
+            potentialSpawnAreas.Add(new CatRectangle(offset + firstDistance + spawnAreaoffset, extendLowerY - spawnAreaoffset, offset + firstDistance + secondDistance - spawnAreaoffset, lowerY + spawnAreaoffset));
+            potentialSpawnAreas.Add(new CatRectangle(offset +firstDistance + spawnAreaoffset, extendUpperY + spawnAreaoffset, offset + firstDistance + secondDistance - spawnAreaoffset, upperY - spawnAreaoffset));
             Point roomCenter = new Point(offset + firstDistance + secondDistance + thirdDistance + (roomWidth / 2.0), convertPointToLocal(Center).Y);
 
             base.AddChild(new Wall(new Point(offset, lowerY), new Point(offset + firstDistance, lowerY)));
@@ -90,9 +106,9 @@ namespace Catacomb.Maze
             base.AddChild(new Wall(new Point(offset + firstDistance + secondDistance + thirdDistance + roomWidth, upperY - (roomHeight / 2.0 - width / 2)), new Point(offset + firstDistance + secondDistance + thirdDistance + roomWidth, upperY + (width / 2.0))));
 
 
-
-            base.AddInteractable(new Treasure(roomCenter));
-
+            
+            base.AddInteractable(new Treasure(roomCenter,getExecute));
+            
 
             return;
         }

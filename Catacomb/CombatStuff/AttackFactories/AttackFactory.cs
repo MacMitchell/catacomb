@@ -9,6 +9,7 @@ namespace Catacomb.CombatStuff
 
     /**
      * when creating attacks, please put the base values at the start of the attack. Easier to change in the future 
+     * the function returned here should be able to be called with all null values. If you need to use a entity name, put in the execute
      */
     class AttackFactory
     {
@@ -131,6 +132,32 @@ namespace Catacomb.CombatStuff
             return delcareAttack;
         }
 
+        public static Attack FireBlast(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double percent = 1.0;
+            double burnAmount = 10;
+
+
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Name = "FireBlast";
+            currentAttack.Damage = castor.MagicStat * percent;
+
+            if (Global.Globals.Rand.Next(1, 3) == 2)
+            {
+                currentAttack.Burn = burnAmount;
+            }
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                currentAttack.Description = currentAttack.Castor.Name + " engulfed " + currentAttack.Target.Name +" in flames!";
+
+                if(currentAttack.Burn > 0)
+                {
+                    UtilAttackFactory.GenerateFollowUpTextAttack(currentAttack, currentAttack.Target.Name + " was burned!");
+                }
+            };
+
+            return currentAttack;
+        }
 
         public static Attack FrostLance(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {

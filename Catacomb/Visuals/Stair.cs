@@ -7,7 +7,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia;
 using Catacomb.Vectors;
-
+using Catacomb.Maze;
 
 namespace Catacomb.Visuals
 {
@@ -16,12 +16,16 @@ namespace Catacomb.Visuals
         public static int drawnId = 3;
         public const double size = 40;
         public static IImmutableBrush BACKGROUND_STAIR_COLOR = Avalonia.Media.Brushes.Black;
+        private Room destiniation;
+
+
         public override int DrawnId
         {
             get { return drawnId; }
         }
 
-        public Stair(Vectors.Point middle) : base(  new CatRectangle(middle.X - size / 2, middle.Y - size / 2, middle.X + size / 2, middle.Y + size / 2),
+        
+        public Stair(Vectors.Point middle, CatMaze destination) : base(  new CatRectangle(middle.X - size / 2, middle.Y - size / 2, middle.X + size / 2, middle.Y + size / 2),
                                                     new CatRectangle(middle.X-size/1.1, middle.Y - size/1.1, middle.X + size/1.1, middle.Y+size/1.1)) {
             canvas.Width = size;
             canvas.Height = size;
@@ -82,7 +86,7 @@ namespace Catacomb.Visuals
             canvas.Background = BACKGROUND_STAIR_COLOR;
             trespassable = true;
 
-            base.execute = ()=>CatacombManager.Instance.NextFloor();
+            base.execute = ()=>CatacombManager.Instance.NextFloor(destination);
             Draw();
         }
 

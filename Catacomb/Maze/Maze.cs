@@ -9,10 +9,22 @@ using Catacomb.Entities;
 using System.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Catacomb.CombatStuff;
 namespace Catacomb.Maze
 {
     public class CatMaze
     {
+
+        /**8
+         *WHEN BUILDING A MAZE YOU MUST DECLARE:
+         *  Size: total number of rooms
+         *  Step: Number of filler rooms between key rooms
+         *  NumberOfMonster: The number of monsters
+         *  FillerRoom function to create filler rooms
+         *  KeyRoom:  function to create key rooom
+         *  StairRoom: function to create ONE stair room. If you want more, add them to key rooms
+         *  
+         */
 
         private Room start;
         private Canvas canvas;
@@ -22,7 +34,11 @@ namespace Catacomb.Maze
 
         private List<Room> allRooms;        
         private MazeBuilder builder;
-        protected List<Monster> monsters;
+        protected List<Monster> monsters; //thesea are the monsters currently roaming in the maze
+
+        public MazeBuilder.CreateRoomFunction FillerRoom { get => Builder.FillerRoom; set => Builder.FillerRoom = value; }
+        public MazeBuilder.CreateRoomFunction KeyRoom { get => Builder.KeyRoom; set => Builder.KeyRoom = value; }
+        public MazeBuilder.CreateRoomFunction StairRoom { get => Builder.StairRoomCreator; set => Builder.StairRoomCreator = value; }
 
         private int size;
         private int step;
@@ -38,26 +54,39 @@ namespace Catacomb.Maze
             set { cameraPos = value; }
         }
 
+        private List<Monster> creatableMonsters; //the monsters can be added to maze. It is a Unique list
+
+
         public int Size { get => size; set => size = value; }
         public int Step { get => step; set => step = value; }
         public int NumberOfMonsters { get => numberOfMonsters; set => numberOfMonsters = value; }
+        public List<Monster> CreatableMonsters { get => creatableMonsters; set => creatableMonsters = value; }
+        public List<Room> InspawnableRooms { get => inspawnableRooms; set => inspawnableRooms = value; }
+        public MazeBuilder Builder { get => builder; set => builder = value; }
+
+        private List<Room> inspawnableRooms;
 
         //TODO currently the maze uses the MazeBuilder to help create itself
         //Ideally, when the user creates a maze, it uses a MazeBuilder to create a maze
         public CatMaze() {
             rand = new Random();
-            builder = new MazeBuilder();
+            Builder = new MazeBuilder();
             monsters = new List<Monster>();
             startPoint = new Point(150, 150);
 
             Step = 1;
             Size = 10;
             NumberOfMonsters = 10;
+            CreatableMonsters = new List<Monster>();
+
+            CreatableMonsters.Add(MonsterFactory.GreenSlime(player)); //TEMP
+            InspawnableRooms = new List<Room>();
+            
         }
         public void Create(Player playIn)
         {
             
-            start = builder.BuildMaze(Size, Step);
+            start = Builder.BuildMaze(Size, Step);
             canvas = null;
             player = playIn;
             player.Position = startPoint;//new Point(150, 150);
@@ -74,8 +103,10 @@ namespace Catacomb.Maze
             {
                 try
                 {
+                    CleanUp();
                     this.Create(playIn);
                     this.Draw();
+                    AddSpawnAreaToInspawnableRooms();
 
                     for (int i = 0; i < NumberOfMonsters; i++)
                     {
@@ -86,10 +117,16 @@ namespace Catacomb.Maze
                 catch (Exception sadness)
                 {
                     Console.WriteLine("FAILED TO BUILD MAZE\n");
+
                 }
             }
         }
 
+        public void CleanUp()
+        {
+            inspawnableRooms = new List<Room>();
+            Builder.CleanUp();
+        }
         public Canvas GetCanvas()
         {
             return canvas;
@@ -172,20 +209,36 @@ namespace Catacomb.Maze
         public virtual void CreateMonster() 
         {
             //find a room
-            Room monsterRoom = GetMonsterRoom();
-
-            Monster createdMonster = CreateMonster(monsterRoom);
-            createdMonster.MovementAI = new BasicMovement(createdMonster, player);
-            createdMonster.Container = monsterRoom.RoomDrawn;
-
-            Point spawnPoint = monsterRoom.RoomDrawn.GenerateSpawnPoint(createdMonster.Width, createdMonster.Height);
-            if(spawnPoint == null)
+            bool done = false;
+            //TODO add the room that cannot spawn any monster to list of inspawnableRooms
+            while (!done)
             {
-                return;
-            }
-            createdMonster.PlaceMonster(spawnPoint);
+                Room monsterRoom = GetMonsterRoom();
+                List<Monster> possibleMonsters = monsterRoom.AcceptableMonsters(creatableMonsters);
+                if(possibleMonsters.Count == 0)
+                {
+                    InspawnableRooms.Add(monsterRoom);
+                    continue;
+                }
 
-            AddMonster(createdMonster);
+                Monster createdMonster = possibleMonsters[rand.Next(0, possibleMonsters.Count)].Clone(player);
+                
+                Point spawnPoint = monsterRoom.RoomDrawn.GenerateSpawnPoint(createdMonster.Width, createdMonster.Height);
+                if (spawnPoint != null)
+                {
+                    createdMonster.PlaceMonster(spawnPoint);
+                    createdMonster.Container = monsterRoom.RoomDrawn;
+                    AddMonster(createdMonster);
+                    
+                    done = true;
+                }
+            }
+            
+        }
+
+        protected void AddSpawnAreaToInspawnableRooms()
+        {
+            InspawnableRooms = start.GetAllConnectedRooms(true);
         }
 
         protected void AddMonster(Monster monsterIn)
@@ -199,35 +252,28 @@ namespace Catacomb.Maze
          */
         protected virtual Room GetMonsterRoom()
         {
-            List<Room> dontSpawnHere = GetInspawnableRooms();
             int index;
             
             while (true)
             {
                 index = rand.Next(0, allRooms.Count);
                 Room monsterRoom = allRooms[index];
-                if (!dontSpawnHere.Contains(monsterRoom))
+                if (!InspawnableRooms.Contains(monsterRoom))
                 {
                     break;
                 }
             }
             return allRooms[index];
         }
-        /**
-         * Returns a list of rooms that you do not want ANY monster to spawn in
-         * This base method returns the start room and all rooms connecting to the start room
-         */
-        protected virtual List<Room> GetInspawnableRooms()
-        {
-            return start.GetAllConnectedRooms(true);
-            
-        }
-        protected virtual Monster CreateMonster(Room roomin)
+        protected virtual Monster CreateMonster(Room roomIn)
         {
             double minSpeed = 100.0;
             double maxSpeed = 500.0;
             double speed = rand.NextDouble() * maxSpeed + minSpeed;
-            Monster newMonster = new Monster(35, 35, speed);
+            //Monster newMonster = new Monster(35, 35, speed);
+            //newMonster.MovementAI = new BasicMovement(newMonster, player);
+            Monster newMonster = roomIn.AcceptableMonsters(CreatableMonsters)[0].Clone(player);
+            newMonster.Container = roomIn.RoomDrawn;
             return newMonster;
         }
 

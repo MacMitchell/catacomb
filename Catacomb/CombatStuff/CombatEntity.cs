@@ -8,6 +8,14 @@ using System.Threading.Tasks;
 namespace Catacomb.CombatStuff
 {
 
+    public enum AttackType
+    {
+        SOC,
+        SOT,
+        EOT,
+        EOC,
+        A,
+    }
 
     public class CombatEntity {
         private string name;
@@ -39,6 +47,7 @@ namespace Catacomb.CombatStuff
 
         private double maxHealth;
         private double health;
+        private double mana;
         private double attackStat;
         private double maxAttackStat;
         private double magicStat;
@@ -51,6 +60,7 @@ namespace Catacomb.CombatStuff
         private double maxSpeed;
         private double armor;
         private double poison;
+        private double burn;
         private double xp;
         private Boolean isPlayer;
 
@@ -77,6 +87,7 @@ namespace Catacomb.CombatStuff
             set { endOfCombatAttack = value; }
         }
 
+
         public List<AttackGenerator> TempGenerateAttacks { get => tempGenerateAttacks; set => tempGenerateAttacks = value; }
         protected List<AttackGenerator> StartOfCombatAttacks { get => startOfCombatAttacks; set => startOfCombatAttacks = value; }
         public List<AttackGenerator> StartOfTurnAttacks { get => startOfTurnAttacks; set => startOfTurnAttacks = value; }
@@ -85,6 +96,8 @@ namespace Catacomb.CombatStuff
         public List<AttackGenerator> TempEndOfTurnAttacks { get => tempEndOfTurnAttacks; set => tempEndOfTurnAttacks = value; }
         public double Poison { get => poison; set => poison = value; }
         protected List<AttackGenerator> SymmetricAttacks { get => symmetricAttacks; set => symmetricAttacks = value; }
+        public double Burn { get => burn; set => burn = value; }
+        public double Mana { get => mana; set => mana = value; }
 
         public CombatEntity(string nameIn, double defaultValue = 0,bool isPlayer =false)
         {
@@ -113,6 +126,7 @@ namespace Catacomb.CombatStuff
             MaxMagicStat = defaultValue;
             MaxHealth = defaultValue;
             MaxMagicResist = defaultValue;
+            mana = defaultValue;
             MaxDefense = defaultValue;
             MaxSpeed = defaultValue;
 
@@ -125,6 +139,7 @@ namespace Catacomb.CombatStuff
             speed = defaultValue;
             xp = 0;
             Poison = 0.0;
+            Burn = 0.0;
         }
 
 
@@ -142,11 +157,18 @@ namespace Catacomb.CombatStuff
             SymmetricAttacks.Add(UtilAttackFactory.SymmetricEndOfTurn);
         }
 
-        public void AddAttack(AttackGenerator newAttack) 
-        {
-            generateAttacks.Add(newAttack);
-        }
 
+        public void AddAttack(AttackGenerator newAttack)
+        {
+            AttackType type = newAttack(this,null,null,null,null).Type;
+            switch (type)
+            {
+                case AttackType.A: generateAttacks.Add(newAttack); break;
+                case AttackType.SOC: StartOfCombatAttacks.Add(newAttack); break;
+                case AttackType.SOT: StartOfTurnAttacks.Add(newAttack); break;
+                case AttackType.EOT: EndOfTurnAttacks.Add(newAttack); break;
+            }
+        }
         public void AddTempAttack(AttackGenerator newTempAttack)
         {
             tempGenerateAttacks.Add(newTempAttack);
@@ -257,7 +279,6 @@ namespace Catacomb.CombatStuff
             tempEndOfTurnAttacks = new List<AttackGenerator>(endOfTurnAttacks);
         }
        
-
         public virtual string GenerateStats()
         {
             string output = Name + "\nHealth: " +
@@ -267,7 +288,9 @@ namespace Catacomb.CombatStuff
                             "\nMagic: " + MagicStat + "/" + MaxMagicStat + 
                             "\nDefense: " + Defense + "/" + MaxDefense +
                             "\nMagic Resist: " + MagicResist + "/" + MaxMagicResist +
-                            "\nSpeed: " + Speed + "/" + MaxSpeed + 
+                            "\nSpeed: " + Speed + "/" + MaxSpeed +
+                            "\nPoison: " + Poison +
+                            "\nBurn: " + Burn +
                              "\nXP: " + XP;
             return output;
         }

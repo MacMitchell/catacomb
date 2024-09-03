@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Catacomb.Vectors;
-
+using Catacomb.Entities;
+using Catacomb.CombatStuff;
 namespace Catacomb.Maze
 {
     public class Room 
@@ -58,7 +59,11 @@ namespace Catacomb.Maze
             }
         }
 
+        public List<MonsterType> PossibleMonsters { get => possibleMonsters; set => possibleMonsters = value; }
+
         public int id;
+
+        private List<MonsterType> possibleMonsters;
         public Room()
         {
             
@@ -68,6 +73,8 @@ namespace Catacomb.Maze
             bottom = null;
             left = null;
             roomDrawn = null;
+            PossibleMonsters = new List<MonsterType>();
+            PossibleMonsters.Add(MonsterType.All);
         }
 
       
@@ -203,6 +210,15 @@ namespace Catacomb.Maze
             }
             Room otherRoom = (Room)obj;
             return id == otherRoom.id;
+        }
+
+        public virtual List<Monster> AcceptableMonsters(List<Monster> allMonsters)
+        {
+            if (possibleMonsters.Contains(MonsterType.All)){
+                return allMonsters;
+            }
+            var filteredResults = allMonsters.Where((monster) => possibleMonsters.Contains(monster.Type));
+            return (List<Monster>)filteredResults;
         }
     }
 }

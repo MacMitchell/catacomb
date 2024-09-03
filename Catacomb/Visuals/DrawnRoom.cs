@@ -424,7 +424,7 @@ namespace Catacomb.Visuals
 
         public virtual Point GenerateSpawnPoint(double width, double height, double offset = Globals.LINE_THICKNESS)
         {
-            CatRectangle potentialArea = potentialSpawnAreas[0];
+            CatRectangle potentialArea = potentialSpawnAreas[Globals.Rand.Next(potentialSpawnAreas.Count)];
 
             double minX = potentialArea.TopLeft.X + offset*2; //+ (width / 2.0);
             double maxX = potentialArea.TopRight.X - offset - (width / 1.0);

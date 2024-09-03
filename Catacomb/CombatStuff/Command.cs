@@ -122,10 +122,10 @@ namespace Catacomb.CombatStuff
             }
         }
 
-        public void ExecuteNext(CombatEntity one, CombatEntity two)
+        public int ExecuteNext(CombatEntity one, CombatEntity two)
         {
             this.Next();
-            this.CurrentCommand.Execute(one, two);
+            return this.CurrentCommand.Execute(one, two);
         }
 
         public void Next()

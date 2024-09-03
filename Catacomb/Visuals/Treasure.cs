@@ -14,6 +14,8 @@ namespace Catacomb.Visuals
 {
     public class Treasure:Interactable
     {
+        public delegate InteractableExecute CreateTreasureExecute(Treasure treasure);
+
         public static int drawnId = 3;
         private static double size = 40;
 
@@ -21,7 +23,7 @@ namespace Catacomb.Visuals
         {
             get { return drawnId; }
         }
-        public Treasure(Point middle):base(new CatRectangle(middle.X - size / 2, middle.Y - size / 2, middle.X + size / 2, middle.Y + size / 2),
+        public Treasure(Point middle, CreateTreasureExecute getExecute):base(new CatRectangle(middle.X - size / 2, middle.Y - size / 2, middle.X + size / 2, middle.Y + size / 2),
                                                     new CatRectangle(middle.X - size / 1.1, middle.Y - size / 1.1, middle.X + size / 1.1, middle.Y + size / 1.1)){
 
             canvas.Width = size;
@@ -29,14 +31,13 @@ namespace Catacomb.Visuals
 
             canvas.Background = Brushes.Orange;
             trespassable = true;
-            CreateExecute();
-            
+            execute = getExecute(this);
             Draw();
         }
 
-        void CreateExecute()
+        public void CreateExecute()
         {
-            execute = () => {
+            execute =() => {
                 //RemoveSelfInteractable(); 
                 CatPopUp treasurePopUp = new CatPopUp();
                 treasurePopUp.Message = "TEST message";
@@ -46,6 +47,23 @@ namespace Catacomb.Visuals
                 treasurePopUp.onFinish = () => { RemoveSelfInteractable(); };
                 CatacombManager.Instance.DisplayPopUp(treasurePopUp);
                 
+            };
+        }
+
+        public static CreateTreasureExecute CreateBasicAttackTreasure(CombatEntity.AttackGenerator newAttack)
+        {
+            //returns a function
+            return (Treasure treasureIn) =>
+                () => {
+                {
+                    CatPopUp treasurePopUp = new CatPopUp();
+                    treasurePopUp.Message = " You learned the skill " + newAttack(Player.Instance.Fighter, null, null, null, null).Name + "!";
+                    treasurePopUp.Title = "Found SKill!";
+
+                    Player.Instance.Fighter.AddAttack(newAttack);
+                    treasurePopUp.onFinish = () => { treasureIn.RemoveSelfInteractable(); };
+                    CatacombManager.Instance.DisplayPopUp(treasurePopUp);
+                };
             };
         }
     }

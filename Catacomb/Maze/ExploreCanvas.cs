@@ -38,20 +38,16 @@ namespace Catacomb.Maze
         public Avalonia.Controls.Panel GetDisplay(){
             return this;
         }
-        public void SetUpMaze(int numberOfRooms = 10, int numberOfMonsters = 10 )
+        public void SetUpMaze(CatMaze mazeIn  )
         {
-            int stepSize = numberOfRooms/10;
             double width = base.Width;
             double height = base.Height;
             //currentMaze = new CatMaze(25, 1,player);
             Boolean done = false;
             //TEMPORARY MEASURE. Building the maze sometimes fails. It seems like it just fails to place one room, sometimes. One room will take all the available parents room and still fail
             //Got tired of looking through the maze builder and building rooms
-            maze = new CatMaze();
+            maze = mazeIn != null ? mazeIn : new CatMaze();
             
-            maze.Size = numberOfRooms;
-            maze.Step = stepSize;
-            maze.NumberOfMonsters = 10;
 
             maze.startPoint = new Vectors.Point((width / 2), (height / 2));
 

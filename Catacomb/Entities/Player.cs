@@ -71,11 +71,5 @@ namespace Catacomb.Entities
                 case Key.W:  Angle = 3*Math.PI/2; break;
             }
         }
-
-        public override CombatEntity GetCombatEntity()
-        {
-            return new CombatEntity("Player",200);
-        }
-
     }
 }

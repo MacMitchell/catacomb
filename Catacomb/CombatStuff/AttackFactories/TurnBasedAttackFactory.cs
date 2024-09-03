@@ -20,7 +20,7 @@ namespace Catacomb.CombatStuff.AttackFactories
         {
             double healPercent = 5.0;
             Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
-
+            currentAttack.Type = AttackType.SOT;
             currentAttack.Name = "Regeneration";
 
             currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
@@ -41,7 +41,7 @@ namespace Catacomb.CombatStuff.AttackFactories
             double damage = 5.0;
 
             Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
-
+            currentAttack.Type = AttackType.EOT;
             currentAttack.Name = "Sharp Stick";
 
             currentAttack.Damage = damage;
@@ -57,8 +57,9 @@ namespace Catacomb.CombatStuff.AttackFactories
             double baseToxicAmount = 10;
 
 
-
+            
             Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.SOT;
             currentAttack.Name = "Toxic Aura";
             currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
             {

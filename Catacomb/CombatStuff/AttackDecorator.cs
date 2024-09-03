@@ -23,6 +23,7 @@ namespace Catacomb.CombatStuff
         private SetStatsDelegate setDamage = null; //the damage the attack does (+:reduces health)
         private SetStatsDelegate setSelfHeal= null; //how much the one is attacking will heal (negative value will cause self damage)
         private SetStatsDelegate setPoison= null; //how much the attack will poison its target (+: increases poison)
+        private SetStatsDelegate setBurn = null;
         private SetStatsDelegate setMentalBreak= null; //how much mentalbreak the attack will apply to the target (+: increases mental break)
         private SetStatsDelegate setArmorChange= null; //how much will the attack change the target armor after the damage is done (+: reduces armor)
         private SetStatsDelegate setSelfArmorChange= null; //how much the attack will change the armor of the user (+: reduces armor)
@@ -47,6 +48,7 @@ namespace Catacomb.CombatStuff
             setDamage = (double  value, Attack mainAttack) =>value;
             setSelfHeal = (double  value, Attack mainAttack) => value; 
             setPoison = (double  value, Attack mainAttack) => value; 
+            setBurn = (double value, Attack mainAttack) => value;
             setMentalBreak = (double  value, Attack mainAttack) =>value; 
             setArmorChange = (double  value, Attack mainAttack) => value; 
             setSelfArmorChange = (double  value, Attack mainAttack) =>value; 
@@ -77,6 +79,8 @@ namespace Catacomb.CombatStuff
         public override double Damage { get => setDamage(layerUpAttack.Damage, MainAttack); set => layerUpAttack.Damage = value; }
         public override double SelfHeal { get => setSelfHeal(layerUpAttack.SelfHeal, MainAttack); set => layerUpAttack.SelfHeal = value; }
         public override double Poison { get => setPoison(layerUpAttack.Poison, MainAttack); set => layerUpAttack.Poison = value; }
+
+        public override double Burn { get => setBurn(layerUpAttack.Poison, MainAttack); set => layerUpAttack.Burn = value; }
         public override double MentalBreak { get => setMentalBreak(layerUpAttack.MentalBreak,MainAttack); set => layerUpAttack.MentalBreak = value; }
         public override double ArmorChange { get => setArmorChange(layerUpAttack.ArmorChange, MainAttack); set => layerUpAttack.ArmorChange = value; }
         public override double SelfArmorChange { get => setSelfArmorChange(layerUpAttack.SelfArmorChange, MainAttack); set => layerUpAttack.SelfArmorChange = value; }

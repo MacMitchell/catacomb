@@ -28,7 +28,6 @@ namespace Catacomb
         }
 
 
-
         Player player;
         //Window mainWindow;
         DispatcherTimer time;
@@ -89,8 +88,8 @@ namespace Catacomb
             player = new Player(new Vectors.Point(0, 0));
 
             ExploreCanvas maze = new ExploreCanvas(base.Bounds.Size.Width, base.Bounds.Size.Height, player);
-            maze.SetUpMaze(numberOfRooms,numberOfMonsters);
-
+            //maze.SetUpMaze(numberOfRooms,numberOfMonsters);
+            maze.SetUpMaze(MazeFactory.BasicMaze(player));
             Display = maze;
         }
 
@@ -150,11 +149,11 @@ namespace Catacomb
             }
         }
 
-        public void NextFloor()
+        public void NextFloor(CatMaze newFloor)
         {
             Display.Destroy();
             ExploreCanvas maze = new ExploreCanvas(base.Bounds.Size.Width, base.Bounds.Size.Height, player);
-            maze.SetUpMaze(numberOfRooms, numberOfMonsters);
+            maze.SetUpMaze(newFloor);
 
             Display = maze;
         }

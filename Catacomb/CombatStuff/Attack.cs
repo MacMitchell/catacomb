@@ -11,6 +11,7 @@ namespace Catacomb.CombatStuff
         protected double damage; //the damage the attack does (+:reduces health)
         protected double selfHeal; //how much the one is attacking will heal (negative value will cause self damage)
         protected double poison; //how much the attack will poison its target (+: increases poison)
+        protected double burn; //how much the attack will burn its target (+: increases poison)
         protected double mentalBreak; //how much mentalbreak the attack will apply to the target (+: increases mental break)
         protected double armorChange; //how much will the attack change the target armor after the damage is done (+: reduces armor)
         protected double selfArmorChange; //how much the attack will change the armor of the user (+: reduces armor)
@@ -27,12 +28,12 @@ namespace Catacomb.CombatStuff
         protected double manaDrain;
         protected double selfManaDrain;
         protected string name;
-
         public delegate void ExecuteAttackDelegate(CombatEntity castor, CombatEntity target);
         public ExecuteAttackDelegate ExecuteAttack;
         protected CombatEntity castor;
         protected CombatEntity target;
 
+        private AttackType type = AttackType.A;
 
         protected int commandReturnResult ;
         public int CommandReturnResult{
@@ -45,6 +46,7 @@ namespace Catacomb.CombatStuff
             this.damage = 0;
             this.selfHeal = 0;
             this.poison = 0;
+            this.Burn = 0;
             this.mentalBreak = 0;
             this.armorChange = 0;
             this.selfArmorChange = 0;
@@ -92,6 +94,11 @@ namespace Catacomb.CombatStuff
             Target.Speed += SpeedStatChange;
             Castor.Speed += SelfSpeedStatChange;
 
+            Target.Mana += ManaDrain;
+            Castor.Mana += SelfManaDrain;
+
+            Target.Poison += Poison;
+            Target.Burn += Burn;
             if (Damage > 0)
             {
                 InflectDamage(Target, Damage);
@@ -133,6 +140,8 @@ namespace Catacomb.CombatStuff
 
         public virtual double ManaDrain { get => manaDrain; set => manaDrain = value; }
         public virtual double SelfManaDrain { get => selfManaDrain; set => selfManaDrain = value; }
+        public virtual double Burn { get => burn; set => burn = value; }
+        public AttackType Type { get => type; set => type = value; }
 
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
@@ -190,6 +199,19 @@ namespace Catacomb.CombatStuff
             target.Health -= poisonAmount;
             return poisonAmount;
         }
+
+        public virtual double CalculateBurnDamage(double burnAmount, CombatEntity target)
+        {
+            return target.MaxHealth * (burnAmount / 1000.0);
+        }   
+
+        public virtual double TakeBurnDamage(double burnAmount, CombatEntity target)
+        {
+            burnAmount = CalculateBurnDamage(burnAmount, target);
+            target.Health -= burnAmount;
+            return burnAmount;
+        }
+
         /**
          *The AttackDecorator passed in here is the most outer attack decorater
          */

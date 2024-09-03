@@ -9,6 +9,18 @@ namespace Catacomb.Global
 {
     public static class Globals
     {
+        private static Random rand;
+        public static Random Rand
+        {
+            get
+            {
+                if (rand == null)
+                {
+                    rand = new Random();
+                }
+                return rand;
+            }
+        }
 
         public const bool DEBUG = false;
         public const double TOLERANCE = 0.00005;

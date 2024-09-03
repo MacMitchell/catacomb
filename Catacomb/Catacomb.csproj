@@ -197,6 +197,7 @@
     <Compile Include="Maze\Connection.cs" />
     <Compile Include="Maze\ExploreCanvas.cs" />
     <Compile Include="Maze\Hallway.cs" />
+    <Compile Include="Maze\MazeFactory.cs" />
     <Compile Include="Maze\Room.cs" />
     <Compile Include="Maze\Maze.cs" />
     <Compile Include="Maze\MazeBuilder.cs" />

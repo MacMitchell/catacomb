@@ -19,6 +19,8 @@ namespace Catacomb.Maze
         public double gap = 300;
         private static int connectionLimit = Global.Globals.CONNECTION_LIMIT;
 
+        public int keyRoomCount = 0;
+        public int fillerRoomCount = 0;
         private int numberOfRooms;
 
         //list of rooms that could not be built. The int value for the direction the PARENT needs to be. i.e. grab from availableParent[int]
@@ -34,6 +36,8 @@ namespace Catacomb.Maze
         public CreateRoomFunction FillerRoom { get => fillerRoom; set => fillerRoom = value; }
         public CreateRoomFunction KeyRoom { get => keyRoom; set => keyRoom = value; }
 
+        private CreateRoomFunction stairRoomCreator;
+        public CreateRoomFunction StairRoomCreator { get => stairRoomCreator; set => stairRoomCreator = value; }
         public MazeBuilder()
         {
             rand = new Random();
@@ -43,6 +47,15 @@ namespace Catacomb.Maze
                 availableParents.Add(new List<Room>());
             }
             freeRooms = new List<Tuple<Room, int>>();
+
+            FillerRoom = (List<Room> currentRooms) =>
+            {
+                return new Hallway();
+            };
+            KeyRoom = (List<Room> currentRooms) =>
+            {
+                return new Room();
+            };
         }
 
         /**
@@ -50,7 +63,7 @@ namespace Catacomb.Maze
          */ 
         public virtual Room BuildMaze(int size, int step)
         {
-            ArrayList found = new ArrayList();
+            List<Room> found = new List<Room>();
             found.Add(new Room());
             Room current = (Room)found[0];
 
@@ -70,7 +83,7 @@ namespace Catacomb.Maze
                 {
                     if (!current.HasConnection(direction))
                     {
-                        Room newRoom = GetFillerRoom();
+                        Room newRoom = GetFillerRoom(found);
                         found.Add(newRoom);
                         current.connect(newRoom,direction);
                     }
@@ -84,7 +97,7 @@ namespace Catacomb.Maze
                     if (!current.HasConnection(direction))
                     {
                         //TODO: make another function to make the rooms
-                        Room newRoom = i == placement[1] - 1 ? GetKeyRoom() : GetFillerRoom();
+                        Room newRoom = i == placement[1] - 1 ? GetKeyRoom(found) : GetFillerRoom(found);
                         found.Add(newRoom);
                         current.connect(newRoom, direction);
                     }
@@ -95,7 +108,7 @@ namespace Catacomb.Maze
             {
                 if (!current.HasConnection(i))
                 {
-                    Room stairRoom = new StairRoom();
+                    Room stairRoom = StairRoomCreator(found);
                     current.connect(stairRoom,i);
                     break;
                 }
@@ -104,31 +117,21 @@ namespace Catacomb.Maze
             return ((Room)found[0]);
         }
 
-
-        protected virtual Room CreateStairRoom(int size, int currentSize)
-        {
-            double chance = (double)currentSize / (double)size * 100/0;
-            int number = rand.Next(1, 101);
-            if(number <= chance)
-            {
-                return new StairRoom();
-            }
-            return null;
-        }
-
-
         /**
          * Gets the room that seperates a key room from another key room
          */
-        public Room GetFillerRoom()
+        public Room GetFillerRoom(List<Room> currentRooms)
         {
-
-            return new Hallway();
+            Room toReturn = FillerRoom(currentRooms);
+            fillerRoomCount++;
+            return toReturn;
         }
 
-        public Room GetKeyRoom()
+        public Room GetKeyRoom(List<Room> currentRooms)
         {
-            return new Room();
+            Room toReturn = KeyRoom(currentRooms);
+            keyRoomCount++;
+            return toReturn;
         }
         public void BuildRoom(List<Room> createdRooms, Room current,Canvas mazeCanvas)
         {
@@ -424,6 +427,12 @@ namespace Catacomb.Maze
             {
                 availableParents[3].Add(potentialParent);
             }
+        }
+
+        public void CleanUp()
+        {
+            keyRoomCount = 0;
+            fillerRoomCount = 0;
         }
  /** Create a random number that will be equal or less than max. It will be equal or greater than the min
   *     The number has an equal chance to be negative or positive*/

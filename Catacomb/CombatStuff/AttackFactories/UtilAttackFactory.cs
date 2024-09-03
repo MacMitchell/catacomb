@@ -97,7 +97,16 @@ namespace Catacomb.CombatStuff
                         poisonAttack.Description = castor.Name + " took " + amount + " from poison!";
                     };
                 }
-                it.ExecuteNext(no,nope);
+                if(castor.Burn >0)
+                {
+                    Attack burnAttack = Attack.CreateAttack(castor, parent, it, target, dec);
+                    burnAttack.ExecuteAttack= (CombatEntity innerNo, CombatEntity innerNope) =>
+                    {
+                        double amount = burnAttack.TakeBurnDamage(castor.Burn, castor);
+                        burnAttack.Description = castor.Name + " took " + amount + " from burning!";
+                    };
+                }
+                utilAttack.CommandReturnResult = it.ExecuteNext(no,nope);
             };
         }
     }

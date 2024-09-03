@@ -229,15 +229,10 @@ namespace Catacomb.Entities
             container.Interact(Center);
         }
 
-        public abstract CombatEntity GetCombatEntity();
 
         public bool equals(Entity other)
         {
             return id == other.id;
         }
     }
-
-   
-
-
 }

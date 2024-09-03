@@ -14,7 +14,6 @@ namespace Catacomb.Entities
         protected Player player = null;
 
         public abstract bool SetUpMove(double time);
-        
     }
 
 
@@ -30,6 +29,7 @@ namespace Catacomb.Entities
             player = playIn;
             senseRange = senseRangeIn;
         }
+
         private bool doesMonsterSeePlayer()
         {
             double distance = player.Position.GetDistance(monster.Position);

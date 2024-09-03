@@ -15,15 +15,11 @@ namespace Catacomb.Entities
     public class Monster : Entity
     {
         private Movement movementAI;
-        
+        private MonsterType type;
         public override CombatEntity Fighter
         {
-            get { if(fighter== null)
-                {
-                    fighter = MonsterFactory.GenerateSlime();
-                }
-                return fighter;
-            }
+            get { return fighter;}
+            set { fighter = value; }
         }
         public Movement MovementAI
         {
@@ -31,6 +27,15 @@ namespace Catacomb.Entities
             set { movementAI = value; }
             
         }
+
+        public delegate Monster MonsterCloner(Player playin);
+
+        private MonsterCloner clone;
+
+
+        public MonsterType Type { get => type; set => type = value; }
+        public MonsterCloner Clone { get => clone; set => clone = value; }
+
         public Monster(double width, double height,double maxVelocity) : base(new Point(0,0), new CatRectangle(0, 0, width, height))
         {
             Width = width;
@@ -41,6 +46,7 @@ namespace Catacomb.Entities
             SetColor(Brushes.Red);
             Velocity = 0;
             MaxVelocity = maxVelocity;
+            
         }
         
         public void PlaceMonster(Point spawnPoint)
@@ -72,11 +78,6 @@ namespace Catacomb.Entities
                 return this;
             }
             return null;
-        }
-
-        public override CombatEntity GetCombatEntity()
-        {
-            return new CombatEntity("Monster",100);
         }
     }
 }
