@@ -45,9 +45,9 @@ namespace Catacomb.Maze
         public static CatMaze BasicMaze(Player playIn)
         {
             CatMaze maze = new CatMaze();
-            maze.Size = 20;
+            maze.Size = 10;
             maze.Step = 1;
-            maze.NumberOfMonsters = 5;
+            maze.NumberOfMonsters = 3;
 
             maze.CreatableMonsters.Add(MonsterFactory.GreenSlime(playIn));
 
@@ -59,7 +59,7 @@ namespace Catacomb.Maze
             
             Room[] keyRooms = { new Room(), treasureRoom };
 
-            int[] keyCount = { 15,1 };
+            int[] keyCount = { 10,1 };
             maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
             maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicFireMaze(playIn));
 

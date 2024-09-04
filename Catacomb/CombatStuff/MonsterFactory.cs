@@ -37,7 +37,7 @@ namespace Catacomb.CombatStuff
         }
     public static Monster GreenSlime(Player player)
         {
-            Monster greenSlime = new Monster(35, 35, 10);
+            Monster greenSlime = new Monster(35, 35,35 );
             greenSlime.MovementAI = new BasicMovement(greenSlime, player);
             greenSlime.Fighter = MonsterFactory.GreenSlimeCombat();
             greenSlime.Type = MonsterType.Slime;
@@ -55,8 +55,8 @@ namespace Catacomb.CombatStuff
 
         public static Monster FireImp(Player player)
         {
-            Monster fireImp = new Monster(35, 35, 100);
-            fireImp.MovementAI = new BasicMovement(fireImp, player);
+            Monster fireImp = new Monster(35, 35, 250);
+            fireImp.MovementAI = new BasicWonderWithHuntingMovement(fireImp, player);
             fireImp.Type = MonsterType.Imp;
             fireImp.Clone = FireImp;
 

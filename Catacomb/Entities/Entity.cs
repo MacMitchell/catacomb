@@ -63,7 +63,7 @@ namespace Catacomb.Entities
             set { container = value; }
         }
 
-        private Point Center
+        public Point Center
         {
             get { return new Point(Position.GetX() + width / 2, Position.GetY() + width / 2); }
         }

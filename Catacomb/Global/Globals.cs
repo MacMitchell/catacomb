@@ -42,6 +42,10 @@ namespace Catacomb.Global
         {
             return Math.Abs(d1) < TOLERANCE;
         }
+        public static double GetRandomNumber(double minimum, double maximum)
+        {
+            return rand.NextDouble() * (maximum - minimum) + minimum;
+        }
     }
     
 }
