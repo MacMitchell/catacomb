@@ -56,6 +56,7 @@ namespace Catacomb.Entities
             SetColor( Brushes.Orange);
             Velocity = 0;
             MaxVelocity = 800;
+            Accerlation = MaxVelocity;
             Instance = this;
             Draw();
         }

@@ -56,7 +56,7 @@ namespace Catacomb.CombatStuff
         public static Monster FireImp(Player player)
         {
             Monster fireImp = new Monster(35, 35, 250);
-            fireImp.MovementAI = new BasicWonderWithHuntingMovement(fireImp, player);
+            fireImp.MovementAI = new BasicWonderWithHuntingMovement(fireImp, player,150,Math.PI/4,500,Math.PI/2);
             fireImp.Type = MonsterType.Imp;
             fireImp.Clone = FireImp;
 
@@ -67,6 +67,7 @@ namespace Catacomb.CombatStuff
         public static CombatEntity FireImpCombat()
         {
             CombatEntity fireImp = new CombatEntity("FireImp", 100);
+            fireImp.Health = 90;
             fireImp.MaxHealth = 90;
             fireImp.MaxMagicStat = 59;
             fireImp.Armor = 0;

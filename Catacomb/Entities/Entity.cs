@@ -15,6 +15,8 @@ namespace Catacomb.Entities
         private double  velocity;
         private double maxVelocity;
         protected CombatEntity fighter;
+        private double accerlation;
+
         public int id;
         public static int idCounter = 0;
         public virtual CombatEntity Fighter
@@ -68,6 +70,8 @@ namespace Catacomb.Entities
             get { return new Point(Position.GetX() + width / 2, Position.GetY() + width / 2); }
         }
 
+        public double Accerlation { get => accerlation; set => accerlation = value; }
+
         public Entity(Point positionIn, Vector rep): base(rep)
         {
             canvas = new Canvas();
@@ -76,7 +80,6 @@ namespace Catacomb.Entities
             Angle = 0;
             Position = positionIn;
             id = idCounter++;
-
         }
 
 

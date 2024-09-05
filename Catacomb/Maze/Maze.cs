@@ -79,7 +79,6 @@ namespace Catacomb.Maze
             NumberOfMonsters = 10;
             CreatableMonsters = new List<Monster>();
 
-            CreatableMonsters.Add(MonsterFactory.GreenSlime(player)); //TEMP
             InspawnableRooms = new List<Room>();
             
         }

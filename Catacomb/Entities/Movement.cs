@@ -99,7 +99,7 @@ namespace Catacomb.Entities
 
         private bool hitPoint()
         {
-            double minDistance = 100;
+            double minDistance = 50;//100; //100 works great testing lower values
             double distance = destination.GetDistance(monster.Center);
             return minDistance > Math.Abs(distance);
         }
