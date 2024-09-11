@@ -12,6 +12,28 @@ namespace Catacomb.Vectors
         private Point start;
         //references the bottom right corner of the rectangle
         private Point end;
+        private double offsetX;
+        private double offsetY;
+        public double OffsetX
+        {
+            get { return offsetX; }
+            set
+            {
+                start.OffsetX = value;
+                end.OffsetX = value;
+                offsetX = value;
+            }
+        }
+        public double OffsetY
+        {
+            get { return offsetY; }
+            set
+            {
+                start.OffsetY = value;
+                end.OffsetY = value;
+                offsetY = value;
+            }
+        }
 
         public Point Center
         {
@@ -26,6 +48,8 @@ namespace Catacomb.Vectors
 
         public CatRectangle(Point start, Point end)
         {
+            offsetX = 0;
+            offsetY = 0;
             double minX = start.GetMinX(end);
             double minY = start.GetMinY(end);
             double maxX = start.GetMaxX(end);
@@ -75,6 +99,8 @@ namespace Catacomb.Vectors
 
         public CatRectangle(double x1, double y1, double x2, double y2)
         {
+            offsetX = 0;
+            offsetY = 0;
             double minX = x1 > x2 ? x2 : x1;
             double minY = y1 > y2 ? y2 : y1;
             double maxX = x1 > x2 ? x1 : x2;
@@ -84,6 +110,11 @@ namespace Catacomb.Vectors
             this.end = new Point(maxX, maxY);
         }
 
+
+        public Vector Clone()
+        {
+            return new CatRectangle(start.Clone(), end.Clone());
+        }
         public bool DoesIntersect(Vector other)
         {
             if (other.GetVectorType() == "Line")
@@ -134,8 +165,6 @@ namespace Catacomb.Vectors
             }
             return false;
         }
-
-
 
         public bool DoesIntersect(CatRectangle other)
         {
@@ -279,6 +308,16 @@ namespace Catacomb.Vectors
                     other.expand(3, -newX);
                 }
             }
+        }
+
+        public Point CreatePointInRectangle(double offset = 35)
+        {
+            Point topLeft = TopLeft;
+            Point bottomRight = BottomRight;
+            double randX = Global.Globals.GetRandomNumber(topLeft.X - offset, bottomRight.X + offset);
+            double randY = Global.Globals.GetRandomNumber(topLeft.Y - offset, bottomRight.Y + offset);
+            return new Point(randX, randY);
+
         }
 
         private bool PassThroughVert(CatRectangle other)

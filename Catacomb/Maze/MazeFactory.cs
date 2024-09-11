@@ -45,9 +45,9 @@ namespace Catacomb.Maze
         public static CatMaze BasicMaze(Player playIn)
         {
             CatMaze maze = new CatMaze();
-            maze.Size = 10;
+            maze.Size = 5;
             maze.Step = 1;
-            maze.NumberOfMonsters = 3;
+            maze.NumberOfMonsters = 1;
 
             maze.CreatableMonsters.Add(MonsterFactory.GreenSlime(playIn));
 
@@ -71,7 +71,7 @@ namespace Catacomb.Maze
             CatMaze maze = new CatMaze();
             maze.Size = 25;
             maze.Step = 1;
-            maze.NumberOfMonsters = 7;
+            maze.NumberOfMonsters = 17;
 
             maze.CreatableMonsters.Add(MonsterFactory.FireImp(playIn));
 

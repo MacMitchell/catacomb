@@ -12,28 +12,44 @@ namespace Catacomb.Vectors
 
         private double x;
         private double y;
+        private double offsetX;
+        private double offsetY;
 
         public double X
         {
-            get { return x; }
+            get { return x + offsetX; }
+            set { x = value; }
         }
 
         public double Y
         {
-            get { return y; }
+            get { return y + offsetY; }
+            set { y = value; }
         }
+
+        public double OffsetX { get => offsetX; set => offsetX = value; }
+        public double OffsetY { get => offsetY; set => offsetY = value; }
+
         public Point(double x, double y)
         {
             this.x = x;
             this.y = y;
+            offsetX = 0;
+            offsetY = 0;
+        }
+
+        //Clone does not return offset
+        public Point Clone()
+        {
+            return new Point(x, y);
         }
         public double GetX()
         {
-            return x;
+            return x + offsetX;
         }
         public double GetY()
         {
-            return y;
+            return y + offsetY;
         }
         public void UpdateX(double  x)
         {
@@ -45,8 +61,8 @@ namespace Catacomb.Vectors
         }
         public double GetDistance(Point other)
         {
-            double dX = Math.Pow(this.x - other.x, 2);
-            double dY = Math.Pow(this.y - other.y, 2);
+            double dX = Math.Pow(this.X - other.X, 2);
+            double dY = Math.Pow(this.Y - other.Y, 2);
             double distance = Math.Sqrt(dX + dY);
             return distance;
         }

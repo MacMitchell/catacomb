@@ -11,7 +11,28 @@ namespace Catacomb.Vectors
     
         private Point start;
         private Point end;
-
+        private double offsetX;
+        private double offsetY;
+        public virtual double OffsetX
+        {
+            get{ return offsetX;}
+            set
+            {
+                start.OffsetX = value;
+                end.OffsetX = value;
+                offsetX = value;
+            }
+        }
+        public virtual double OffsetY
+        {
+            get { return offsetY; }
+            set
+            {
+                start.OffsetY = value;
+                end.OffsetY = value;
+                offsetY = value;
+            }
+        }
         public Point Start
         {
             get { return start; }
@@ -22,6 +43,8 @@ namespace Catacomb.Vectors
         }
         public CatLine(Point start, Point end)
         {
+            offsetX = 0;
+            offsetY = 0;
             if(start.GetX() > end.GetX())
             {
                 this.end = start;
@@ -42,6 +65,8 @@ namespace Catacomb.Vectors
         }
         public CatLine(double x1, double y1, double x2, double y2)
         {
+            offsetX = 0;
+            offsetY = 0;
             if(x1 > x2)
             {
                 this.start = new Point(x2, y2);
@@ -52,6 +77,11 @@ namespace Catacomb.Vectors
                 this.start = new Point(x1, y1);
                 this.end = new Point(x2, y2);
             }
+        }
+
+        public Vector Clone()
+        {
+            return new CatLine(start.Clone(), end.Clone());
         }
         public bool DoesIntersect(Vector other)
         {

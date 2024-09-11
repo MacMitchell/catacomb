@@ -145,7 +145,6 @@ namespace Catacomb.Maze
                 {
                     continue;
                 }
-                //SOMETIMES THIS COLLIDES WITH THE STARTER ROOM, FIX PLEASE 
                 bool result = CreateRoomNeighbors(createdRooms, current, i);
                 if (result)
                 {
@@ -157,7 +156,6 @@ namespace Catacomb.Maze
 
                     //sometimes it is not called when it fails to build
                     current.CloseConnection(i);
-                    //current.RoomDrawn.CloseConnectionPoints(i);
                 }
              
             }

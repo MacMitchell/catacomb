@@ -172,6 +172,7 @@ namespace Catacomb.Maze
                 otherRoom.RoomDrawn.CloseConnectionPoints(GetOppositeDirection(direction));
             }
             RemoveConnection(direction);
+            
 
             RoomDrawn.CloseConnectionPoints(direction);    
         }

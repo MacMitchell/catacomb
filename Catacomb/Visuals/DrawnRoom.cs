@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Catacomb.Vectors;
 using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Controls.Shapes;
+
 using Catacomb.Global;
 using System.Collections;
 using Catacomb.Entities;
@@ -17,9 +20,10 @@ namespace Catacomb.Visuals
         private static Random rand;
         public  Room parent;
         public Tuple<Point, Point>[] connectionPoints;
-        private Tuple<Point,Point> originalRep;
-        
+        public CatRectangle originalRep;
+        protected bool[] createdConnectionLocal;
         protected List<CatRectangle> potentialSpawnAreas;
+        protected Ellipse[] debugConnections;
 
 
         public String testString = "";
@@ -35,24 +39,26 @@ namespace Catacomb.Visuals
 
         protected Point Center
         {
-            get { return new Point(originalRep.Item1.X / 2 + originalRep.Item2.X / 2, originalRep.Item1.Y / 2 + originalRep.Item2.Y / 2); }
+            get { return new Point(originalRep.Center.X, originalRep.Center.Y); }
         }
         public DrawnRoom(Room parentIn, Point start, Point end) : base(new CatRectangle(start, end), true)
         {
-            originalRep = new Tuple<Point, Point>(start, end);
+            originalRep = new CatRectangle(start, end);
             parent = parentIn;
             canvas = new Canvas();
             canvas.Width = start.GetMaxX(end) - start.GetMinX(end); //+ 5* Globals.LINE_THICKNESS;
             canvas.Height = start.GetMaxY(end) - start.GetMinY(end);// + 5* Globals.LINE_THICKNESS;
             canvas.Background = Globals.MAZE_BACKGROUND_COLOR;
             rand = new Random();
+            debugConnections = new Ellipse[Globals.CONNECTION_LIMIT];
+            createdConnectionLocal = new bool[Globals.CONNECTION_LIMIT];
 
-
-
+            
             connectionPoints = new Tuple<Point, Point>[Globals.CONNECTION_LIMIT];
             for(int i =0; i < Globals.CONNECTION_LIMIT; i++)
             {
                 connectionPoints[i] = null;
+                createdConnectionLocal[i] = false;
             }
 
             potentialSpawnAreas = new List<CatRectangle>();
@@ -74,11 +80,10 @@ namespace Catacomb.Visuals
             
             Tuple<Point, Point> localConnectionPoints = GetLocalConnectionPoints(direction);
 
-            //if(otherRoom == null || !otherRoom.HasConnectionPoints(oppositeDirection))
             if(localConnectionPoints == null)
             {
-                //Tuple<Point, Point> connectionPoints = GetConnectionPoints(direction, start, end);
                 CreateConnectionPoints(direction, start, end);
+                createdConnectionLocal[direction] = true;
                 localConnectionPoints = connectionPoints[direction]; 
                 base.AddChild(new Wall(start, localConnectionPoints.Item1));
                 base.AddChild(new Wall(localConnectionPoints.Item2, end));
@@ -129,6 +134,9 @@ namespace Catacomb.Visuals
         public void CloseConnectionPoints(int direction)
         {
             Tuple<Point, Point> connectionPoint = connectionPoints[direction];
+            connectionPoints[direction] = null;
+            createdConnectionLocal[direction] = false;
+            canvas.Children.Remove(debugConnections[direction]);
             base.AddChild(new Wall(connectionPoint.Item1, connectionPoint.Item2));
         }
         public override void Draw()
@@ -136,10 +144,43 @@ namespace Catacomb.Visuals
             DrawRoom();
 
             if (Globals.DEBUG)
-            {
-                TextBox testBox = new TextBox();
-                testBox.Text = testString;//parent.getId().ToString() + "\n" + representive.ToString();
-                canvas.Children.Add(testBox);
+            {                
+                if (Globals.SHOW_CONNECTION_POINTS)
+                {
+                    for (int i = 0; i < Globals.CONNECTION_LIMIT; i++)
+                    {
+
+                        Point connection = GetLocalConnectionPointCenter(i);
+                        if(connection == null)
+                        {
+                            continue;
+                        }
+                        double diameter = 16;
+                        debugConnections[i] = new Ellipse();
+                        debugConnections[i].Height = diameter;
+                        debugConnections[i].Width = diameter;
+                        debugConnections[i].Fill = Brushes.Purple;
+                        canvas.Children.Add(debugConnections[i]);
+
+                        Line test = new Line();
+                        test.StartPoint = new Avalonia.Point(convertPointToLocal(Center).X, convertPointToLocal(Center).Y);
+                        test.EndPoint = new Avalonia.Point(connection.X, connection.Y);
+                        test.StrokeThickness = 8;
+                        test.Stroke = Brushes.Orange;
+                        canvas.Children.Add(test);
+                        Canvas.SetLeft(debugConnections[i], connection.X - diameter / 2.0);
+                        Canvas.SetTop(debugConnections[i], connection.Y - diameter /2.0);
+                    }
+                }
+                if (Globals.SHOW_ROOM_META_TEXT)
+                {
+                    TextBlock testBox = new TextBlock();
+                    testBox.Background = Brushes.White;
+                    testBox.Text = testString;
+                    canvas.Children.Add(testBox);
+                    Canvas.SetLeft(testBox, Globals.LINE_THICKNESS * 2);
+                    Canvas.SetTop(testBox, Globals.LINE_THICKNESS * 2);
+                }
             }
             
             base.Draw();
@@ -277,7 +318,38 @@ namespace Catacomb.Visuals
             return new Tuple<Point, Point>(start, end);
         }
 
-        
+        /**
+         * This returns the center poit in LOCAL cordinates 
+         */
+        public Point GetLocalConnectionPointCenter(int direction, bool global = false)
+        {
+            Tuple<Point,Point> average;
+            double averageX = 0.0 ;
+            double averageY = 0.0;
+            if(!parent.HasConnection(direction))
+            {
+                return null;
+            }
+            DrawnRoom neighbor = parent.GetConnectedRoom(direction).RoomDrawn;
+            if (createdConnectionLocal[direction])
+            {
+                average = connectionPoints[direction];
+            }
+            else if (neighbor != null && neighbor.HasConnectionPoints(Room.GetOppositeDirection(direction)))
+            {
+                average = GetNeighborsConnectionPoints(direction);
+                averageX = direction == Globals.LEFT ? Globals.CONNCETION_LENGTH : direction == Globals.RIGHT ? -Globals.CONNCETION_LENGTH : 0.0;
+                averageY = direction == Globals.TOP ? Globals.CONNCETION_LENGTH : direction == Globals.BOTTOM ? -Globals.CONNCETION_LENGTH : 0.0;
+            }
+            else
+            {
+                return null;
+            }
+            averageX += (average.Item1.X + average.Item2.X) /2.0;
+            averageY += (average.Item1.Y + average.Item2.Y) / 2.0;
+            return global ? convertPointToGlobal(new Point(averageX,averageY)) :new Point(averageX, averageY);
+        }
+
         //assum
         public Tuple<Point,Point> PlaceNeighbor(int direction, double gap, Point p1, Point p2 )
         {
@@ -359,6 +431,39 @@ namespace Catacomb.Visuals
             return new CatRectangle(thisRoomPoint, otherRoomPoint);
         }
 
+        public virtual bool DoesVectorIntersectConnectingRooms(Vector vectorIn)
+        {
+            //assumes vector is in global space
+            for(int i =0; i < Globals.CONNECTION_LIMIT; i++)
+            {
+                if (!parent.HasConnection(i))
+                {
+                    continue;
+                }
+                Room connectedRoom = parent.GetConnectedRoom(i);
+
+                if(connectedRoom.RoomDrawn != null && connectedRoom.RoomDrawn.IsWithin(vectorIn))
+                {
+                    if (connectedRoom.RoomDrawn.DoesGlobalIntersect(vectorIn)) {
+                        return true;
+                    };
+                }
+            }
+            return DoesGlobalIntersect(vectorIn);
+        }
+
+        public bool DoesGlobalIntersect(Vector vectorIn)
+        {
+            double oldOffsetX = vectorIn.OffsetX;
+            double oldOffsetY = vectorIn.OffsetY;
+
+            vectorIn.OffsetX -= Position.X;
+            vectorIn.OffsetY -= Position.Y;
+            bool result = DoesIntersect(vectorIn);
+            vectorIn.OffsetX = oldOffsetX;
+            vectorIn.OffsetY = oldOffsetY;
+            return result;
+        }
         public override bool EntityMove(Entity entityIn, double distance)
         {
             Vector globalMovement = entityIn.GetMovementVector(distance, 0, 0);
@@ -385,6 +490,11 @@ namespace Catacomb.Visuals
             return base.EntityMove(entityIn,distance);
         }
 
+        public DrawnRoom GetConnection(int direction)
+        {
+            return parent.GetConnectedRoom(direction).RoomDrawn;
+        }
+
         /**
          * Converts the given points (GLOBAL CORDINATE) into a point in the local cordinates
          * Does NOT modify the original point
@@ -400,7 +510,7 @@ namespace Catacomb.Visuals
         }
         public override bool  Erase()
         {
-            base.representive = new CatRectangle(originalRep.Item1, originalRep.Item2);
+            base.representive = originalRep.Clone();
             for (int i = 0; i < Globals.CONNECTION_LIMIT; i++)
             {
                 connectionPoints[i] = null;
@@ -421,7 +531,40 @@ namespace Catacomb.Visuals
             base.AddChild(new Floor(floor));
             
         }
-
+        public DrawnRoom GetEntityCurrentRoom(Entity entityIn)
+        {
+            if (originalRep.IsWithin(entityIn))
+            {
+                return this;
+            }
+            for(int i =0; i < Globals.CONNECTION_LIMIT; i++)
+            {
+                if (!parent.HasConnection(i))
+                {
+                    continue;
+                }
+                if (GetConnection(i).originalRep.IsWithin(entityIn))
+                {
+                    return GetConnection(i);
+                }
+            }
+            double minDistance = originalRep.Center.GetDistance(entityIn.Center);
+            DrawnRoom min = this;
+            for (int i = 0; i < Globals.CONNECTION_LIMIT; i++)
+            {
+                if (!parent.HasConnection(i))
+                {
+                    continue;
+                }
+                double distance = GetConnection(i).originalRep.Center.GetDistance(entityIn.Center);
+                if(distance < minDistance)
+                {
+                    minDistance = distance;
+                    min = GetConnection(i);
+                }
+            }
+            return min;
+        }
         public virtual Point GenerateSpawnPoint(double width, double height, double offset = Globals.LINE_THICKNESS)
         {
             CatRectangle potentialArea = potentialSpawnAreas[Globals.Rand.Next(potentialSpawnAreas.Count)];

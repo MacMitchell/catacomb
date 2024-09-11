@@ -375,5 +375,16 @@ namespace UnitTests
             Assert.IsFalse(test.IsPointInVector(p2));
             Assert.IsFalse(test.IsPointInVector(p3));
         }
+
+        [TestMethod]
+        public void Rectangle_Is_In_Vector()
+        {
+            CatThickLine test = new CatThickLine(new Point(0, 0), new Point(5, 5), 2);
+            CatRectangle t1 = new CatRectangle(0, 4, 5, 0);
+            Assert.IsTrue(test.DoesIntersect(t1));
+
+
+
+        }
     }
 }

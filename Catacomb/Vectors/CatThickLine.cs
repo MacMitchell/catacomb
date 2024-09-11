@@ -18,10 +18,39 @@ namespace Catacomb.Vectors
         
         Point end;
 
+        private double offsetX;
+        private double offsetY;
+        private double width;
+        public double OffsetX
+        {
+            get { return offsetX; }
+            set
+            {
+                upperLine.OffsetX = value;
+                lowerLine.OffsetX = value;
+                start.OffsetX = value;
+                end.OffsetX = value;
+                offsetX = value;
+            }
+        }
 
-        
+        public double OffsetY
+        {
+            get { return offsetY; }
+            set
+            {
+                upperLine.OffsetY = value;
+                lowerLine.OffsetY = value;
+                start.OffsetY = value;
+                end.OffsetY = value;
+                offsetY = value;
+            }
+        }
         public CatThickLine(Point p1, Point p2, double width)
         {
+            offsetX = 0;
+            offsetY = 0;
+            this.width = width;
             width = width/ 2;
             start = p1.GetSmallerPoint(p2);
             end = p1.GetBiggerPoint(p2);
@@ -33,6 +62,11 @@ namespace Catacomb.Vectors
 
             upperLine = GetCatLineFromCenter(angle+Math.PI/2, width, center);
             lowerLine = GetCatLineFromCenter(angle - Math.PI / 2, width, center);
+        }
+
+        public Vector Clone()
+        {
+            return new CatThickLine(start.Clone(), end.Clone(), width);
         }
 
         public bool DoesIntersect(Vector other)

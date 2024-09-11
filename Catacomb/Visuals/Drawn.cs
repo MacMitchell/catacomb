@@ -24,6 +24,17 @@ namespace Catacomb.Visuals
         private Point position;
         protected bool trespassable;
 
+        public double OffsetX
+        {
+            get { return representive.OffsetX; }
+            set { representive.OffsetX = value; }
+        }
+        public double OffsetY
+        {
+            get { return representive.OffsetY; }
+            set { representive.OffsetY = value; }
+        }
+
         protected Drawn parent = null;
         public virtual int DrawnId
         {
@@ -37,6 +48,9 @@ namespace Catacomb.Visuals
         {
             get { return trespassable; }
         }
+        //Position means different things for different objects
+        //For entities, the positon is in the center
+        //for rooms, the posiion is the topleft
         public Point Position
         {
             get { return position; }
@@ -54,6 +68,12 @@ namespace Catacomb.Visuals
                  
         }
 
+
+        //Returns a copy of the representive
+        public Vector Clone()
+        {
+            return representive.Clone();
+        }
         public double GetScalar()
         {
             return scalar;

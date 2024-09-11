@@ -40,11 +40,12 @@ namespace Catacomb.Entities
             set { angle = value; }
         }
 
-       
+        private Double? tempAngle;
 
-    
 
-    private double width = 25;
+
+
+        private double width = 25;
         private double height = 25;
         public double Width
         {
@@ -67,10 +68,16 @@ namespace Catacomb.Entities
 
         public Point Center
         {
-            get { return new Point(Position.GetX() + width / 2, Position.GetY() + width / 2); }
+            get { return new Point(Position.X, Position.Y); }
+            //get { return new Point(Position.GetX() + width / 2, Position.GetY() + width / 2); } 
         }
 
+        public Point TopLeft
+        {
+            get { return Center.AddPoint( new Point(-Width / 2.0, -Height / 2.0)); }
+        }
         public double Accerlation { get => accerlation; set => accerlation = value; }
+        public Double? TempAngle { get => tempAngle; set => tempAngle = value; }
 
         public Entity(Point positionIn, Vector rep): base(rep)
         {
@@ -80,6 +87,7 @@ namespace Catacomb.Entities
             Angle = 0;
             Position = positionIn;
             id = idCounter++;
+            tempAngle = null;
         }
 
 
@@ -89,9 +97,18 @@ namespace Catacomb.Entities
         public virtual void MoveMe(double time)
         {
             double distance = velocity * time;
-            double newX = (distance ) * Math.Cos(angle) + Position.GetX();
-            double newY = (distance ) * Math.Sin(angle) + Position.GetY();
-
+            double newX;
+            double newY;
+            if (TempAngle == null)
+            {
+                newX = (distance) * Math.Cos(angle) + Position.GetX();
+                newY = (distance) * Math.Sin(angle) + Position.GetY();
+            }
+            else
+            {
+                newX = (distance) * Math.Cos(TempAngle.Value) + Position.GetX();
+                newY = (distance) * Math.Sin(TempAngle.Value) + Position.GetY();
+            }
             Point temp = Position;
             Position = new Point(newX, newY);
 
@@ -177,7 +194,8 @@ namespace Catacomb.Entities
             CatRectangle rep = (CatRectangle)representive;
             //assuming it is a square
             double width = rep.GetWidth();
-            Point center = new Point(Position.GetX() + width / 2, Position.GetY() + width / 2);
+            Point center = Center;
+            //Point center = new Point(Position.GetX() + width / 2, Position.GetY() + width / 2);
             center = center.GetRotateCopy(angle, width/2);
             double newX =   center.GetX() + distance * Math.Cos(Angle);
             double newY =   center.GetY() + distance * Math.Sin(Angle);
@@ -196,10 +214,12 @@ namespace Catacomb.Entities
         public override void Draw()
         {
             Update();
-            base.Draw();
+
+            Canvas.SetTop(canvas, Position.GetY() - Height/2.0);
+            Canvas.SetLeft(canvas, Position.GetX() - Width/2.0);
         }
 
-        protected void SetColor( IImmutableBrush color)
+        public void SetColor( IImmutableBrush color)
         {
             canvas.Background = color;
         }
@@ -232,6 +252,10 @@ namespace Catacomb.Entities
             container.Interact(Center);
         }
 
+        public virtual DrawnRoom GetCurrentRoom()
+        {
+            return container.GetEntityCurrentRoom(this); 
+        }
 
         public bool equals(Entity other)
         {

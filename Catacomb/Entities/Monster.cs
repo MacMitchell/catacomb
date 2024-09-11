@@ -38,7 +38,6 @@ namespace Catacomb.Entities
         private Ellipse outerEye;
         private Ellipse innerEye;
 
-
         public MonsterType Type { get => type; set => type = value; }
         public MonsterCloner Clone { get => clone; set => clone = value; }
 
@@ -94,14 +93,14 @@ namespace Catacomb.Entities
             double innerDistanceY = 18;
             //Canvas.SetLeft(outerEye, (Width / 2) - (outerEye.Width / 2));
             //Canvas.SetTop(outerEye, (Width / 2) - (outerEye.Width/2));
+            double angle = TempAngle != null ? (double) TempAngle : Angle;
+
+            Canvas.SetLeft(outerEye, (Width / 2) - (outerEye.Width/2) + (Math.Cos(angle) * outerDistanceX));
+            Canvas.SetTop(outerEye, (Width / 2)- (outerEye.Height / 2) + (Math.Sin(angle) * outerDistanceY));
 
 
-            Canvas.SetLeft(outerEye, (Width / 2) - (outerEye.Width/2) + (Math.Cos(Angle) * outerDistanceX));
-            Canvas.SetTop(outerEye, (Width / 2)- (outerEye.Height / 2) + (Math.Sin(Angle) * outerDistanceY));
-
-
-            Canvas.SetLeft(innerEye, (Width / 2) - (innerEye.Width/2) + (Math.Cos(Angle) * innerDistanceX));
-            Canvas.SetTop(innerEye, (Width / 2) - (innerEye.Height/2) + (Math.Sin(Angle) * innerDistanceY));
+            Canvas.SetLeft(innerEye, (Width / 2) - (innerEye.Width/2) + (Math.Cos(angle) * innerDistanceX));
+            Canvas.SetTop(innerEye, (Width / 2) - (innerEye.Height/2) + (Math.Sin(angle) * innerDistanceY));
         }
         public void PlaceMonster(Point spawnPoint)
         {
