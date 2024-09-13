@@ -8,6 +8,7 @@ using Avalonia.Controls;
 
 using Catacomb.Entities;
 using Catacomb.CombatStuff;
+using Catacomb.Menu;
 namespace Catacomb.Maze
 {
     class ExploreCanvas : Avalonia.Controls.Canvas, DisplayMode
@@ -26,13 +27,15 @@ namespace Catacomb.Maze
         int right;
         int up;
         int down;
+        private bool showMenu;
+
         public ExploreCanvas(double width, double height, Player player):base()
         {
             base.Width = width;
             base.Height = height;
             base.Background = Global.Globals.MAZE_BACKGROUND_COLOR;
             this.player = player;
-
+            showMenu = false;
         }
         
         public Avalonia.Controls.Panel GetDisplay(){
@@ -53,24 +56,7 @@ namespace Catacomb.Maze
 
 
             maze.ConstructMaze(player);
-            /*while (!done)
-            {
-                try
-                {
-                    maze.Create(player);
-                    maze.Draw();
 
-                    for (int i = 0; i < numberOfMonsters; i++)
-                    {
-                        maze.CreateMonster();
-                    }
-                    done = true;
-                }
-                catch (Exception sadness)
-                {
-                    Console.WriteLine("FAILED TO BUILD MAZE\n");
-                }
-            }*/
             
             base.Children.Add(maze.GetCanvas());
             base.Children.Add(player.GetCanvas());
@@ -88,6 +74,12 @@ namespace Catacomb.Maze
 
         public DisplayMode Update(double time)
         {
+            if (showMenu)
+            {
+                showMenu = false;
+               
+                return new ClassMenu(this.Width, this.Height, player, this);
+            }
             SetPlayerAngle();
             maze.move(time);
             Monster combat = maze.CheckForCombat();
@@ -179,6 +171,9 @@ namespace Catacomb.Maze
                     break;
                 case Key.Space:
                     player.Interact();
+                    break;
+                case Key.Escape:
+                    showMenu = true;
                     break;
             }
         }

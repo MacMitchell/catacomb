@@ -35,12 +35,7 @@ namespace Catacomb.CombatStuff
         }
         public override string GenerateStats()
         {
-            string classes = "";
-            foreach(CatClass catClass in AllClasses)
-            {
-                classes += "\n" + catClass.Name;
-            }
-            return base.GenerateStats() + classes;
+            return base.GenerateStats() +"\n" + currentCatClass.Name;
         }
 
 

@@ -204,7 +204,9 @@
     <Compile Include="MainWindow.cs" />
     <Compile Include="Maze\StairRoom.cs" />
     <Compile Include="Maze\TreasureRoom.cs" />
+    <Compile Include="Menu\ClassMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\SelectGrid.cs" />
     <Compile Include="Vectors\CatLine.cs" />
     <Compile Include="Vectors\CatRectangle.cs" />
     <Compile Include="Vectors\CatThickLine.cs" />
