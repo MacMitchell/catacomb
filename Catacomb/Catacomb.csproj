@@ -179,6 +179,7 @@
     <Compile Include="CombatStuff\AdminCommand.cs" />
     <Compile Include="CombatStuff\Attack.cs" />
     <Compile Include="CombatStuff\AttackDecorator.cs" />
+    <Compile Include="CombatStuff\AttackFactories\AttackDecFactory.cs" />
     <Compile Include="CombatStuff\AttackFactories\AttackFactory.cs" />
     <Compile Include="CombatStuff\AttackFactories\TurnBasedAttackFactory.cs" />
     <Compile Include="CombatStuff\Class\CatClass.cs" />

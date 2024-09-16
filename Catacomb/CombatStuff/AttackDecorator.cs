@@ -8,6 +8,7 @@ namespace Catacomb.CombatStuff
 {
     //use this class when you need to change the Attack itself.
     //EX: When you want to do 1.1x damage
+    //This class is called from the bottom up i.e. baseAttack -> firstDecorator-> seconddecorator ->... -> top layer
     public class AttackDecorator:Attack
     {
         private Attack layerUpAttack; // this is the AttackDecorator or attack that is the next layer up
@@ -64,6 +65,35 @@ namespace Catacomb.CombatStuff
             setSelfSpeedStatChange = (double  value, Attack mainAttack) => value; 
             setManaDrain = (double  value, Attack mainAttack) =>value;
             setSelfManaDrain = (double  value, Attack mainAttack) => value;
+
+        }
+
+        public AttackDecorator Clone()
+        {
+            AttackDecorator newDec = new AttackDecorator(null,null);
+            newDec.setDamage = setDamage;
+            newDec.setSelfHeal = setSelfHeal;
+            newDec.setPoison = setPoison;
+            newDec.setBurn = setBurn;
+            newDec.setMentalBreak = setMentalBreak;
+            newDec.setArmorChange = setArmorChange;
+            newDec.setSelfArmorChange = setSelfArmorChange;
+            newDec.setDefenseStatChange = setDefenseStatChange;
+            newDec.setMagicResistStatChange = setMagicResistStatChange;
+            newDec.setSelfMagicResistStatChange = setSelfMagicResistStatChange;
+            newDec.setSelfDefenseStatChange = setSelfDefenseStatChange;
+            newDec.setAttackStatChange = setAttackStatChange;
+            newDec.setSelfAttackStatChange = setSelfAttackStatChange;
+            newDec.setMagicAttackStatChange = setMagicAttackStatChange;
+            newDec.setSelfMagicAttackStatChange = setSelfMagicAttackStatChange;
+            newDec.setSpeedStatChange = setSpeedStatChange;
+            newDec.setSelfSpeedStatChange = setSelfSpeedStatChange;
+            newDec.setManaDrain = setManaDrain;
+            newDec.setSelfManaDrain = SetSelfManaDrain;
+            
+            newDec.setCalculateDamage = setCalculateDamage;
+            newDec.Type = Type;
+            return newDec;
         }
 
         public override double CalculateDamage(double damage)
@@ -80,7 +110,7 @@ namespace Catacomb.CombatStuff
         public override double SelfHeal { get => setSelfHeal(layerUpAttack.SelfHeal, MainAttack); set => layerUpAttack.SelfHeal = value; }
         public override double Poison { get => setPoison(layerUpAttack.Poison, MainAttack); set => layerUpAttack.Poison = value; }
 
-        public override double Burn { get => setBurn(layerUpAttack.Poison, MainAttack); set => layerUpAttack.Burn = value; }
+        public override double Burn { get => setBurn(layerUpAttack.Burn, MainAttack); set => layerUpAttack.Burn = value; }
         public override double MentalBreak { get => setMentalBreak(layerUpAttack.MentalBreak,MainAttack); set => layerUpAttack.MentalBreak = value; }
         public override double ArmorChange { get => setArmorChange(layerUpAttack.ArmorChange, MainAttack); set => layerUpAttack.ArmorChange = value; }
         public override double SelfArmorChange { get => setSelfArmorChange(layerUpAttack.SelfArmorChange, MainAttack); set => layerUpAttack.SelfArmorChange = value; }

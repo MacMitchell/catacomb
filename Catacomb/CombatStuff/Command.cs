@@ -55,6 +55,26 @@ namespace Catacomb.CombatStuff
             }
             return children[index];
         }
+
+        public void SetParent(Command parentIn)
+        {
+            if(parent != null)
+            {
+                throw new PossibleCommandParentChange();
+            }
+            else
+            {
+                Parent = parentIn;
+                if (Parent != null)
+                {
+                    Parent.children.Add(this);
+                }
+            }
+        }
+        class PossibleCommandParentChange : Exception
+        {
+            public PossibleCommandParentChange() : base("Setting parent when parent is not null") { }
+        }
     }
 
 

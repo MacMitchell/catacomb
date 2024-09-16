@@ -90,7 +90,7 @@ namespace Catacomb.CombatStuff
             {
                 if (castor.Poison > 0)
                 {
-                    Attack poisonAttack = Attack.CreateAttack(castor, parent, it, target, dec);
+                    Attack poisonAttack = Attack.CreateAttack(castor, parent, it, target, dec != null ?dec.Clone():null);
                     poisonAttack.ExecuteAttack = (CombatEntity innerNo, CombatEntity innerNope) =>
                     {
                         double amount = poisonAttack.TakePoisonDamge(castor.Poison, castor);
@@ -99,7 +99,7 @@ namespace Catacomb.CombatStuff
                 }
                 if(castor.Burn >0)
                 {
-                    Attack burnAttack = Attack.CreateAttack(castor, parent, it, target, dec);
+                    Attack burnAttack = Attack.CreateAttack(castor, parent, it, target, dec != null ? dec.Clone() : null);
                     burnAttack.ExecuteAttack= (CombatEntity innerNo, CombatEntity innerNope) =>
                     {
                         double amount = burnAttack.TakeBurnDamage(castor.Burn, castor);

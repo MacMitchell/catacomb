@@ -46,7 +46,7 @@ namespace Catacomb.CombatStuff
             this.damage = 0;
             this.selfHeal = 0;
             this.poison = 0;
-            this.Burn = 0;
+            this.burn = 0;
             this.mentalBreak = 0;
             this.armorChange = 0;
             this.selfArmorChange = 0;
@@ -222,8 +222,9 @@ namespace Catacomb.CombatStuff
             {
                 return new Attack(parent);
             }
-            Attack baseAttack = new Attack(null);
+            Attack baseAttack = new Attack();
 
+            dec.SetParent(parent);
             AttackDecorator attackDecoratorIt = dec;
             while (true)
             {

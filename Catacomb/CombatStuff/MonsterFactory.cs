@@ -29,7 +29,6 @@ namespace Catacomb.CombatStuff
             player.AddAttack(AttackFactory.FireBall);
             player.AddAttack(AttackFactory.Leech);
             player.AddAttack(AttackFactory.Bulster);
-
             player.IsPlayer = true;
 
 
@@ -49,8 +48,12 @@ namespace Catacomb.CombatStuff
         {
             CombatEntity slime = new CombatEntity("Slime",100);
             slime.XP = 100;
-            slime.AddAttack(AttackFactory.Tackle);
+            //slime.AddAttack(AttackFactory.Tackle);
             slime.AddAttack(AttackFactory.Leech);
+
+            slime.AddAttackDecorator(AttackDecFactory.PoisonTouch);
+            slime.AddAttackDecorator(AttackDecFactory.ShoulderGaurd);
+            
             return slime;
         }
 

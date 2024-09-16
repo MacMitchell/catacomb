@@ -87,10 +87,10 @@ namespace Catacomb.CombatStuff
             currentAttack.Damage = baseDamage;
             currentAttack.Name = "Leech";
 
-            currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
+            double targetHealthBefore = other != null ? other.Health: 0;
+
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
             {
-                double targetHealthBefore = currentAttack.Target.Health;
-                currentAttack.InflectDamage(currentAttack.Target, currentAttack.Damage);
 
                 double healthAfter = currentAttack.Target.Health;
                 double healAmount = targetHealthBefore - healthAfter;

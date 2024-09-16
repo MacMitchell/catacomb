@@ -307,6 +307,8 @@ namespace Catacomb.CombatStuff
             }
             public void Next()
             {
+                Console.WriteLine("DESCRIPTION");
+                Console.WriteLine(it.CurrentCommand.Description);
                 it.Next();
             }
             public int ExecuteNext()
