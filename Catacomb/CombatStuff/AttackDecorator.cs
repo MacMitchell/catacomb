@@ -126,6 +126,8 @@ namespace Catacomb.CombatStuff
         public override double SelfSpeedStatChange { get => setSelfSpeedStatChange(layerUpAttack.SelfSpeedStatChange, MainAttack); set => layerUpAttack.SelfSpeedStatChange = value; }
         public SetStatsDelegate SetDamage { get => setDamage; set => setDamage = value; }
         public SetStatsDelegate SetSelfHeal { get => setSelfHeal; set => setSelfHeal = value; }
+
+        public SetStatsDelegate SetBurn { get => setBurn; set => setBurn = value; }
         public SetStatsDelegate SetPoison { get => setPoison; set => setPoison = value; }
         public SetStatsDelegate SetMentalBreak { get => setMentalBreak; set => setMentalBreak = value; }
         public SetStatsDelegate SetArmorChange { get => setArmorChange; set => setArmorChange = value; }
@@ -144,6 +146,21 @@ namespace Catacomb.CombatStuff
         public SetStatsDelegate SetSelfManaDrain { get => setSelfManaDrain; set => setSelfManaDrain = value; }
         public InflictDamageDelegate SetInflictDamage { get => setInflictDamage; set => setInflictDamage = value; }
         public InflictDamageDelegate SetCalculateDamage { get => setCalculateDamage; set => setCalculateDamage = value; }
+
         public Attack MainAttack { get => mainAttack; set => mainAttack = value; }
+        public override DType DamageType { get {
+                if(mainAttack == null)
+                {
+                    return DType.none;
+                }
+                return mainAttack.DamageType;
+                } 
+            set { if (MainAttack != null) { 
+                    MainAttack.DamageType = value; 
+                }
+                base.DamageType = value;
+            }
+}
+
     }
 }

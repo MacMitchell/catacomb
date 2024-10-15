@@ -587,6 +587,11 @@ namespace Catacomb.Visuals
 
             return convertPointToGlobal(localSpawnPoint);
         }
+
+        public virtual void MustExecute(CatMaze mazeIn)
+        {
+            return;
+        }
         
     }
 }

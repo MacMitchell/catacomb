@@ -218,7 +218,21 @@ namespace Catacomb.Maze
             if (possibleMonsters.Contains(MonsterType.All)){
                 return allMonsters;
             }
-            var filteredResults = allMonsters.Where((monster) => possibleMonsters.Contains(monster.Type));
+            var filteredResults = allMonsters.Where((monster) =>
+            {
+                for (int i = 0; i < monster.Types.Count; i++)
+                {
+                    {
+                        if (possibleMonsters.Contains(monster.Types[i]))
+                        {
+                            return true;
+                        }
+                    }
+
+                }
+                return false;
+            }
+            );
             return (List<Monster>)filteredResults;
         }
     }

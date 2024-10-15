@@ -9,6 +9,7 @@ using Catacomb.CombatStuff;
 using Catacomb.Entities;
 using Catacomb.Visuals;
 using Catacomb.CombatStuff.AttackFactories;
+using Catacomb.Maze.Rooms;
 
 namespace Catacomb.Maze
 {
@@ -45,21 +46,22 @@ namespace Catacomb.Maze
         public static CatMaze BasicMaze(Player playIn)
         {
             CatMaze maze = new CatMaze();
-            maze.Size = 5;
+            maze.Size = 6;
             maze.Step = 1;
-            maze.NumberOfMonsters = 1;
+            maze.NumberOfMonsters = 3;
 
             maze.CreatableMonsters.Add(MonsterFactory.GreenSlime(playIn));
+            maze.CreatableMonsters.Add(MonsterFactory.GoblinScout(playIn));
 
             Room[] fillerRooms = { new Hallway() };
             int[] fillerCount = { 20 };
             maze.FillerRoom = CreateAllRoomFunction(fillerRooms, fillerCount, maze.Builder, true);
 
-            TreasureRoom treasureRoom = new TreasureRoom(Treasure.CreateBasicAttackTreasure(TurnBasedAttackFactory.SharpStick));
+            RandomTreasureRoom treasureRoom = new RandomTreasureRoom(Treasure.CreateBasicAttackTreasure(TurnBasedAttackFactory.SharpStick));
             
             Room[] keyRooms = { new Room(), treasureRoom };
 
-            int[] keyCount = { 10,1 };
+            int[] keyCount = { 5,1 };
             maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
             maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicFireMaze(playIn));
 
@@ -74,6 +76,8 @@ namespace Catacomb.Maze
             maze.NumberOfMonsters = 17;
 
             maze.CreatableMonsters.Add(MonsterFactory.FireImp(playIn));
+            maze.CreatableMonsters.Add(MonsterFactory.LittleDevil(playIn));
+            maze.CreatableMonsters.Add(MonsterFactory.FireWisp(playIn));
 
             Room[] fillerRooms = { new Hallway() };
             int[] fillerCount = { 20 };

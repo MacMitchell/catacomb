@@ -24,9 +24,10 @@ namespace Catacomb.CombatStuff.Class
         public static CatClass Mage(CombatPlayer play)
         {
             CatClass mage = new CatClass("Mage", "A basic mage user. Knows a little, not much", 10, play);
-
+            mage.LevelBase = 100;
 
             CatClassLevelUpHelper mageLevelUp = new CatClassLevelUpHelper(play);
+            mageLevelUp.healthChange = 3;
             mageLevelUp.manaChange = 5;
             mageLevelUp.magicChange = 3;
             mageLevelUp.magicResistChange = 1;
@@ -38,6 +39,20 @@ namespace Catacomb.CombatStuff.Class
             return mage;
         }
 
+        public static CatClass Squire(CombatPlayer play)
+        {
+            CatClass squire = new CatClass("Squire", "Learning to use the sword", 10 ,play);
+
+            CatClassLevelUpHelper squireHelper = new CatClassLevelUpHelper(play);
+            squireHelper.attackChange = 1;
+            squireHelper.healthChange = 2;
+            squireHelper.defenseChange = 1;
+            squireHelper.magicResistChange = 1;
+            squireHelper.speedChange = 1;
+            squireHelper.CreateLevelUpForAllLevels(squire);
+
+            return squire;
+        }
         
     }
 }

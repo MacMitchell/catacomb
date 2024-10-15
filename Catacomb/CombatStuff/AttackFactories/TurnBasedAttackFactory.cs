@@ -15,6 +15,22 @@ namespace Catacomb.CombatStuff.AttackFactories
      */
     public static class TurnBasedAttackFactory
     {
+        public static Attack Rage(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double statChange = 6;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "Regeneration";
+            currentAttack.SelfDefenseStatChange = -statChange;
+            currentAttack.SelfAttackStatChange = statChange;
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                
+                currentAttack.Description = "Rage! " + currentAttack.Castor.Name + " is getting enraged! Attack rose but defense fell!" ;
+
+            };
+            return currentAttack;
+        }
 
         public static Attack Regeneration(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
@@ -45,9 +61,43 @@ namespace Catacomb.CombatStuff.AttackFactories
             currentAttack.Name = "Sharp Stick";
 
             currentAttack.Damage = damage;
+            currentAttack.DamageType = DType.physical;
             currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
             {
                 currentAttack.Description = "A sharp stick pokes " + currentAttack.Target.Name + "!";
+            };
+            return currentAttack;
+        }
+
+        /**
+         * This is a debuff that slowly starts to do more damage over time.
+         */
+        public static Attack StackingCurse(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double defaultDamage = 5;
+            double stackingAmount = 2;
+
+            double currentDamage = defaultDamage;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.DamageType = DType.pierce;
+            currentAttack.Name = "Stacking Curse";
+
+            if (castor.metadata.ContainsKey("stacking_curse"))
+            {
+                //currentDamage = ( (int) castor.metadata["stacking_curse"])  + stackingAmount;
+                currentDamage = Convert.ToDouble(castor.metadata["stacking_curse"]) + stackingAmount;
+            }
+
+            currentAttack.SelfHeal = currentDamage * -1;
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                castor.metadata["stacking_curse"] = currentDamage;
+
+                currentAttack.Description = currentAttack.Castor.Name + " takes damage from the curse";
+
+
+                UtilAttackFactory.GenerateFollowUpTextAttack(currentAttack, ("The curse worsens"));
             };
             return currentAttack;
         }
@@ -67,7 +117,7 @@ namespace Catacomb.CombatStuff.AttackFactories
 
                 currentAttack.Description = currentAttack.Castor.Name + " gives off a toxic aura";
 
-                UtilAttackFactory.GenerateFollowUpTextAttack(currentAttack, (currentAttack.Target.Name + " poison increased by 10"));
+                UtilAttackFactory.GenerateFollowUpTextAttack(currentAttack, (currentAttack.Target.Name + " poison increased by " + baseToxicAmount));
             };
             return currentAttack;
         } 

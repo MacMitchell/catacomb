@@ -9,10 +9,31 @@ using Catacomb.Visuals;
 using Catacomb.CombatStuff;
 namespace Catacomb.Maze
 {
-    public class TreasureRoom : Room
+    public class BaseTreasureRoom : Room
     {
-
+        public BaseTreasureRoom(Treasure.CreateTreasureExecute executeIn)
+        {
+            GetExecute = executeIn;
+        }
         private Treasure.CreateTreasureExecute getExecute;
+        public Treasure.CreateTreasureExecute GetExecute {get => getExecute; set  => getExecute = value; }
+
+    };
+    public class BaseDrawnTreasureRoom: DrawnRoom
+    {
+        private Treasure.CreateTreasureExecute getExecute;
+        public BaseDrawnTreasureRoom(Room parentIn, Point start, Point end, Treasure.CreateTreasureExecute getExecute) : base(parentIn, start, end)
+        {
+            this.getExecute = getExecute;
+        }
+        protected void AddTreasure(Point p)
+        {
+            base.AddInteractable(new Treasure(p, getExecute));
+        }
+    }
+
+    public class TreasureRoom : BaseTreasureRoom
+    {
         public override double MaxWidth
         {
             get { return 1500; }
@@ -30,11 +51,9 @@ namespace Catacomb.Maze
             get { return 1500; }
         }
 
-        public Treasure.CreateTreasureExecute GetExecute { get => getExecute; set => getExecute = value; }
 
-        public TreasureRoom(Treasure.CreateTreasureExecute executeIn) : base()
+        public TreasureRoom(Treasure.CreateTreasureExecute executeIn) : base(executeIn)
         {
-            GetExecute = executeIn;
         }
 
         public override Room Clone()
@@ -51,11 +70,9 @@ namespace Catacomb.Maze
         }
     }
 
-    public class DrawnTreasureRoom:DrawnRoom{
-        private Treasure.CreateTreasureExecute getExecute;
-        public DrawnTreasureRoom(Room parentIn, Point start, Point end,Treasure.CreateTreasureExecute getExecute) : base(parentIn, start, end)
+    public class DrawnTreasureRoom:BaseDrawnTreasureRoom{
+        public DrawnTreasureRoom(Room parentIn, Point start, Point end,Treasure.CreateTreasureExecute getExecute) : base(parentIn, start, end,getExecute)
         {
-            this.getExecute = getExecute;
         }
 
         protected override void DrawRoom()
@@ -107,8 +124,7 @@ namespace Catacomb.Maze
 
 
             
-            base.AddInteractable(new Treasure(roomCenter,getExecute));
-            
+            base.AddTreasure(roomCenter);            
 
             return;
         }

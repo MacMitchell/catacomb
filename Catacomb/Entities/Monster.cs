@@ -17,7 +17,7 @@ namespace Catacomb.Entities
     public class Monster : Entity
     {
         private Movement movementAI;
-        private MonsterType type;
+        private List<MonsterType> types;
         
         public override CombatEntity Fighter
         {
@@ -38,7 +38,8 @@ namespace Catacomb.Entities
         private Ellipse outerEye;
         private Ellipse innerEye;
 
-        public MonsterType Type { get => type; set => type = value; }
+        public List<MonsterType> Types { get => types; set => types = value; }
+        public MonsterType Type { set => types.Add(value); }
         public MonsterCloner Clone { get => clone; set => clone = value; }
 
         public Monster(double width, double height,double maxVelocity) : base(new Point(0,0), new CatRectangle(0, 0, width, height))
@@ -47,6 +48,8 @@ namespace Catacomb.Entities
             Height = height;
             canvas.Width = Width;
             canvas.Height = Height;
+
+            
 
             Ellipse monsterVisual = new Ellipse();
             monsterVisual.Width = Width;
@@ -57,6 +60,7 @@ namespace Catacomb.Entities
             
             DrawEye();
 
+            Types = new List<MonsterType>();
 
             SetColor(Brushes.Transparent);
             Velocity = 0;

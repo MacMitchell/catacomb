@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace Catacomb.CombatStuff
 {
+    public enum DType //damage type
+    {
+        physical,
+        magic,
+        pierce,
+        none,
+    }
     public class Attack : Command
     {
         protected double damage; //the damage the attack does (+:reduces health)
@@ -34,7 +41,8 @@ namespace Catacomb.CombatStuff
         protected CombatEntity target;
 
         private AttackType type = AttackType.A;
-
+        private DType damageType;
+        private 
         protected int commandReturnResult ;
         public int CommandReturnResult{
             set { commandReturnResult = value; }
@@ -67,6 +75,7 @@ namespace Catacomb.CombatStuff
             castor = null;
             target = null;
             ExecuteAttack = DefaultExecuteAttack;
+            DamageType = DType.pierce;
         }
 
 
@@ -111,7 +120,7 @@ namespace Catacomb.CombatStuff
             //if damages itself
              if (selfHeal < 0)
             {
-                InflectDamage(Castor, SelfHeal * -1);
+                castor.Health += selfHeal;
             }
             else
             {
@@ -142,6 +151,7 @@ namespace Catacomb.CombatStuff
         public virtual double SelfManaDrain { get => selfManaDrain; set => selfManaDrain = value; }
         public virtual double Burn { get => burn; set => burn = value; }
         public AttackType Type { get => type; set => type = value; }
+        public virtual DType DamageType { get => damageType; set => damageType = value; }
 
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
@@ -164,9 +174,15 @@ namespace Catacomb.CombatStuff
         {
             return damage;
         }
+
+        public virtual double CalculateResistance(CombatEntity target, double damage)
+        {
+            return   DamageType == DType.pierce ? 0 : DamageType == DType.physical? target.Defense : target.MagicResist;
+        }
         public virtual void InflectDamage( CombatEntity target,double damage)
         {
             damage = CalculateDamage(damage);
+            damage -= CalculateResistance(target,damage);
             if(damage == 0)
             {
                 return;
@@ -200,6 +216,7 @@ namespace Catacomb.CombatStuff
             return poisonAmount;
         }
 
+        //THIS CANNOT CHANGE THE TARGET'S HEALTH. ONLY CALCULATE HOW MUCH IT SHOULD DO IN THEORY
         public virtual double CalculateBurnDamage(double burnAmount, CombatEntity target)
         {
             return target.MaxHealth * (burnAmount / 1000.0);

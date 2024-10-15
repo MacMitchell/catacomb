@@ -190,6 +190,7 @@
     <Compile Include="CombatStuff\Command.cs" />
     <Compile Include="CombatStuff\MonsterFactory.cs" />
     <Compile Include="CombatStuff\AttackFactories\UtilAttackFactory.cs" />
+    <Compile Include="CombatStuff\MonsterUtils\MonsterJuicer.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\Player.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Maze\Maze.cs" />
     <Compile Include="Maze\MazeBuilder.cs" />
     <Compile Include="MainWindow.cs" />
+    <Compile Include="Maze\Rooms\RandomTreasureRoom.cs" />
     <Compile Include="Maze\StairRoom.cs" />
     <Compile Include="Maze\TreasureRoom.cs" />
     <Compile Include="Menu\ClassMenu.cs" />

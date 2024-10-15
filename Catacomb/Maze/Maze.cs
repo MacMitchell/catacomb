@@ -107,6 +107,11 @@ namespace Catacomb.Maze
                     this.Draw();
                     AddSpawnAreaToInspawnableRooms();
 
+                    allRooms.ForEach(room =>
+                    {
+                        room.RoomDrawn.MustExecute(this);
+                    });
+
                     for (int i = 0; i < NumberOfMonsters; i++)
                     {
                         this.CreateMonster();

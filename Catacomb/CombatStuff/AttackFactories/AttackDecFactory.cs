@@ -8,6 +8,16 @@ namespace Catacomb.CombatStuff.AttackFactories
 {
     public class AttackDecFactory
     {
+        public static AttackDecorator HeatedClaws(Attack attackParent, Command parent = null)
+        {
+            AttackDecorator heatedClaws = new AttackDecorator(attackParent, parent);
+            
+            
+            heatedClaws.SetBurn = (double value, Attack mainAttack) => mainAttack.Damage > 0 && heatedClaws.DamageType == DType.physical ? value + 5 : value;
+            
+            heatedClaws.Type = AttackType.DA;
+            return heatedClaws;
+        }
         public static AttackDecorator PoisonTouch(Attack attackParent, Command parent = null)
         {
             AttackDecorator poisonTouch = new AttackDecorator(attackParent, parent);

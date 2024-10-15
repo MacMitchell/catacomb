@@ -33,6 +33,12 @@ namespace Catacomb.CombatStuff
             base.EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
             base.StartOfCombatAttacks.Add(UtilAttackFactory.DefaultPlayerStartOfCombatAttack);
         }
+
+        public override void PrepAttack()
+        {
+            Armor = 0;
+            base.PrepAttack();
+        }
         public override string GenerateStats()
         {
             return base.GenerateStats() +"\n" + currentCatClass.Name;

@@ -190,6 +190,20 @@ namespace Catacomb.CombatStuff.Class
 
         }
 
+        public static void AddGainAttackDecoratorLevelUp(CombatEntity.DecoratorGenerator dec, CatClass catclass, int lvl)
+        {
+            catclass.AddLevelUpEffect(lvl, (CommandIterator it, Command parent, CombatPlayer player) =>
+            {
+                Attack gainAttack = new Attack(parent);
+                gainAttack.ExecuteAttack = (CombatEntity no, CombatEntity nope) =>
+                {
+                    Attack basicInfo = dec(null, null);
+                    gainAttack.Description = "You got the equipement " + basicInfo.Name + "!";
+                    player.AddAttackDecorator(dec);
+                };
+                return gainAttack;
+            });
+        }
         public static void AddGainCatClassLevelUp(CatClass currentCatClass, CatClass gainClass, int lvl)
         {
             currentCatClass.AddLevelUpEffect(lvl, (CommandIterator it, Command parent, CombatPlayer player) =>

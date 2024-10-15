@@ -1,5 +1,6 @@
 ﻿using Catacomb.CombatStuff.Class;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,7 @@ namespace Catacomb.CombatStuff
         private double maxHealth;
         private double health;
         private double mana;
+        private double maxMana;
         private double attackStat;
         private double maxAttackStat;
         private double magicStat;
@@ -110,11 +112,16 @@ namespace Catacomb.CombatStuff
         public List<DecoratorGenerator> TempAttackingAttackDecs { get => tempAttackingAttackDecs; set => tempAttackingAttackDecs = value; }
         public List<DecoratorGenerator> DefenseAttackDecs { get => defenseAttackDecs; set => defenseAttackDecs = value; }
         public List<DecoratorGenerator> TempDefenseAttackDecs { get => tempDefenseAttackDecs; set => tempDefenseAttackDecs = value; }
+        public double MaxMana { get => maxMana; set => maxMana = value; }
 
+        public Hashtable metadata; 
         public CombatEntity(string nameIn, double defaultValue = 0,bool isPlayer =false)
         {
             this.isPlayer = isPlayer;
             Name = nameIn;
+            metadata = new Hashtable();
+
+
             generateAttacks = new List<AttackGenerator>();
             tempGenerateAttacks = new List<AttackGenerator>();
 
@@ -134,6 +141,7 @@ namespace Catacomb.CombatStuff
             defenseAttackDecs = new List<DecoratorGenerator>();
             tempDefenseAttackDecs = new List<DecoratorGenerator>();
 
+
             InializeValues(defaultValue);
             InitilzeGenericValues();
             InitializeSymmetric();
@@ -145,6 +153,7 @@ namespace Catacomb.CombatStuff
             MaxHealth = defaultValue;
             MaxMagicResist = defaultValue;
             mana = defaultValue;
+            maxMana = defaultValue;
             MaxDefense = defaultValue;
             MaxSpeed = defaultValue;
 
@@ -225,7 +234,7 @@ namespace Catacomb.CombatStuff
         
         public AttackDecorator CreateEntityDecorator(AttackDecorator prev = null, bool defending = false)
         {
-            if (tempAttackingAttackDecs == null)
+            if ((!defending && tempAttackingAttackDecs == null) || (defending && tempDefenseAttackDecs == null))
             {
                 return prev;
             }
@@ -240,7 +249,7 @@ namespace Catacomb.CombatStuff
             }
             else
             {
-                foreach (DecoratorGenerator dec in TempAttackingAttackDecs)
+                 foreach (DecoratorGenerator dec in TempAttackingAttackDecs)
                 {
                     toReturn = dec(prev);
                     prev = toReturn;
@@ -260,10 +269,34 @@ namespace Catacomb.CombatStuff
             dec = other.CreateEntityDecorator(dec,true);
             return dec;
         }
+        /**
+         * That sets up the attack to be used for combat 
+         */
+        private Attack CreateAttack(AttackGenerator genIn, Command parentIn, CommandIterator it, CombatEntity other)
+        {
+            return genIn(this, parentIn, it, other, SetUpDecs(other));
+        }
         public Attack GetAttack(Command parentIn,CommandIterator it, CombatEntity other)
         {
+            List<AttackGenerator> backupList = new List<AttackGenerator>(TempGenerateAttacks);
+
             int index = rand.Next(0, TempGenerateAttacks.Count);
-            return GetAttack(index, parentIn, it,other);
+            Attack temp =  TempGenerateAttacks[index](this, null, null,null);
+            while(Math.Abs(temp.SelfManaDrain) > mana)
+            {
+                TempGenerateAttacks.RemoveAt(index);
+                if(TempGenerateAttacks.Count == 0)
+                {
+                    TempGenerateAttacks = new List<AttackGenerator>(backupList);
+                    return CreateAttack(AttackFactory.Tackle, parentIn, it, other);
+                }
+                index = rand.Next(0, TempGenerateAttacks.Count);
+
+                temp = TempGenerateAttacks[index](this,null,null,null);
+            }
+            TempGenerateAttacks = new List<AttackGenerator>(backupList);
+            temp = GetAttack(index, parentIn, it, other);
+            return temp;
         }
 
         public Attack GetEndOfCombatAttack(CommandIterator it, Command parentIn,CombatEntity other)
@@ -356,12 +389,21 @@ namespace Catacomb.CombatStuff
             {
                 return null;
             }
-             return TempGenerateAttacks[index](this, parent,it, other,SetUpDecs(other));
+             return CreateAttack(TempGenerateAttacks[index], parent,it, other);
         }
 
 
-        public void PrepAttack()
+        public virtual void PrepAttack()
         {
+            
+            attackStat = MaxAttackStat;
+            magicStat = MaxMagicStat;
+            magicResist = MaxMagicResist;
+            defense = MaxDefense;
+            speed = MaxSpeed;
+            Poison = 0;
+            Burn = 0;
+            metadata = new Hashtable();
             tempGenerateAttacks = new List<AttackGenerator>(generateAttacks);
             tempStartOfTurnAttacks = new List<AttackGenerator>(startOfTurnAttacks);
             tempEndOfTurnAttacks = new List<AttackGenerator>(endOfTurnAttacks);
@@ -374,6 +416,7 @@ namespace Catacomb.CombatStuff
         {
             string output = Name + "\nHealth: " +
                             Health + "/" + MaxHealth +
+                            "\n Mana: " + mana + "/" + maxMana +
                             "\nArmor: " + Armor  +
                             "\nAttack: " + AttackStat + "/" + MaxAttackStat +
                             "\nMagic: " + MagicStat + "/" + MaxMagicStat + 

@@ -307,8 +307,6 @@ namespace Catacomb.CombatStuff
             }
             public void Next()
             {
-                Console.WriteLine("DESCRIPTION");
-                Console.WriteLine(it.CurrentCommand.Description);
                 it.Next();
             }
             public int ExecuteNext()
@@ -319,8 +317,6 @@ namespace Catacomb.CombatStuff
             }
             public void SetUpAttacks()
             {
-                //in the fruture this will not change the current command, but currentCommand.Next
-                //StartOfTurnCommand getAttacks = new StartOfTurnCommand(it,null,player,monster);
                 FetchStartOfCombatAttack getAttacks = new FetchStartOfCombatAttack(it, null, player, monster);
                 it.CurrentCommand = getAttacks;
             }
