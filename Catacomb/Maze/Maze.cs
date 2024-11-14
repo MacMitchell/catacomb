@@ -63,6 +63,7 @@ namespace Catacomb.Maze
         public List<Monster> CreatableMonsters { get => creatableMonsters; set => creatableMonsters = value; }
         public List<Room> InspawnableRooms { get => inspawnableRooms; set => inspawnableRooms = value; }
         public MazeBuilder Builder { get => builder; set => builder = value; }
+        public Player Player { get => player; set => player = value; }
 
         private List<Room> inspawnableRooms;
 
@@ -245,7 +246,7 @@ namespace Catacomb.Maze
             InspawnableRooms = start.GetAllConnectedRooms(true);
         }
 
-        protected void AddMonster(Monster monsterIn)
+        public void AddMonster(Monster monsterIn)
         {
             canvas.Children.Add(monsterIn.GetCanvas());
             monsters.Add(monsterIn);

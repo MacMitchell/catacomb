@@ -204,6 +204,7 @@
     <Compile Include="Maze\Maze.cs" />
     <Compile Include="Maze\MazeBuilder.cs" />
     <Compile Include="MainWindow.cs" />
+    <Compile Include="Maze\Rooms\BossRoom.cs" />
     <Compile Include="Maze\Rooms\RandomTreasureRoom.cs" />
     <Compile Include="Maze\StairRoom.cs" />
     <Compile Include="Maze\TreasureRoom.cs" />

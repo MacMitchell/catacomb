@@ -224,7 +224,7 @@ namespace Catacomb.CombatStuff
 
         private abstract class MainCombatView : Grid
         {
-            protected CombatEntity player;
+            protected CombatPlayer player;
             protected CombatEntity monster;
             protected CommandIterator it;
 
@@ -237,7 +237,7 @@ namespace Catacomb.CombatStuff
             {
                 base.Width = width;
                 base.Height = height;
-                this.player = player;
+                this.player = (CombatPlayer) player;
                 this.monster = monster;
                 this.it = it;
                 this.monsterText = leftSide;

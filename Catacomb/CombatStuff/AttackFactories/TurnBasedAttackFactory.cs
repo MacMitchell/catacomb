@@ -15,6 +15,88 @@ namespace Catacomb.CombatStuff.AttackFactories
      */
     public static class TurnBasedAttackFactory
     {
+
+        /**
+         * First time the castor reaches below half health, it burn the target for a good amount
+         */
+        public static Attack FlamingOutrage(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double burnAmount = 50;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "Flaming Outrage";
+            currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
+            {
+                if(castor.Health *2 <= castor.MaxHealth)
+                {
+                    Attack followUp = Attack.CreateAttack(castor, currentAttack, it, other, dec?.Clone());
+                    followUp.Burn = burnAmount;
+                    followUp.Target = currentAttack.Target;
+                    followUp.Castor = currentAttack.Castor;
+                    currentAttack.Description = currentAttack.Castor.Name + "'s anger causes fire to fly everywhere";
+                    followUp.ExecuteAttack += (CombatEntity c2, CombatEntity t2) =>
+                    {
+                        followUp.Description =  followUp.Target.Name + "'s burn greatly increased!";
+                        castor.RemoveTempAttack(FlamingOutrage);
+                    };
+                }
+                else
+                {
+                    currentAttack.CommandReturnResult = it.ExecuteNext(c, t);
+                }
+            };
+            return currentAttack;
+        }
+
+        /**
+         * After a set number of turns, it will deal a lot of damage to castor
+         */
+        public static Attack Meteor(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double baseDamage = 80;
+            double baseTimer = 4;
+            
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Name = "Failling Meteor";
+            currentAttack.Type = AttackType.EOT;
+
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                if (castor.metadata.ContainsKey("meteor"))
+                {
+                    if (Convert.ToInt32(castor.metadata["meteor"]) == 0)
+                    {
+                        currentAttack.Description = "The Meteor Fell!";
+                        Attack metoerAttack = Attack.CreateAttack(castor, currentAttack, it, other, dec?.Clone());
+
+                       metoerAttack.Damage = baseDamage;
+                        metoerAttack.DamageType = DType.magic;
+                        metoerAttack.ExecuteAttack += (CombatEntity ct, CombatEntity tt) =>
+                        {
+                            metoerAttack.Description = "The meteor deals devastating damage to " + currentAttack.Castor.Name + "!";
+                            //remove attack
+                            castor.metadata.Remove("meteor");
+                            castor.RemoveTempAttack(Meteor);
+                        };
+
+                    }
+                    else
+                    {
+                        currentAttack.Description = "The meteor is getting bigger...";    
+                        castor.metadata["meteor"] = Convert.ToInt32(castor.metadata["meteor"]) - 1;
+                    }
+                }
+                else
+                {
+                    castor.metadata["meteor"] = baseTimer;
+                    currentAttack.Description = "A meteor appears in the sky";
+                }
+
+            };
+
+            
+            return currentAttack;
+        }
         public static Attack Rage(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             double statChange = 6;

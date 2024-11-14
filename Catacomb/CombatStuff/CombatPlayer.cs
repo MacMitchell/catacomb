@@ -23,14 +23,17 @@ namespace Catacomb.CombatStuff
                 }
              currentCatClass = value; } }
 
- 
+        public void AddClass(CatClass c)
+        {
+            AllClasses.Add(c);
+        }
         public CombatPlayer(string nameIn, double defaultValue = 0):base(nameIn, defaultValue)
         {
             AllClasses = new List<CatClass>();
         }
         public override void InitilzeGenericValues()
         {
-            base.EndOfCombatAttack = UtilAttackFactory.DefaultPlayerEndOfCombat;
+            base.EndOfCombatAttack.Add(UtilAttackFactory.DefaultPlayerEndOfCombat);
             base.StartOfCombatAttacks.Add(UtilAttackFactory.DefaultPlayerStartOfCombatAttack);
         }
 
@@ -38,6 +41,16 @@ namespace Catacomb.CombatStuff
         {
             Armor = 0;
             base.PrepAttack();
+        }
+
+
+        public Attack GetAttack(int index, Command parent, CommandIterator it, CombatEntity other)
+        {
+           if(index >= TempGenerateAttacks.Count)
+             {
+                return null;
+            }
+            return CreateAttack(TempGenerateAttacks[index], parent, it, other);
         }
         public override string GenerateStats()
         {

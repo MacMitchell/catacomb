@@ -18,7 +18,7 @@ namespace Catacomb.CombatStuff
         Demon,
         Fire,
         Ethereal,
-
+        Elemental,
     }
     class MonsterFactory
     {
@@ -42,8 +42,9 @@ namespace Catacomb.CombatStuff
             player.AddAttack(AttackFactory.Bulster);
 
             //testing
-            player.AddAttack(AttackFactory.Ignite);
-            player.AddAttack(AttackFactory.Heatwave);
+            player.AddAttackDecorator(AttackDecFactory.CoolFlames);
+            player.AddAttack(AttackFactory.SelfIgnition);
+            
 
             return player;
         }
@@ -109,8 +110,8 @@ namespace Catacomb.CombatStuff
 
         public static Monster FireWisp(Player player)
         {
-            Monster fireWisp = new Monster(35, 35, 100);
-            fireWisp.MovementAI = new BasicWonderingMovement(fireWisp, player,1000);
+            Monster fireWisp = new Monster(35, 35, 25);
+            fireWisp.MovementAI = new SmartMovement(fireWisp, player);
             fireWisp.Type = MonsterType.Fire;
             fireWisp.Type = MonsterType.Ethereal;
             fireWisp.Clone = FireWisp;
@@ -166,7 +167,6 @@ namespace Catacomb.CombatStuff
         public static Monster LittleDevil(Player player)
         {
             Monster littleDevil = new Monster(35, 35, 300);
-            //fireImp.MovementAI = new BasicWonderWithHuntingMovement(fireImp, player,150,Math.PI/4,500,Math.PI/2);
             littleDevil.MovementAI = new SmartMovement(littleDevil, player);
             littleDevil.Type = MonsterType.Imp;
             littleDevil.Type = MonsterType.Fire;
@@ -182,10 +182,41 @@ namespace Catacomb.CombatStuff
             littleDevil.Fighter = littleDevilFighter;
 
 
-            MonsterUtils.MonsterJuicer.GenerateRandomStartOfTurnVoice(new[] {"The Little devil sharpens its claws", "The little devil looks ready to pounce"},littleDevilFighter);
+            MonsterUtils.MonsterJuicer.GenerateRandomStartOfTurnVoice(new[] {"The Little devil sharpens its claws", "The little devil gets ready to pounce"},littleDevilFighter);
             littleDevilFighter.AddAttack(AttackFactory.HeatingClaws);
 
             return littleDevil;
+        }
+
+        public static Monster FireElemental(Player play)
+        {
+            Monster fireElemental = new Monster(35, 35, 50);
+            fireElemental.MovementAI = new SmartMovement(fireElemental, play);
+            fireElemental.Type = MonsterType.Fire;
+            fireElemental.Type = MonsterType.Elemental;
+            fireElemental.Clone = FireElemental;
+
+
+            CombatEntity fighter = new CombatEntity("Fire Elemental", 145);
+            fighter.MaxMana = 150;
+            fighter.Mana = 150;
+            fighter.Armor = 0;
+            fighter.MaxAttackStat = 20;
+            fighter.MaxMagicStat = 20;
+            fighter.MaxDefense = 5;
+            fighter.MaxMagicResist = 7;
+            fighter.MaxSpeed = 40;
+            //add attacks
+            fighter.AddAttack(AttackFactory.FireBall);
+            fighter.AddAttack(AttackFactory.Ignite);
+            fighter.AddAttack(AttackFactory.Heatwave);
+
+            fighter.AddAttack(TurnBasedAttackFactory.FlamingOutrage);
+
+            MonsterUtils.MonsterJuicer.GenerateRandomStartOfTurnVoice(new[] {"A tornado of flames whirls around you both.", "The ancient fire being looms over you.", "The elemental body of flames flares up."}, fighter);
+            fireElemental.Fighter = fighter;
+            return fireElemental;
+
         }
     }
 }

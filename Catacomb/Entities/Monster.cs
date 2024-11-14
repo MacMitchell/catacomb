@@ -14,6 +14,7 @@ using Avalonia.Controls;
 
 namespace Catacomb.Entities
 {
+    //CREATING A MONSTER requires placeMonster and setting the container
     public class Monster : Entity
     {
         private Movement movementAI;

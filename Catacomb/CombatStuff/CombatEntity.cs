@@ -76,6 +76,8 @@ namespace Catacomb.CombatStuff
         private List<AttackGenerator> tempGenerateAttacks; //this is used to keep track of attacks that can be used in one combat. It allows for attack to be in one combat and removed for the next
 
         private List<AttackGenerator> startOfCombatAttacks;
+        private List<AttackGenerator> endOfCombatAttack;
+
 
         private List<AttackGenerator> startOfTurnAttacks;
         private List<AttackGenerator> tempStartOfTurnAttacks;
@@ -85,8 +87,7 @@ namespace Catacomb.CombatStuff
 
         private List<AttackGenerator> symmetricAttacks;
 
-        protected AttackGenerator endOfCombatAttack;
-        public AttackGenerator EndOfCombatAttack
+        public List<AttackGenerator> EndOfCombatAttack
         {
             get { return endOfCombatAttack; }
             set { endOfCombatAttack = value; }
@@ -126,7 +127,7 @@ namespace Catacomb.CombatStuff
             tempGenerateAttacks = new List<AttackGenerator>();
 
             startOfCombatAttacks = new List<AttackGenerator>();
-
+            EndOfCombatAttack = new List<AttackGenerator>();
             startOfTurnAttacks = new List<AttackGenerator>();
             tempStartOfTurnAttacks = new List<AttackGenerator>();
 
@@ -171,10 +172,7 @@ namespace Catacomb.CombatStuff
 
         public virtual void InitilzeGenericValues()
         {
-            if (!IsPlayer)
-            {
-                EndOfCombatAttack = UtilAttackFactory.DefaultEndOfCombatAttack;                
-            }
+            
             startOfCombatAttacks.Add(UtilAttackFactory.DefaultStartOfCombatAttack);
         }
 
@@ -193,6 +191,7 @@ namespace Catacomb.CombatStuff
                 case AttackType.SOC: StartOfCombatAttacks.Add(newAttack); break;
                 case AttackType.SOT: StartOfTurnAttacks.Add(newAttack); break;
                 case AttackType.EOT: EndOfTurnAttacks.Add(newAttack); break;
+                case AttackType.EOC: EndOfCombatAttack.Add(newAttack); break;
             }
         }
         public void AttackTempAttack(AttackGenerator newTempAttack)
@@ -204,6 +203,20 @@ namespace Catacomb.CombatStuff
                 case AttackType.SOT: TempStartOfTurnAttacks.Add(newTempAttack); break;
                 case AttackType.EOT: TempEndOfTurnAttacks.Add(newTempAttack); break;
             }
+        }
+
+        //NOT TESTED YET 
+        public void RemoveTempAttack(AttackGenerator tempAttack)
+        {
+            Attack att = tempAttack(this, null, null, null, null);
+            AttackType type = att.Type;
+            switch (type)
+            {
+                case AttackType.A: tempGenerateAttacks= (List<AttackGenerator>) tempGenerateAttacks.Where(attack => attack(this,null,null,null).Name != att.Name).ToList(); break;
+                case AttackType.SOT: TempStartOfTurnAttacks = (List<AttackGenerator>) TempStartOfTurnAttacks.Where(attack => attack(this, null, null, null).Name != att.Name).ToList(); break;
+                case AttackType.EOT: TempEndOfTurnAttacks = (List<AttackGenerator>)TempEndOfTurnAttacks.Where(attack => attack(this, null, null, null).Name != att.Name).ToList(); break;
+            }
+
         }
         public void AddTempAttack(AttackGenerator newTempAttack)
         {
@@ -272,7 +285,7 @@ namespace Catacomb.CombatStuff
         /**
          * That sets up the attack to be used for combat 
          */
-        private Attack CreateAttack(AttackGenerator genIn, Command parentIn, CommandIterator it, CombatEntity other)
+        protected Attack CreateAttack(AttackGenerator genIn, Command parentIn, CommandIterator it, CombatEntity other)
         {
             return genIn(this, parentIn, it, other, SetUpDecs(other));
         }
@@ -295,13 +308,22 @@ namespace Catacomb.CombatStuff
                 temp = TempGenerateAttacks[index](this,null,null,null);
             }
             TempGenerateAttacks = new List<AttackGenerator>(backupList);
-            temp = GetAttack(index, parentIn, it, other);
+            temp = GetAttack(TempGenerateAttacks[index], parentIn, it, other);
             return temp;
         }
 
-        public Attack GetEndOfCombatAttack(CommandIterator it, Command parentIn,CombatEntity other)
+        public List<Attack> GetEndOfCombatAttack(CommandIterator it, Command parentIn,CombatEntity other)
         {
-            return EndOfCombatAttack(this, parentIn,it,other,SetUpDecs(other));
+            List<Attack> attacks = new List<Attack>();
+            foreach (AttackGenerator att in EndOfCombatAttack)
+            {
+                Attack temp = att(this, parentIn, it, other, SetUpDecs(other));
+                temp.Castor = this;
+                temp.Target = other;
+                attacks.Add(temp);
+            }
+            return attacks;
+           // return EndOfCombatAttack(this, parentIn,it,other,SetUpDecs(other));
         }
 
         public List<Attack> GetStartOfCombatAttack(CommandIterator it, Command parentIn, CombatEntity other)
@@ -344,6 +366,10 @@ namespace Catacomb.CombatStuff
                 temp.Target = other;
                 attacks.Add(temp);
             }
+            if (!IsPlayer)
+            {
+                UtilAttackFactory.DefaultEndOfCombatAttack(this, parentIn, it,other,SetUpDecs(other));
+            }
             return attacks;
         }
 
@@ -383,13 +409,13 @@ namespace Catacomb.CombatStuff
             Speed = MaxSpeed;
         }
 
-        public Attack GetAttack(int index, Command parent,CommandIterator it,CombatEntity other)
+        public Attack GetAttack(AttackGenerator attackToBe, Command parent,CommandIterator it,CombatEntity other)
         {
-            if(index >= TempGenerateAttacks.Count)
+/*            if(index >= TempGenerateAttacks.Count)
             {
                 return null;
-            }
-             return CreateAttack(TempGenerateAttacks[index], parent,it, other);
+            }*/
+             return CreateAttack(attackToBe, parent,it, other);
         }
 
 
@@ -409,6 +435,7 @@ namespace Catacomb.CombatStuff
             tempEndOfTurnAttacks = new List<AttackGenerator>(endOfTurnAttacks);
             tempAttackingAttackDecs = new List<DecoratorGenerator>(attackingAttackDecs);
             tempDefenseAttackDecs = new List<DecoratorGenerator>(defenseAttackDecs);
+            
         }
        
 

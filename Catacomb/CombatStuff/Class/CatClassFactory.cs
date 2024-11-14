@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Catacomb.Entities;
+using Catacomb.CombatStuff.AttackFactories;
 namespace Catacomb.CombatStuff.Class
 {
     public class CatClassFactory
@@ -21,6 +22,24 @@ namespace Catacomb.CombatStuff.Class
             mageLevelUp.CreateLevelUpForAllLevels(fireMage);
             return fireMage;
         }
+
+        public static CatClass InfernoMage(CombatPlayer play)
+        {
+            CatClass infernoMage = new CatClass("Inferno Mage", "Loves fire, loves lighting things on fire, and loves hugging fire.", 10, play);
+
+            CatClassLevelUpHelper helper = new CatClassLevelUpHelper(play);
+            helper.manaChange = 2;
+            helper.magicChange = 6;
+            helper.magicResistChange = 2;
+            helper.CreateLevelUpForAllLevels(infernoMage);
+
+            CatClassLevelUpHelper.AddGainAttackLevelUp(TurnBasedAttackFactory.FlamingOutrage,infernoMage,3);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.Heatwave,infernoMage,9);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.SelfIgnition, infernoMage, 4);
+            
+            return infernoMage;
+        }
+
         public static CatClass Mage(CombatPlayer play)
         {
             CatClass mage = new CatClass("Mage", "A basic mage user. Knows a little, not much", 10, play);

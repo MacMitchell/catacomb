@@ -17,6 +17,9 @@ namespace Catacomb.CombatStuff
         private Attack mainAttack; //this is the main attack that is being decorated. Does not need to be known when created, but REQURIED when running
 
         public int priority = 10;
+        private string attackDecorateName ="NO NAME";
+        private string attackDecorateDescription ="NO DESCRIPTIOM";
+
         public delegate double SetStatsDelegate(double value, Attack mainAttack);
         public delegate double InflictDamageDelegate(double value, Attack mainAttack);
 
@@ -162,5 +165,7 @@ namespace Catacomb.CombatStuff
             }
 }
 
+        public string AttackDecorateName { get => attackDecorateName; set => attackDecorateName = value; }
+        public string AttackDecorateDescription { get => attackDecorateDescription; set => attackDecorateDescription = value; }
     }
 }

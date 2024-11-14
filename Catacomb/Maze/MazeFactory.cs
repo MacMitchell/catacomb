@@ -10,6 +10,7 @@ using Catacomb.Entities;
 using Catacomb.Visuals;
 using Catacomb.CombatStuff.AttackFactories;
 using Catacomb.Maze.Rooms;
+using Catacomb.CombatStuff.Class;
 
 namespace Catacomb.Maze
 {
@@ -48,7 +49,7 @@ namespace Catacomb.Maze
             CatMaze maze = new CatMaze();
             maze.Size = 6;
             maze.Step = 1;
-            maze.NumberOfMonsters = 3;
+            maze.NumberOfMonsters = 0;//3;
 
             maze.CreatableMonsters.Add(MonsterFactory.GreenSlime(playIn));
             maze.CreatableMonsters.Add(MonsterFactory.GoblinScout(playIn));
@@ -65,7 +66,7 @@ namespace Catacomb.Maze
             maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
             maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicFireMaze(playIn));
 
-            
+
             return maze;
         }
         public static CatMaze BasicFireMaze(Player playIn)
@@ -73,21 +74,20 @@ namespace Catacomb.Maze
             CatMaze maze = new CatMaze();
             maze.Size = 25;
             maze.Step = 1;
-            maze.NumberOfMonsters = 17;
+            maze.NumberOfMonsters = 0;//8;
 
             maze.CreatableMonsters.Add(MonsterFactory.FireImp(playIn));
             maze.CreatableMonsters.Add(MonsterFactory.LittleDevil(playIn));
             maze.CreatableMonsters.Add(MonsterFactory.FireWisp(playIn));
-
             Room[] fillerRooms = { new Hallway() };
             int[] fillerCount = { 20 };
             maze.FillerRoom = CreateAllRoomFunction(fillerRooms, fillerCount, maze.Builder, true);
 
             TreasureRoom treasureRoom = new TreasureRoom(Treasure.CreateBasicAttackTreasure(TurnBasedAttackFactory.ToxicAura));
+            BossRoom bossRoom = new BossRoom(MonsterFactory.FireElemental(playIn), CatClassFactory.InfernoMage(playIn.GetPlayerFighter), Treasure.CreateAttackDecTreasure(AttackDecFactory.CoolFlames));
+            Room[] keyRooms = { new Room(), treasureRoom,bossRoom };
 
-            Room[] keyRooms = { new Room(), treasureRoom };
-
-            int[] keyCount = { 15, 1 };
+            int[] keyCount = { 13, 1,4 };
             maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
             maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicMaze(playIn));
 

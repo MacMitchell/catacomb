@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
 namespace Catacomb.CombatStuff
 {
 
@@ -64,7 +66,7 @@ namespace Catacomb.CombatStuff
             currentAttack.Damage = baseDamage;
             currentAttack.Name = "Fireball";
             currentAttack.DamageType = DType.physical;
-            currentAttack.SelfManaDrain = -45;
+            currentAttack.SelfManaDrain = -5;
             currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
             {
                 currentAttack.Description = currentAttack.Castor.Name + " throw a fireball at " + currentAttack.Target.Name + "!";
@@ -265,6 +267,7 @@ namespace Catacomb.CombatStuff
             currentAttack.Damage = baseDamage;
             currentAttack.Type = AttackType.A;
             currentAttack.DamageType = DType.magic;
+            currentAttack.SelfManaDrain = -20;
             currentAttack.ExecuteAttack += (CombatEntity no, CombatEntity o) =>
             {
                 currentAttack.Description = castor.Name + " directs a painful heatwave at " + currentAttack.Target.Name;
@@ -292,7 +295,7 @@ namespace Catacomb.CombatStuff
             currentAttack.Name = "Ignite";
             currentAttack.Burn = baseBurn;
             currentAttack.Type = AttackType.A;
-
+            currentAttack.SelfManaDrain = -20;
             currentAttack.ExecuteAttack += (CombatEntity no, CombatEntity o) =>
             {
                 currentAttack.Description = castor.Name + " set " + currentAttack.Target.Name + " on fire!";
@@ -337,12 +340,37 @@ namespace Catacomb.CombatStuff
 
             currentAttack.ExecuteAttack += (CombatEntity no, CombatEntity o) =>
             {
-                currentAttack.Description = castor.Name + " slahed at " + currentAttack.Target.Name + "!";
+                currentAttack.Description = castor.Name + " slashed at " + currentAttack.Target.Name + "!";
                 UtilAttackFactory.GenerateFollowUpTextAttack(currentAttack, currentAttack.Target.Name +" was poisoned by " + currentAttack.Poison + "!");
 
             };
             return currentAttack;
         }
+
+        public static Attack SelfIgnition(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double baseBurn = 50;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Name = "Self Ignition";
+            currentAttack.Type = AttackType.A;
+            currentAttack.Burn = baseBurn;
+
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = currentAttack.Castor.Name + " sets EVERYONE on fire!";
+                Attack followup = Attack.CreateAttack(castor, currentAttack, it, castor, castor.CreateEntityDecorator(null, true));
+                followup.Target = castor;
+                followup.Burn = baseBurn;
+                followup.ExecuteAttack += (CombatEntity co, CombatEntity oo) =>{
+                    followup.Description = currentAttack.Castor.Name + " sets themself on fire";
+
+                };
+            };
+
+            return currentAttack;
+        }
+
+
 
         public static Attack Slash(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
@@ -363,10 +391,35 @@ namespace Catacomb.CombatStuff
 
             currentAttack.ExecuteAttack += (CombatEntity no, CombatEntity o) =>
             {
-                currentAttack.Description = castor.Name + " slahed at " + currentAttack.Target.Name + "!";
+                currentAttack.Description = castor.Name + " slashed at " + currentAttack.Target.Name + "!";
                 if (crit)
                 {
                     UtilAttackFactory.GenerateFollowUpTextAttack(currentAttack,"Critical hit!");
+                }
+            };
+            return currentAttack;
+        }
+        
+
+        public static Attack SummonMeteor(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Name = "Summon Meteor";
+            currentAttack.DamageType = DType.none;
+            currentAttack.Type = AttackType.A;
+
+
+            currentAttack.ExecuteAttack += (CombatEntity no, CombatEntity o) =>
+            {
+                if (currentAttack.Target.metadata.ContainsKey("meteor"))
+                {
+                    currentAttack.Description = "There already is a meteor in the sky. There is room for only one (per person).";
+                }
+                else
+                {
+                    currentAttack.Description = castor.Name + " summoned a meteor!!!";
+                    currentAttack.Target.AttackTempAttack(TurnBasedAttackFactory.Meteor);
                 }
             };
             return currentAttack;

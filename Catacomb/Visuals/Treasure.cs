@@ -66,5 +66,22 @@ namespace Catacomb.Visuals
                 };
             };
         }
+        public static CreateTreasureExecute CreateAttackDecTreasure(CombatEntity.DecoratorGenerator newAttack)
+        {
+            //returns a function
+            return (Treasure treasureIn) =>
+                () => {
+                    {
+                        CatPopUp treasurePopUp = new CatPopUp();
+                        treasurePopUp.Message = " You found the artifact: " + newAttack(null,null).AttackDecorateName + "!" +"\n"+
+                                                    newAttack(null,null).AttackDecorateDescription;
+                        treasurePopUp.Title = "Found ARTIFACT!";
+
+                        Player.Instance.Fighter.AddAttackDecorator(newAttack);
+                        treasurePopUp.onFinish = () => { treasureIn.RemoveSelfInteractable(); };
+                        CatacombManager.Instance.DisplayPopUp(treasurePopUp);
+                    };
+                };
+        }
     }
 }
