@@ -190,6 +190,7 @@
     <Compile Include="CombatStuff\Command.cs" />
     <Compile Include="CombatStuff\MonsterFactory.cs" />
     <Compile Include="CombatStuff\AttackFactories\UtilAttackFactory.cs" />
+    <Compile Include="CombatStuff\MonsterUtils\AttackAi.cs" />
     <Compile Include="CombatStuff\MonsterUtils\MonsterJuicer.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\Movement.cs" />

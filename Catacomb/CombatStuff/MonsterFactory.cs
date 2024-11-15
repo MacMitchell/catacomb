@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Catacomb.CombatStuff.Class;
 using Catacomb.CombatStuff.AttackFactories;
 using Catacomb.Entities;
+using Catacomb.CombatStuff.MonsterUtils;
 
 namespace Catacomb.CombatStuff
 {
@@ -212,6 +213,12 @@ namespace Catacomb.CombatStuff
             fighter.AddAttack(AttackFactory.Heatwave);
 
             fighter.AddAttack(TurnBasedAttackFactory.FlamingOutrage);
+
+            ConditionalAi ai = new ConditionalAi(fighter);
+            ai.AddConditionalCast(delegate (CombatEntity castor, CombatEntity player) { return player.Burn < 50; }, AttackFactory.Ignite);
+            ai.AddConditionalCast(delegate (CombatEntity castor, CombatEntity player) { return player.Burn >= 50; }, AttackFactory.Heatwave);
+
+            fighter.MyAttackAi = ai;
 
             MonsterUtils.MonsterJuicer.GenerateRandomStartOfTurnVoice(new[] {"A tornado of flames whirls around you both.", "The ancient fire being looms over you.", "The elemental body of flames flares up."}, fighter);
             fireElemental.Fighter = fighter;

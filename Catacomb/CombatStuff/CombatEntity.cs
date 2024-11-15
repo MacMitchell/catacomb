@@ -1,4 +1,5 @@
 ﻿using Catacomb.CombatStuff.Class;
+using Catacomb.CombatStuff.MonsterUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace Catacomb.CombatStuff
         public double MaxAttackStat { get => maxAttackStat; set => maxAttackStat = value; }
         public double MagicStat { get => magicStat; set => magicStat = value; }
         public double MaxMagicStat { get => maxMagicStat; set => maxMagicStat = value; }
+
         public double Defense { get => defense; set => defense = value; }
         public double MaxDefense { get => maxDefense; set => maxDefense = value; }
         public double MagicResist { get => magicResist; set => magicResist = value; }
@@ -114,6 +116,9 @@ namespace Catacomb.CombatStuff
         public List<DecoratorGenerator> DefenseAttackDecs { get => defenseAttackDecs; set => defenseAttackDecs = value; }
         public List<DecoratorGenerator> TempDefenseAttackDecs { get => tempDefenseAttackDecs; set => tempDefenseAttackDecs = value; }
         public double MaxMana { get => maxMana; set => maxMana = value; }
+        public AttackAi MyAttackAi { get => myAttackAi; set => myAttackAi = value; }
+
+        private AttackAi myAttackAi;
 
         public Hashtable metadata; 
         public CombatEntity(string nameIn, double defaultValue = 0,bool isPlayer =false)
@@ -142,6 +147,7 @@ namespace Catacomb.CombatStuff
             defenseAttackDecs = new List<DecoratorGenerator>();
             tempDefenseAttackDecs = new List<DecoratorGenerator>();
 
+            MyAttackAi = new AttackAi(this);
 
             InializeValues(defaultValue);
             InitilzeGenericValues();
@@ -283,15 +289,15 @@ namespace Catacomb.CombatStuff
             return dec;
         }
         /**
-         * That sets up the attack to be used for combat 
+         * That sets up the attack to be used for combat Returns an attack ready to be used in combat
          */
-        protected Attack CreateAttack(AttackGenerator genIn, Command parentIn, CommandIterator it, CombatEntity other)
+        public Attack CreateAttack(AttackGenerator genIn, Command parentIn, CommandIterator it, CombatEntity other)
         {
             return genIn(this, parentIn, it, other, SetUpDecs(other));
         }
         public Attack GetAttack(Command parentIn,CommandIterator it, CombatEntity other)
         {
-            List<AttackGenerator> backupList = new List<AttackGenerator>(TempGenerateAttacks);
+            /*List<AttackGenerator> backupList = new List<AttackGenerator>(TempGenerateAttacks);
 
             int index = rand.Next(0, TempGenerateAttacks.Count);
             Attack temp =  TempGenerateAttacks[index](this, null, null,null);
@@ -309,7 +315,8 @@ namespace Catacomb.CombatStuff
             }
             TempGenerateAttacks = new List<AttackGenerator>(backupList);
             temp = GetAttack(TempGenerateAttacks[index], parentIn, it, other);
-            return temp;
+            return temp;*/
+            return MyAttackAi.GetAttack(parentIn, it, other);
         }
 
         public List<Attack> GetEndOfCombatAttack(CommandIterator it, Command parentIn,CombatEntity other)
@@ -411,10 +418,6 @@ namespace Catacomb.CombatStuff
 
         public Attack GetAttack(AttackGenerator attackToBe, Command parent,CommandIterator it,CombatEntity other)
         {
-/*            if(index >= TempGenerateAttacks.Count)
-            {
-                return null;
-            }*/
              return CreateAttack(attackToBe, parent,it, other);
         }
 

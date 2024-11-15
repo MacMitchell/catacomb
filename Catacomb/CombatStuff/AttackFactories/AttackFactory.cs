@@ -273,6 +273,7 @@ namespace Catacomb.CombatStuff
                 currentAttack.Description = castor.Name + " directs a painful heatwave at " + currentAttack.Target.Name;
                 if (currentAttack.Target.Burn > 0) {
                     Attack followUp = Attack.CreateAttack(castor, currentAttack, it, other, dec?.Clone());
+                    followUp.Target = currentAttack.Target;
                     followUp.Damage = followUp.CalculateBurnDamage( currentAttack.Target.Burn, currentAttack.Target);
                     followUp.DamageType = DType.pierce;
                     followUp.ExecuteAttack += (CombatEntity n2, CombatEntity n3) =>
