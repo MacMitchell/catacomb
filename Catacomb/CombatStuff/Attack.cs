@@ -34,6 +34,8 @@ namespace Catacomb.CombatStuff
         protected double selfSpeedStatChange; //(+: reduces)
         protected double manaDrain;
         protected double selfManaDrain;
+        private int tired;
+        private int selfTired;
         protected string name;
         public delegate void ExecuteAttackDelegate(CombatEntity castor, CombatEntity target);
         public ExecuteAttackDelegate ExecuteAttack;
@@ -70,6 +72,8 @@ namespace Catacomb.CombatStuff
             this.selfSpeedStatChange = 0;
             this.selfManaDrain = 0;
             this.manaDrain = 0;
+            this.tired = 0;
+            this.selfTired = 0;
 
             CommandReturnResult = Command.IGNORE_COMMAND;
             castor = null;
@@ -92,7 +96,7 @@ namespace Catacomb.CombatStuff
             Castor.Defense += SelfDefenseStatChange;
 
             Target.MagicResist += MagicAttackStatChange;
-            Castor.MagicResist += SelfMagicAttackStatChange;
+            Castor.MagicResist += SelfMagicResistStatChange;
 
             Target.AttackStat += AttackStatChange;
             Castor.AttackStat += SelfAttackStatChange;
@@ -108,6 +112,9 @@ namespace Catacomb.CombatStuff
 
             Target.Poison += Poison;
             Target.Burn += Burn;
+
+            Target.Tired += Tired;
+            Castor.Tired += SelfTired;
             if (Damage > 0)
             {
                 InflectDamage(Target, Damage);
@@ -152,6 +159,8 @@ namespace Catacomb.CombatStuff
         public virtual double Burn { get => burn; set => burn = value; }
         public AttackType Type { get => type; set => type = value; }
         public virtual DType DamageType { get => damageType; set => damageType = value; }
+        public virtual  int Tired { get => tired; set => tired = value; }
+        public virtual int SelfTired { get => selfTired; set => selfTired = value; }
 
         public override int Execute(CombatEntity castor, CombatEntity target)
         {
@@ -253,6 +262,27 @@ namespace Catacomb.CombatStuff
                 }
                 attackDecoratorIt = (AttackDecorator)attackDecoratorIt.LayerUpAttack;
             }
+        }
+
+
+        /**
+         *  Creates another attack based on the parent.
+         *  ONLY  CALL IN EXECUTE ATTACK, RQEUIRES THE ATTACK TO BE INITIALIZED WITH TARGET AND CASTOR
+         */
+        public static Attack CreateFollowupAttack(Attack parent, CommandIterator it, AttackDecorator dec= null)
+        {
+            Attack followUp = Attack.CreateAttack(parent.Castor, parent, it, parent.Target, dec?.Clone());
+            followUp.Target = parent.Target;
+            followUp.Castor = parent.Castor;
+            return followUp;
+        }
+
+
+        public static Attack CreateSelfTargetAttack(Attack parent, CommandIterator it, CombatEntity selfTarget)
+        {
+            Attack followup = Attack.CreateAttack(selfTarget, parent, it, selfTarget, selfTarget.CreateEntityDecorator(null, true));
+            followup.Target = selfTarget;
+            return followup;
         }
     }
 }

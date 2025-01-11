@@ -58,6 +58,11 @@ namespace Catacomb.CombatStuff
         }
 
 
+        public void HealForNextFloor()
+        {
+            Health = Math.Min(Health + (MaxHealth / 2.0), MaxHealth);
+            Mana = MaxMana;
+        }
     }
 
     

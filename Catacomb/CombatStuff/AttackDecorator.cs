@@ -28,6 +28,8 @@ namespace Catacomb.CombatStuff
         private SetStatsDelegate setSelfHeal= null; //how much the one is attacking will heal (negative value will cause self damage)
         private SetStatsDelegate setPoison= null; //how much the attack will poison its target (+: increases poison)
         private SetStatsDelegate setBurn = null;
+        private SetStatsDelegate setTired = null;
+        private SetStatsDelegate setSelfTired = null;
         private SetStatsDelegate setMentalBreak= null; //how much mentalbreak the attack will apply to the target (+: increases mental break)
         private SetStatsDelegate setArmorChange= null; //how much will the attack change the target armor after the damage is done (+: reduces armor)
         private SetStatsDelegate setSelfArmorChange= null; //how much the attack will change the armor of the user (+: reduces armor)
@@ -53,6 +55,8 @@ namespace Catacomb.CombatStuff
             setSelfHeal = (double  value, Attack mainAttack) => value; 
             setPoison = (double  value, Attack mainAttack) => value; 
             setBurn = (double value, Attack mainAttack) => value;
+            setTired = (double value, Attack mainAttack) => value;
+            setSelfTired = (double value, Attack mainAttack) => value;
             setMentalBreak = (double  value, Attack mainAttack) =>value; 
             setArmorChange = (double  value, Attack mainAttack) => value; 
             setSelfArmorChange = (double  value, Attack mainAttack) =>value; 
@@ -78,6 +82,8 @@ namespace Catacomb.CombatStuff
             newDec.setSelfHeal = setSelfHeal;
             newDec.setPoison = setPoison;
             newDec.setBurn = setBurn;
+            newDec.setTired = setTired;
+            newDec.setSelfTired = setSelfTired;
             newDec.setMentalBreak = setMentalBreak;
             newDec.setArmorChange = setArmorChange;
             newDec.setSelfArmorChange = setSelfArmorChange;
@@ -113,6 +119,9 @@ namespace Catacomb.CombatStuff
         public override double SelfHeal { get => setSelfHeal(layerUpAttack.SelfHeal, MainAttack); set => layerUpAttack.SelfHeal = value; }
         public override double Poison { get => setPoison(layerUpAttack.Poison, MainAttack); set => layerUpAttack.Poison = value; }
 
+        public override int Tired { get => (int) Math.Ceiling(setTired(layerUpAttack.Tired,MainAttack)); set => layerUpAttack.Tired = value; }
+
+        public override int SelfTired { get => (int) Math.Ceiling(setSelfTired(layerUpAttack.SelfTired,MainAttack)); set => layerUpAttack.SelfTired = value; }
         public override double Burn { get => setBurn(layerUpAttack.Burn, MainAttack); set => layerUpAttack.Burn = value; }
         public override double MentalBreak { get => setMentalBreak(layerUpAttack.MentalBreak,MainAttack); set => layerUpAttack.MentalBreak = value; }
         public override double ArmorChange { get => setArmorChange(layerUpAttack.ArmorChange, MainAttack); set => layerUpAttack.ArmorChange = value; }
@@ -167,5 +176,7 @@ namespace Catacomb.CombatStuff
 
         public string AttackDecorateName { get => attackDecorateName; set => attackDecorateName = value; }
         public string AttackDecorateDescription { get => attackDecorateDescription; set => attackDecorateDescription = value; }
+        public SetStatsDelegate SetTired { get => setTired; set => setTired = value; }
+        public SetStatsDelegate SetSelfTired { get => setSelfTired; set => setSelfTired = value; }
     }
 }

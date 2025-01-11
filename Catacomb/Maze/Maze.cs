@@ -101,8 +101,8 @@ namespace Catacomb.Maze
             bool done = false;
             while (!done)
             {
-                try
-                {
+                //try
+                //{
                     CleanUp();
                     this.Create(playIn);
                     this.Draw();
@@ -118,12 +118,12 @@ namespace Catacomb.Maze
                         this.CreateMonster();
                     }
                     done = true;
-                }
-                catch (Exception sadness)
-                {
+              //  }
+               // catch (Exception sadness)
+                //{
                     Console.WriteLine("FAILED TO BUILD MAZE\n");
 
-                }
+                //}
             }
         }
 

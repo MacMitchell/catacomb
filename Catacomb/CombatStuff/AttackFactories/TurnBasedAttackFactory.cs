@@ -16,6 +16,43 @@ namespace Catacomb.CombatStuff.AttackFactories
     public static class TurnBasedAttackFactory
     {
 
+
+        public static Attack BlizzardPassive(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double baseDamage = 5;
+            baseDamage += castor.MagicStat / 10;
+
+            double speedReduce = 5;
+            speedReduce += castor.MagicStat / 10;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Name = "Blizzard Passive";
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.DamageType = DType.magic;
+
+            currentAttack.Damage = baseDamage;
+            currentAttack.SpeedStatChange = -speedReduce;
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = $"A blizzard rages, slowing and dmaaging {currentAttack.Target.Name}!";
+            };
+            return currentAttack;
+        }
+
+        public static Attack BurnLover(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double increase = castor.Burn / 10;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.SOT;
+            currentAttack.Name = "Burn Lover";
+            currentAttack.SelfMagicAttackStatChange = increase;
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity t) =>
+            {
+                currentAttack.Description = $"{currentAttack.Castor.Name} loves the burn!";
+            };
+
+            return currentAttack;
+        }
+
         /**
          * First time the castor reaches below half health, it burn the target for a good amount
          */
@@ -48,6 +85,93 @@ namespace Catacomb.CombatStuff.AttackFactories
             return currentAttack;
         }
 
+        public static Attack GoblinBackupArmy(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double baseDamage = 10;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Damage = baseDamage;
+            currentAttack.DamageType = DType.physical;
+
+
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "Goblin Backup Army";
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = $"{currentAttack.Castor.Name} army attacks {currentAttack.Target.Name}!";
+                if (!currentAttack.Castor.metadata.ContainsKey("goblin_army_attack_count"))
+                {
+                    currentAttack.Castor.metadata.Add("goblin_army_attack_count", 0);
+                }
+                currentAttack.Castor.metadata["goblin_army_attack_count"] = ( (int) currentAttack.Castor.metadata["goblin_army_attack_count"]) + 1;
+            };
+            
+            return currentAttack;
+
+        }
+
+        public static Attack GoblinFriend(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double baseDamage = 10;
+            baseDamage += castor.AttackStat / 2;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Damage = baseDamage;
+            currentAttack.DamageType = DType.physical;
+
+
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "Goblin Friend";
+            currentAttack.Description = "A friendly goblin that gets stronger with you!";
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = $"{currentAttack.Castor.Name}'s goblin friend attacks!";
+            };
+
+            return currentAttack;
+        }
+
+        public static Attack HotBod(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double baseBurn = 5;
+            baseBurn += castor.MagicStat / 5;
+
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Burn = baseBurn;
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "HotBod";
+            currentAttack.Description = "Burns everyone at the end of the turn";
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = currentAttack.Castor.Name + " is burning hot. It causes " + currentAttack.Target.Name +" to burn!";
+                Attack followup = Attack.CreateAttack(castor, currentAttack, it, castor, castor.CreateEntityDecorator(null, true));
+                followup.Target = castor;
+                followup.Burn = baseBurn;
+                followup.ExecuteAttack += (CombatEntity co, CombatEntity oo) => {
+                    followup.Description = currentAttack.Castor.Name + " gets even hotter";
+
+                };
+            };
+
+            return currentAttack;
+        }
+
+
+
+        public static Attack LesserManaRegen(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double regenAmount = 5;
+
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Name = "Lesser Mana Regen";
+            currentAttack.Type = AttackType.EOT;
+
+            currentAttack.SelfManaDrain = Math.Min(regenAmount,castor.MaxMana - castor.Mana);
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = $"{currentAttack.Castor.Name} regenerates some mana";
+            };
+
+            return currentAttack;
+        }
         /**
          * After a set number of turns, it will deal a lot of damage to castor
          */
@@ -97,6 +221,7 @@ namespace Catacomb.CombatStuff.AttackFactories
             
             return currentAttack;
         }
+
         public static Attack Rage(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
         {
             double statChange = 6;
@@ -130,6 +255,76 @@ namespace Catacomb.CombatStuff.AttackFactories
 
                 currentAttack.Description = "Regeneration! "  + currentAttack.Castor.Name + " healed for " + (healthAfter - healthBefore) + "!";
 
+            };
+            return currentAttack;
+        }
+
+
+        /**
+         * When the target health falls below half health, it greatly increaes your spped and slightly attack UNTESTED 
+         */
+        public static Attack SenseBlood(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec = null)
+        {
+            double attackIncreasse = 10;
+            double speedIncrease = 100;
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "Sense Blood";
+            currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
+            {
+                if (other.Health * 2 <= other.MaxHealth)
+                {
+                    Attack followUp = Attack.CreateAttack(castor, currentAttack, it, other, dec?.Clone());
+                    followUp.SelfAttackStatChange = attackIncreasse;
+                    followUp.SelfSpeedStatChange = speedIncrease;
+                    followUp.Target = currentAttack.Target;
+                    followUp.Castor = currentAttack.Castor;
+                    currentAttack.Description = currentAttack.Castor.Name + " senses some blood in the air";
+                    followUp.ExecuteAttack += (CombatEntity c2, CombatEntity t2) =>
+                    {
+                        followUp.Description = followUp.Castor.Name + "'s speed greatly increased";
+                        UtilAttackFactory.GenerateFollowUpTextAttack(followUp, followUp.Castor.Name + "'s attack increased!");
+                        castor.RemoveTempAttack(SenseBlood);
+                    };
+                }
+                else
+                {
+                    currentAttack.CommandReturnResult = it.ExecuteNext(c, t);
+                }
+            };
+            return currentAttack;
+        }
+
+        public static Attack SenseFire(CombatEntity castor, Command parent, CommandIterator it, CombatEntity other, AttackDecorator dec= null)
+        {
+            
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, other, dec);
+            currentAttack.Type = AttackType.EOT;
+            currentAttack.Name = "Sense Fire";
+            currentAttack.ExecuteAttack = (CombatEntity c, CombatEntity t) =>
+            {
+                if (other.Burn > 0)
+                {
+                    Attack followUp = Attack.CreateFollowupAttack(currentAttack, it, dec);
+                    followUp.SelfSpeedStatChange = followUp.Target.Burn;
+
+                    currentAttack.Description = currentAttack.Castor.Name + " senses some fire in the air";
+                    followUp.ExecuteAttack += (CombatEntity c2, CombatEntity t2) =>
+                    {
+                        followUp.Description = followUp.Castor.Name + "'s speed increased";
+
+                        Attack followup2 = Attack.CreateFollowupAttack(followUp, it, dec);
+                        followup2.SelfAttackStatChange = followup2.Target.Burn / 10;
+                        followup2.ExecuteAttack += (CombatEntity c3, CombatEntity t3) =>
+                         {
+                             followup2.Description = $"{followup2.Castor.Name} attack increased!";
+                         };
+                    };
+                }
+                else
+                {
+                    currentAttack.CommandReturnResult = it.ExecuteNext(c, t);
+                }
             };
             return currentAttack;
         }

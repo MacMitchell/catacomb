@@ -109,5 +109,21 @@ namespace Catacomb.CombatStuff
                 utilAttack.CommandReturnResult = it.ExecuteNext(no,nope);
             };
         }
+
+
+        public static Attack Tired(CombatEntity castor, Command parent, CommandIterator it, CombatEntity target,AttackDecorator dec = null)
+        {
+            Attack currentAttack = Attack.CreateAttack(castor, parent, it, target,dec);
+            currentAttack.Name = "Tired";
+
+            currentAttack.ExecuteAttack += (CombatEntity c, CombatEntity o) =>
+            {
+                currentAttack.Description = $"{currentAttack.Castor.Name} needs to rest";
+                currentAttack.Castor.Tired--;
+
+            };
+
+            return currentAttack;
+        }
     }
 }

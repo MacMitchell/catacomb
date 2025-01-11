@@ -44,27 +44,29 @@ namespace Catacomb.Maze
             return functionReturn;
         }
 
+        //starting room
         public static CatMaze BasicMaze(Player playIn)
         {
             CatMaze maze = new CatMaze();
             maze.Size = 6;
             maze.Step = 1;
-            maze.NumberOfMonsters = 0;//3;
+            maze.NumberOfMonsters = 3;
 
             maze.CreatableMonsters.Add(MonsterFactory.GreenSlime(playIn));
             maze.CreatableMonsters.Add(MonsterFactory.GoblinScout(playIn));
+
 
             Room[] fillerRooms = { new Hallway() };
             int[] fillerCount = { 20 };
             maze.FillerRoom = CreateAllRoomFunction(fillerRooms, fillerCount, maze.Builder, true);
 
             RandomTreasureRoom treasureRoom = new RandomTreasureRoom(Treasure.CreateBasicAttackTreasure(TurnBasedAttackFactory.SharpStick));
-            
-            Room[] keyRooms = { new Room(), treasureRoom };
+            StairRoom fireStairRoom = new StairRoom(BasicFireMaze(playIn));
+            Room[] keyRooms = { new Room(), treasureRoom,fireStairRoom };
 
-            int[] keyCount = { 5,1 };
+            int[] keyCount = { 5,1,0 };
             maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
-            maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicFireMaze(playIn));
+            maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicDungeonMaze(playIn));
 
 
             return maze;
@@ -74,7 +76,7 @@ namespace Catacomb.Maze
             CatMaze maze = new CatMaze();
             maze.Size = 25;
             maze.Step = 1;
-            maze.NumberOfMonsters = 0;//8;
+            maze.NumberOfMonsters = 8;
 
             maze.CreatableMonsters.Add(MonsterFactory.FireImp(playIn));
             maze.CreatableMonsters.Add(MonsterFactory.LittleDevil(playIn));
@@ -93,6 +95,62 @@ namespace Catacomb.Maze
 
 
             return maze;
+        }
+
+        public static CatMaze MidFireMaze(Player player)
+        {
+            CatMaze maze = new CatMaze();
+            maze.Size = 35;
+            maze.Step = 1;
+            maze.NumberOfMonsters = 15;
+
+            maze.CreatableMonsters.Add(MonsterFactory.HellHound(player));
+            maze.CreatableMonsters.Add(MonsterFactory.Salamander(player));
+            maze.CreatableMonsters.Add(MonsterFactory.Whelp(player));
+
+            Room[] fillerRooms = { new Hallway() };
+            int[] fillerCount = { 40 };
+            maze.FillerRoom = CreateAllRoomFunction(fillerRooms, fillerCount, maze.Builder, true);
+
+
+            Room[] keyRooms = { new Room() };
+            int[] keyCount = { 40 };
+            maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
+
+            maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicFireMaze(player));
+
+
+            return maze;
+        }
+
+        public static CatMaze BasicDungeonMaze(Player playIn)
+        {
+            CatMaze maze = new CatMaze();
+            maze.Size = 25;
+            maze.Step = 1;
+            maze.NumberOfMonsters = 8;
+
+            maze.CreatableMonsters.Add(MonsterFactory.DireWolf(playIn));
+            maze.CreatableMonsters.Add(MonsterFactory.Troll(playIn));
+            maze.CreatableMonsters.Add(MonsterFactory.GoblinMage(playIn));
+            maze.CreatableMonsters.Add(MonsterFactory.GoblinWarrior(playIn));
+
+
+            Room[] fillerRooms = { new Hallway() };
+            int[] fillerCount = { 20 };
+            maze.FillerRoom = CreateAllRoomFunction(fillerRooms, fillerCount, maze.Builder, true);
+
+            BossRoom bossRoom = new BossRoom(MonsterFactory.GoblinKing(playIn), CatClassFactory.Enchanter(playIn.GetPlayerFighter), Treasure.CreateBasicAttackTreasure(TurnBasedAttackFactory.GoblinFriend));
+
+
+            Room[] keyRooms = { new Room(),bossRoom };
+            int[] keyCount = { 20,10 };
+
+            maze.KeyRoom = CreateAllRoomFunction(keyRooms, keyCount, maze.Builder, false);
+            maze.StairRoom = (List<Room> rooms) => new StairRoom(BasicMaze(playIn));
+
+            return maze;
+
         }
     }
 }

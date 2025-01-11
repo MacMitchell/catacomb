@@ -60,6 +60,7 @@ namespace Catacomb.Maze
             
             base.Children.Add(maze.GetCanvas());
             base.Children.Add(player.GetCanvas());
+            player.GetPlayerFighter.HealForNextFloor();
         }
 
         public void Destroy()

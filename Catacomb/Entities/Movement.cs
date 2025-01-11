@@ -307,7 +307,7 @@ namespace Catacomb.Entities
 
         private MovementState state;
 
-        public SmartMovement(Monster parentIn, Player playIn)
+        public SmartMovement(Monster parentIn, Player playIn, int wonderRange = 500, double angleOffset = Math.PI / 12.0, double senseRange = 500, double senseAngle = Math.PI / 2.0)
         {
             monster = parentIn;
             player = playIn;
@@ -322,7 +322,7 @@ namespace Catacomb.Entities
             collisionTest = new Vector[Globals.CONNECTION_LIMIT];
             collisionResults = new bool[Globals.CONNECTION_LIMIT];
 
-            state = new Wondering(this, monster, playIn);
+            state = new Wondering(this, monster, playIn,wonderRange:wonderRange,angleOffset:angleOffset,senseRange:senseRange,senseAngle:senseAngle);
         }
 
         public void SetMonsterAngle(double angle)

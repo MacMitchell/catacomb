@@ -52,7 +52,6 @@ namespace Catacomb.Entities
         public Player(Point positionIn) : base(positionIn, new CatRectangle(0, 0, playerWidth, playerHeight)) {
             canvas.Width = Width;
             canvas.Height = Height;
-            //canvas.Background = Brushes.Orange;
             SetColor( Brushes.Orange);
             Velocity = 0;
             MaxVelocity = 800;

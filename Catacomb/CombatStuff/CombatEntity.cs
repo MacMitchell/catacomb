@@ -67,6 +67,7 @@ namespace Catacomb.CombatStuff
         private double armor;
         private double poison;
         private double burn;
+        private int tired;
         private double xp;
         private Boolean isPlayer;
 
@@ -117,6 +118,7 @@ namespace Catacomb.CombatStuff
         public List<DecoratorGenerator> TempDefenseAttackDecs { get => tempDefenseAttackDecs; set => tempDefenseAttackDecs = value; }
         public double MaxMana { get => maxMana; set => maxMana = value; }
         public AttackAi MyAttackAi { get => myAttackAi; set => myAttackAi = value; }
+        public int Tired { get => tired; set => tired = value; }
 
         private AttackAi myAttackAi;
 
@@ -174,6 +176,7 @@ namespace Catacomb.CombatStuff
             xp = 0;
             Poison = 0.0;
             Burn = 0.0;
+            Tired = 0;
         }
 
         public virtual void InitilzeGenericValues()
@@ -297,25 +300,10 @@ namespace Catacomb.CombatStuff
         }
         public Attack GetAttack(Command parentIn,CommandIterator it, CombatEntity other)
         {
-            /*List<AttackGenerator> backupList = new List<AttackGenerator>(TempGenerateAttacks);
-
-            int index = rand.Next(0, TempGenerateAttacks.Count);
-            Attack temp =  TempGenerateAttacks[index](this, null, null,null);
-            while(Math.Abs(temp.SelfManaDrain) > mana)
+            if(this.Tired >= 1)
             {
-                TempGenerateAttacks.RemoveAt(index);
-                if(TempGenerateAttacks.Count == 0)
-                {
-                    TempGenerateAttacks = new List<AttackGenerator>(backupList);
-                    return CreateAttack(AttackFactory.Tackle, parentIn, it, other);
-                }
-                index = rand.Next(0, TempGenerateAttacks.Count);
-
-                temp = TempGenerateAttacks[index](this,null,null,null);
+                return CreateAttack(UtilAttackFactory.Tired,parentIn,it,other);//UtilAttackFactory.Tired(this, parentIn, it, other);
             }
-            TempGenerateAttacks = new List<AttackGenerator>(backupList);
-            temp = GetAttack(TempGenerateAttacks[index], parentIn, it, other);
-            return temp;*/
             return MyAttackAi.GetAttack(parentIn, it, other);
         }
 
@@ -330,7 +318,6 @@ namespace Catacomb.CombatStuff
                 attacks.Add(temp);
             }
             return attacks;
-           // return EndOfCombatAttack(this, parentIn,it,other,SetUpDecs(other));
         }
 
         public List<Attack> GetStartOfCombatAttack(CommandIterator it, Command parentIn, CombatEntity other)

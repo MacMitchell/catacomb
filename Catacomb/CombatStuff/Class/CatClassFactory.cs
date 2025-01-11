@@ -10,6 +10,26 @@ namespace Catacomb.CombatStuff.Class
 {
     public class CatClassFactory
     {
+
+
+        public static CatClass Enchanter(CombatPlayer play)
+        {
+            CatClass enchanter = new CatClass("Enchanter", "Specializes in buffing their weapons in the heat of combat", 10, play);
+            CatClassLevelUpHelper levelUp = new CatClassLevelUpHelper(play);
+            levelUp.manaChange = 3;
+            levelUp.attackChange = 2;
+            levelUp.magicChange = 2;
+            levelUp.defenseChange = 1;
+            levelUp.magicResistChange = 1;
+            levelUp.CreateLevelUpForAllLevels(enchanter);
+
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.EnchantmentPoison,enchanter, 3);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.EnchantmentBurn, enchanter, 5);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.EnchantmentCorrosive, enchanter, 9);
+
+            return enchanter;
+
+        }
         public static CatClass FireMage(CombatPlayer play)
         {
             CatClass fireMage = new CatClass("Fire Mage", "Knows about fire. Hopefully it will help keep you warm and your enemies burning", 10, play);
@@ -51,11 +71,38 @@ namespace Catacomb.CombatStuff.Class
             mageLevelUp.magicChange = 3;
             mageLevelUp.magicResistChange = 1;
             mageLevelUp.CreateLevelUpForAllLevels(mage);
-            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.FrostLance, mage, 5);
 
             CatClass temp = CatClassFactory.FireMage(play);
-            CatClassLevelUpHelper.AddGainCatClassLevelUp(mage, temp , 3);
+            CatClassLevelUpHelper.AddGainCatClassLevelUp(mage, temp , 4);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.FireLance, mage, 4);
+
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.FrostLance, mage, 7);
+            CatClassLevelUpHelper.AddGainCatClassLevelUp(mage, CatClassFactory.FrostMage(play), 7);
+
+            CatClassLevelUpHelper.AddGainAttackLevelUp(TurnBasedAttackFactory.LesserManaRegen, mage, 10);
+            
             return mage;
+        }
+
+        public static CatClass FrostMage(CombatPlayer play)
+        {
+            CatClass frostMage = new CatClass("Frost Mage", "Likes ice and ice cream", 10, play);
+
+            CatClassLevelUpHelper helper = new CatClassLevelUpHelper(play);
+            helper.healthChange = 2;
+            helper.manaChange = 5;
+            helper.magicChange = 3;
+            helper.defenseChange = 1;
+            helper.magicResistChange = 1;
+            helper.speedChange = 3;
+            helper.CreateLevelUpForAllLevels(frostMage);
+
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.FrostBlast, frostMage, 4);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.Blizzard, frostMage, 8);
+            CatClassLevelUpHelper.AddGainAttackLevelUp(AttackFactory.IceBeam, frostMage, 10);
+
+            
+            return frostMage;
         }
 
         public static CatClass Squire(CombatPlayer play)
